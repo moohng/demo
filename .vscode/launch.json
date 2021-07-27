@@ -5,25 +5,16 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "java",
-      "name": "Launch Main",
+      "name": "(gdb) Launch",
+      "type": "cppdbg",
       "request": "launch",
-      "mainClass": "Main",
-      "projectName": "code-running_87135cd7"
-    },
-    {
-      "type": "java",
-      "name": "Launch Solution",
-      "request": "launch",
-      "mainClass": "Solution",
-      "projectName": "code-running_87135cd7"
-    },
-    {
-      "name": "Launch Package",
-      "type": "go",
-      "request": "launch",
-      "mode": "auto",
-      "program": "${fileDirname}"
+      "program": "${fileDirname}/${fileBasenameNoExtension}.exe",
+      "miDebuggerPath": "C:/mingw64/bin/gdb.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
+      "externalConsole": true,
+      "preLaunchTask": "g++"
     }
   ]
 }
