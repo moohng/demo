@@ -47,6 +47,9 @@ class Canvas {
     return this.instance?.getContext('2d');
   }
 
+  /**
+   * 清空画布
+   */
   clear() {
     this.ctx.clearRect(0, 0, this.width, this.height);
   }
