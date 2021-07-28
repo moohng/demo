@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>五子棋</title>
+  <style>
+    body {
+      padding-top: 20px;
+      text-align: center;
+    }
+
+    #chess {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background-color: tan;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    button {
+      width: 150px;
+      height: 44px;
+      text-align: center;
+      font-size: 16px;
+      outline: none;
+      border: none;
+      border-radius: 44px;
+    }
+
+    .reset-btn {
+      background-color: tan;;
+    }
+
+    .cover {
+      position: fixed;
+      left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #00000080;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .cover .start-btn {
+
+    }
+  </style>
+</head>
+<body>
+  <div id="chess"></div>
+
+  <button id="resetBtn" class="reset-btn">重置</button>
+
+  <div id="cover" class="cover">
+    <button id="startBtn" class="start-btn">点击开始</button>
+  </div>
+
+  <script type="module">
+    import Canvas from './Canvas.js';
+    import Board from './Board.js';
+
+    // 创建画布
+    const canvas = new Canvas('#chess');
+
+    // 创建棋盘
+    const board = new Board(canvas);
+    board.draw();
+
+    console.log(board);
+
+    document.querySelector('#startBtn').addEventListener('click', () => {
+      document.querySelector('#cover').style.display = 'none';
+      board.start();
+    });
+
+    document.querySelector('#resetBtn').addEventListener('click', () => {
+      board.reset();
+    });
+  </script>
+</body>
+</html>
