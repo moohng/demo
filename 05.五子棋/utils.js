@@ -1,3 +1,5 @@
+// @ts-check
+
 /**
  * 获取半径范围
  * @param {number} x 中点坐标
@@ -12,11 +14,8 @@ export function getRange(x, len, radius = 4) {
 }
 
 /**
- * @typedef {(index: number) => boolean} ConditionCallback
- */
-
-/**
  * 判断范围内指定条件连续出现的次数是否达到最大数
+ * @typedef {(index: number) => boolean} ConditionCallback
  * @param {number} start 范围
  * @param {number} end 范围
  * @param {number} maxCount 最大次数
@@ -39,11 +38,8 @@ export function isUptoMaxCount(start, end, maxCount, fn) {
 }
 
 /**
- * @typedef {(x: number, y: number) => boolean} ConditionCallback2D
- */
-
-/**
  * 判断范围内指定条件连续出现的次数是否达到最大数（二维）
+ * @typedef {(x: number, y: number) => boolean} ConditionCallback2D
  * @param {{x: number, y: number}} start 范围
  * @param {{x: number, y: number}} end 范围
  * @param {number} maxCount 最大次数

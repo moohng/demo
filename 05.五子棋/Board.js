@@ -1,3 +1,5 @@
+// @ts-check
+
 import Canvas from './Canvas.js';
 import Piece from './Piece.js';
 import { getRange, isUptoMaxCount, isUptoMaxCount2D } from './utils.js';
@@ -130,7 +132,7 @@ class Board {
 
     /**
      * 棋盘的2维数组
-     * @type {[0 | 'black' | 'white'][]}
+     * @type {(0 | 'black' | 'white')[][]}
      */
     this.cheeks = (() => {
       const arr = [];
@@ -234,6 +236,12 @@ class Board {
     return isUptoMaxCount(start, end, 5, (index) => this.cheeks[index][x] === this.currentStep);
   }
 
+  /**
+   * @private
+   * @param {number} x
+   * @param {number} y
+   * @returns {boolean}
+   */
   leftTop2rightBottom(x, y) {
     // 左上最小半径
     const startMinRadius = Math.min(x, y, 4);
@@ -255,6 +263,12 @@ class Board {
     );
   }
 
+  /**
+   * @private
+   * @param {number} x
+   * @param {number} y
+   * @returns {boolean}
+   */
   leftBottom2rightTop(x, y) {
     // 左下最小半径
     const startMinRadius = Math.min(x, this.rowCount - y - 1, 4);
@@ -274,8 +288,7 @@ class Board {
       5,
       (i, j) => {
         return this.cheeks[endY - (j - startY)][i] === this.currentStep;
-      },
-      true
+      }
     );
   }
 }

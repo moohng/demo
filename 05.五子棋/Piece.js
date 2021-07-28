@@ -1,3 +1,5 @@
+// @ts-check
+
 class Piece {
   /**
    * 创建棋子

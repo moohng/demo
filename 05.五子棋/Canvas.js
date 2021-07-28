@@ -1,11 +1,15 @@
+// @ts-check
+
 class Canvas {
   /**
    * @readonly 宽度
+   * @type {number}
    */
   width = 0;
 
   /**
   * @readonly 高度
+   * @type {number}
   */
   height = 0;
 
