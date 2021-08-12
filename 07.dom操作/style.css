@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+}
+
+.top-option {
+  position: sticky;
+  top: 0;
+  padding: 4px 12px;
+  background-color: #fff;
+}
+.top-option .row {
+  margin: 8px 0;
+}
+
+#app {
+  margin: 30px 12px;
+}
+.cell-bar {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+.cell-bar .avatar {
+  margin-right: 12px;
+  width: 60px;
+  height: 60px;
+  background-color: #f2f2f2;
+  background-size: cover;
+  border-radius: 80px;
+}
+.cell-bar .title {
+  font-weight: bold;
+}
+.cell-bar .subtitle {
+  margin-top: 8px;
+  color: #999;
+  font-size: 0.8em;
+}
