@@ -1,7 +1,7 @@
 import { fetchData } from './api';
 
 function createComponent({ avatar, name, bird }) {
-  const template = `
+  return `
     <div class="cell-bar">
       <div class="avatar" style="background-image: url(${avatar})"></div>
       <div class="content">
@@ -10,15 +10,15 @@ function createComponent({ avatar, name, bird }) {
       </div>
     </div>
     `;
-  return template;
 }
 
 function onInitJs() {
   fetchData().then(data => {
     const list = data.reduce((res, item) => res + createComponent(item), '');
-    document.getElementById('app').innerHTML = list;
+    $('#app').html(list);
   });
 }
 
-document.getElementById('jsInit').addEventListener('click', onInitJs, false);
-document.getElementById('jsUpdate').addEventListener('click', onInitJs, false);
+$('#jsInit').on('click', onInitJs);
+
+$('#jsUpdate').on('click', onInitJs);
