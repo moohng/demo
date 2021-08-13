@@ -1,6 +1,6 @@
 import { fetchData } from './api';
 
-let refresh = () => {};
+let refresh;
 
 document.getElementById('reactInit').addEventListener('click', function () {
   const App = () => {
@@ -24,4 +24,4 @@ document.getElementById('reactInit').addEventListener('click', function () {
   ReactDOM.render(<App />, document.getElementById('app'));
 }, false);
 
-document.getElementById('reactUpdate').addEventListener('click', refresh, false);
+document.getElementById('reactUpdate').addEventListener('click', () => refresh && refresh(), false);
