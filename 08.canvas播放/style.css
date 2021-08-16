@@ -27,3 +27,14 @@ canvas {
 .toolbar .button .iconfont {
   font-size: 20px;
 }
+
+
+.tui-dialog__content input {
+  padding: 8px 12px;
+  width: 80%;
+  font-size: 14px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  box-sizing: border-box;
+  outline: none;
+}

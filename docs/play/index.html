@@ -6,10 +6,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>七夕礼物</title>
   <link rel="stylesheet" href="//at.alicdn.com/t/font_2748127_hf058657tsd.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moohng/tui@1.1.0/dist/tui.min.css">
   
   <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
-  <script type="module" crossorigin src="./assets/index.819f0b7c.js"></script>
-    <link rel="stylesheet" href="./assets/index.fdfeea7b.css">
+  <script src="https://cdn.jsdelivr.net/npm/@moohng/tui@1.1.0/dist/tui.min.js"></script>
+  <script type="module" crossorigin src="./assets/index.a7d17f78.js"></script>
+    <link rel="stylesheet" href="./assets/index.348cdfca.css">
   </head>
 <body>
   <canvas id="canvas"></canvas>
@@ -17,6 +19,19 @@
   <div class="toolbar">
     <div id="clear" class="button"><i class="iconfont icon-clear"></i></div>
     <div id="save" class="button"><i class="iconfont icon-save"></i></div>
+  </div>
+
+  <div class="tui-dialog">
+    <div class="mask cover"></div>
+    <div class="tui-dialog__body">
+      <div class="tui-dialog__hd">请输入口令：</div>
+      <div class="tui-dialog__content">
+        <input id="passwordInput" type="text" placeholder="秦丹">
+      </div>
+      <div class="tui-dialog__ft">
+        <a id="passwordConfirm" class="btn">确定</a>
+      </div>
+    </div>
   </div>
 
   

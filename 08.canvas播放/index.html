@@ -6,8 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>七夕礼物</title>
   <link rel="stylesheet" href="//at.alicdn.com/t/font_2748127_hf058657tsd.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moohng/tui@1.1.0/dist/tui.min.css">
   <link rel="stylesheet" href="./style.css">
   <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@moohng/tui@1.1.0/dist/tui.min.js"></script>
 </head>
 <body>
   <canvas id="canvas"></canvas>
@@ -15,6 +17,19 @@
   <div class="toolbar">
     <div id="clear" class="button"><i class="iconfont icon-clear"></i></div>
     <div id="save" class="button"><i class="iconfont icon-save"></i></div>
+  </div>
+
+  <div class="tui-dialog">
+    <div class="mask cover"></div>
+    <div class="tui-dialog__body">
+      <div class="tui-dialog__hd">请输入口令：</div>
+      <div class="tui-dialog__content">
+        <input id="passwordInput" type="text" placeholder="秦丹">
+      </div>
+      <div class="tui-dialog__ft">
+        <a id="passwordConfirm" class="btn">确定</a>
+      </div>
+    </div>
   </div>
 
   <script type="module">
@@ -56,13 +71,6 @@
       paint.end();
     });
 
-    fetchPath().then(({ data }) => {
-      if (data.length) {
-        // 播放轨迹
-        play(data[0].path);
-      }
-    });
-
     // 播放轨迹
     function play(path) {
       let i = 0; // 线
@@ -95,14 +103,33 @@
       requestAnimationFrame(run);
     }
 
+    let isSave = false;
+
     document.querySelector('#save').addEventListener('click', function(e) {
-      // 保存轨迹
-      addPath(path);
+      document.querySelector('.tui-dialog').style.display = 'flex';
+      isSave = true;
     }, false);
 
     document.querySelector('#clear').addEventListener('click', function(e) {
       disabled = false;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }, false);
+
+    document.querySelector('#passwordConfirm').addEventListener('click', function(e) {
+      document.querySelector('.tui-dialog').style.display = 'none';
+      const password = document.querySelector('#passwordInput').value;
+
+      if (isSave) {
+        // 保存轨迹
+        addPath({ password, path });
+      } else {
+        fetchPath({ password }).then(({ data }) => {
+          if (data.length) {
+            // 播放轨迹
+            play(data[0].path);
+          }
+        });
+      }
     }, false);
   </script>
 </body>
