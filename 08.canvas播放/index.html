@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>记录与播放</title>
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_2748127_hf058657tsd.css">
+  <link rel="stylesheet" href="./style.css">
+  <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+
+  <div class="toolbar">
+    <div id="clear" class="button"><i class="iconfont icon-clear"></i></div>
+    <div id="save" class="button"><i class="iconfont icon-save"></i></div>
+  </div>
+
+  <script type="module">
+    import Paint from './Paint';
+    import { fetchPath, addPath } from './api';
+
+    const canvas = document.querySelector('#canvas');
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+
+    const ctx = canvas.getContext('2d');
+    const paint = new Paint(ctx);
+
+    // [[{x, y}, {x, y}...], [...]]
+    let path = [];
+    let currentLine = [];
+    let painting = false;
+    let disabled = true;
+
+    canvas.addEventListener('touchstart', function (e) {
+      if (disabled) return;
+      painting = true;
+      const { clientX: x, clientY: y } = e.touches[0];
+      const dot = { x, y };
+      currentLine = [dot];
+      paint.drawLine(x, y);
+    });
+    canvas.addEventListener('touchmove', function (e) {
+      if (painting) {
+        const { clientX: x, clientY: y } = e.touches[0];
+        currentLine.push({ x, y });
+        paint.drawLine(x, y);
+      }
+    });
+    canvas.addEventListener('touchend', function (e) {
+      painting = false;
+      path.push(currentLine);
+      currentLine = [];
+      paint.end();
+    });
+
+    fetchPath().then(({ data }) => {
+      if (data.length) {
+        // 播放轨迹
+        play(data[0].path);
+      }
+    });
+
+    // 播放轨迹
+    function play(path) {
+      let i = 0; // 线
+      let j = 0; // 点
+      let lineEnd = false;
+
+      const draw = ({ x, y }) => {
+        paint.drawLine(x, y);
+        requestAnimationFrame(run);
+      };
+
+      const run = () => {
+        if (j >= path[i].length) {
+          paint.end();
+          if (++i < path.length) {
+            j = 0;
+          } else {
+            // 结束
+            return;
+          }
+
+          setTimeout(() => {
+            draw(path[i][j++]);
+          }, 240);
+        } else {
+          draw(path[i][j++]);
+        }
+      };
+
+      requestAnimationFrame(run);
+    }
+
+    document.querySelector('#save').addEventListener('click', function(e) {
+      // 保存轨迹
+      addPath(path);
+    }, false);
+
+    document.querySelector('#clear').addEventListener('click', function(e) {
+      disabled = false;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }, false);
+  </script>
+</body>
+</html>
