@@ -3,6 +3,10 @@ body {
   overflow: hidden;
 }
 
+canvas {
+  position: absolute;
+}
+
 .toolbar {
   position: fixed;
   bottom: 20px;
