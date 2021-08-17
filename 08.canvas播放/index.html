@@ -218,7 +218,17 @@
         const shareUrl = location.origin + location.pathname + '?password=' + password;
         console.log('share url', shareUrl);
         dan.copy(shareUrl);
-        tui.Toast.success('链接已复制，赶紧去微信粘贴分享给小伙伴吧~');
+        // tui.Toast.success('链接已复制，赶紧去微信粘贴分享给小伙伴吧~');
+        tui.Dialog({
+          title: '提示',
+          content: '链接已复制，赶紧去微信粘贴分享给小伙伴吧~\n' + shareUrl,
+          buttons: [{
+            text: '确定',
+            onClick: async () => {
+              return dan.copy(shareUrl);
+            },
+          }],
+        });
       });
     }, false);
 
