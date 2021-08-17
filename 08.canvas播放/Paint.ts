@@ -1,3 +1,16 @@
+interface Dot {
+  x: number;
+  y: number;
+}
+
+interface Path {
+  password: string;
+  pos: Dot[];
+  title?: string;
+  background?: string;
+  backgroundColor?: string;
+}
+
 class Paint {
   private restarting: boolean;
 
@@ -56,6 +69,16 @@ class Paint {
   clear() {
     const { width, height } = this.ctx.canvas;
     this.ctx.clearRect(0, 0, width, height);
+  }
+
+  drawPath(path: Path[]) {
+    this.clear();
+    path.forEach(({ pos }) => {
+      pos.forEach(({ x, y }) => {
+        this.drawLine(x, y);
+      });
+      this.end();
+    });
   }
 }
 

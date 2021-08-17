@@ -5,7 +5,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>画个啥呀送给ta</title>
-  <link rel="stylesheet" href="https://at.alicdn.com/t/font_2748127_n9ut3u38o3.css">
+  <link rel="stylesheet" href="https://at.alicdn.com/t/font_2748127_1ywubg7ty46.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moohng/tui@1.2.0/dist/tui.min.css">
   <link rel="stylesheet" href="./style.css">
   <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
@@ -20,6 +20,7 @@
     <li id="revoke" class="button"><i class="iconfont icon-revoke"></i></li>
     <li id="clear" class="button"><i class="iconfont icon-clear"></i></li>
     <li id="preview" class="button"><i class="iconfont icon-preview"></i></li>
+    <li id="download" class="button"><i class="iconfont icon-download"></i></li>
     <li id="share" class="button"><i class="iconfont icon-share"></i></li>
   </ul>
 
@@ -43,6 +44,7 @@
   <script type="module">
     import Paint from './Paint';
     import { fetchPath, addPath } from './api';
+    import { download } from './util';
 
     /** 初始化 Canvas */
     const canvas = document.querySelector('#canvas');
@@ -186,6 +188,7 @@
     }
 
     /** 操作栏 */
+
     document.querySelector('#share').addEventListener('click', function(e) {
       if (!path.length) {
         return tui.Toast.error('先随便画点什么吧~');
@@ -193,8 +196,7 @@
       // 生成随机口令
       const password = dan.random(8);
       addPath({ password, path, background: paint.background }).then(() => {
-        const shareUrl = location.origin + location.path + '?password=' + password;
-        // location.search = '?password=' + password;
+        const shareUrl = location.origin + location.pathname + '?password=' + password;
         console.log('share url', shareUrl);
         dan.copy(shareUrl);
         tui.Toast.success('链接已复制，赶紧去微信粘贴分享给小伙伴吧~');
@@ -209,7 +211,7 @@
 
     document.querySelector('#revoke').addEventListener('click', function(e) {
       path.pop();
-      drawPath(path);
+      paint.drawPath(path);
     }, false);
 
     document.querySelector('#preview').addEventListener('click', function(e) {
@@ -222,15 +224,12 @@
       });
     }, false);
 
-    function drawPath(path) {
-      paint.clear();
-      path.forEach(({ pos }) => {
-        pos.forEach(({ x, y }) => {
-          paint.drawLine(x, y);
-        });
-        paint.end();
-      });
-    }
+    document.querySelector('#download').addEventListener('click', function(e) {
+      if (!path.length) {
+        return tui.Toast.error('先随便画点什么吧~');
+      }
+      download(canvas.toDataURL());
+    }, false);
 
     /** 颜色选择 */
     document.querySelector('.color-bar').addEventListener('click', function(e) {
