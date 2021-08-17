@@ -26,13 +26,68 @@
 
   <!-- 颜色选择 -->
   <ul class="color-bar">
-    <li class="button"><input class="red" type="radio" name="color" value="#ffffff" style="color: #ffffff" /></li>
-    <li class="button"><input class="red" type="radio" name="color" value="#000000" style="color: #000000" checked /></li>
-    <li class="button"><input class="red" type="radio" name="color" value="#FF3333" style="color: #FF3333" /></li>
-    <li class="button"><input class="red" type="radio" name="color" value="#0066FF" style="color: #0066FF" /></li>
-    <li class="button"><input class="red" type="radio" name="color" value="#FFFF33" style="color: #FFFF33" /></li>
-    <li class="button"><input class="red" type="radio" name="color" value="#33CC66" style="color: #33CC66" /></li>
-    <li class="button"><input class="red" type="radio" name="color" value="#666666" style="color: #666666" /></li>
+    <li class="button">
+      <input type="radio" name="color" value="#ffffff" />
+      <i class="icon" style="color: #ffffff"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="color" value="#000000" checked />
+      <i class="icon" style="color: #000000"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="color" value="#FF3333" />
+      <i class="icon" style="color: #FF3333"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="color" value="#0066FF" />
+      <i class="icon" style="color: #0066FF"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="color" value="#FFFF33" />
+      <i class="icon" style="color: #FFFF33"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="color" value="#33CC66" />
+      <i class="icon" style="color: #33CC66"></i>
+    </li>
+    <div class="line"></div>
+    <li class="button">
+      <input id="colorSelect" type="color" name="color" value="#000000">
+      <i class="icon" style="color: #000000"></i>
+    </li>
+    <div class="line"></div>
+    <li class="button">
+      <input id="backgroundSelect" type="color" name="color" value="#ffffff">
+      <i class="icon" style="color: #ffffff"></i>
+    </li>
+  </ul>
+
+  <!-- 画笔宽度 -->
+  <ul class="width-bar">
+    <li class="button">
+      <input type="radio" name="width" value="2" />
+      <i class="icon" style="width: 4px; height: 4px;"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="width" value="4" />
+      <i class="icon" style="width: 6px; height: 6px;"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="width" value="6" checked />
+      <i class="icon" style="width: 8px; height: 8px;"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="width" value="12" />
+      <i class="icon" style="width: 10px; height: 10px;"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="width" value="20" />
+      <i class="icon" style="width: 12px; height: 12px;"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="width" value="30" />
+      <i class="icon" style="width: 14px; height: 14px;"></i>
+    </li>
   </ul>
 
   <!-- 播放控制 -->
@@ -51,8 +106,12 @@
     canvas.width = innerWidth;
     canvas.height = innerHeight;
 
+    let paintColor = '#000000';
+    let paintBackgroundColor = '#ffffff';
+    let paintWidth = 6;
+
     const ctx = canvas.getContext('2d');
-    const paint = new Paint(ctx);
+    const paint = new Paint(ctx, paintColor, paintWidth, paintBackgroundColor);
 
     // { path: [], background: '', backgroundColor: '', title: '' },
     let path = []; // 记录全部轨迹
@@ -83,16 +142,23 @@
       document.querySelector('#previewCover').style.display = 'none';
     } else {
       /** 播放 */
-      fetchPath({ password }).then(({ path: _path, background }) => {
+      fetchPath({ password }).then(({ path: _path, background, title }) => {
+        if (title) {
+          document.title = title;
+        }
         path = _path;
+        paintBackgroundColor = background;
         paint.background = background;
-        return play(_path);
+        return paint.playPath(_path).then(() => {
+          document.querySelector('#previewCover').classList.add('mask');
+        });
       });
 
       document.querySelector('#previewCover').addEventListener('click', onPlay, false);
 
       document.querySelector('.toolbar').style.opacity = 0;
       document.querySelector('.color-bar').style.opacity = 0;
+      document.querySelector('.width-bar').style.opacity = 0;
     }
 
     function onTouchStart(e) {
@@ -100,6 +166,8 @@
       painting = true;
       const { clientX: x, clientY: y } = canTouch ? e.touches[0] : e;
       const dot = { x, y };
+      paint.color = paintColor;
+      paint.width = paintWidth;
       currentLine = {
         width: paint.width,
         color: paint.color,
@@ -123,68 +191,19 @@
       paint.end();
     }
 
-    let isPlay = false;
-    let isComplete = false;
-
     function onPlay(e) {
-      if (isComplete) {
+      if (paint.isComplete) {
         this.classList.remove('mask');
-        return play(path);
+        return paint.playPath(path).then(() => {
+          document.querySelector('#previewCover').classList.add('mask');
+        });
       }
-      isPlay = !isPlay;
-      if (isPlay) {
+      paint.isPlay = !paint.isPlay;
+      if (paint.isPlay) {
         this.classList.remove('mask');
       } else {
         this.classList.add('mask');
       }
-    }
-
-    function play(path) {
-      console.log('path', path);
-      if (!path.length) return Promise.resolve();
-
-      isPlay = true;
-      isComplete = false;
-      paint.clear();
-
-      return new Promise((resolve, reject) => {
-        let i = 0; // 线
-        let j = 0; // 点
-        let lineEnd = false;
-
-        const draw = ({ x, y }) => {
-          paint.drawLine(x, y);
-          requestAnimationFrame(run);
-        };
-
-        const run = () => {
-          if (!isPlay) {
-            return requestAnimationFrame(run);
-          }
-          if (j >= path[i].pos.length) {
-            paint.end();
-            if (++i < path.length) {
-              j = 0;
-              paint.color = path[i].color;
-            } else {
-              // 结束
-              isComplete = true;
-              return resolve();
-            }
-
-            setTimeout(() => {
-              draw(path[i].pos[j++]);
-            }, 240);
-          } else {
-            draw(path[i].pos[j++]);
-          }
-        };
-
-        paint.color = path[0].color;
-        requestAnimationFrame(run);
-      }).then(() => {
-        document.querySelector('#previewCover').classList.add('mask');
-      });
     }
 
     /** 操作栏 */
@@ -219,8 +238,10 @@
         return tui.Toast.error('先随便画点什么吧~');
       }
       isPreview = true;
-      play(path).then(() => {
+      paint.background = paintBackgroundColor;
+      paint.playPath(path).then(() => {
         isPreview = false;
+        document.querySelector('#previewCover').classList.add('mask');
       });
     }, false);
 
@@ -232,10 +253,38 @@
     }, false);
 
     /** 颜色选择 */
+
     document.querySelector('.color-bar').addEventListener('click', function(e) {
       if (e.target.checked) {
-        paint.color = e.target.value;
+        paintColor = e.target.value;
       }
+      console.log('e.target.value', e.target.value)
+    }, false);
+
+    document.querySelector('.width-bar').addEventListener('click', function(e) {
+      if (e.target.checked) {
+        paintWidth = e.target.value;
+      }
+      console.log('e.target.value', e.target.value)
+    }, false);
+
+    /** 自定义颜色 */
+
+    document.querySelector('#colorSelect').addEventListener('click', (e) => {
+      e.stopPropagation();
+    }, false);
+    document.querySelector('#backgroundSelect').addEventListener('click', (e) => {
+      e.stopPropagation();
+    }, false);
+    document.querySelector('#colorSelect').addEventListener('input', function(e) {
+      paintColor = e.target.value;
+      this.nextElementSibling.style.color = paintColor;
+    }, false);
+    document.querySelector('#backgroundSelect').addEventListener('input', function(e) {
+      paintBackgroundColor = e.target.value;
+      this.nextElementSibling.style.color = paintBackgroundColor;
+      paint.background = paintBackgroundColor;
+      paint.drawPath(path);
     }, false);
   </script>
 </body>

@@ -3,6 +3,12 @@ export const addPath = (data) => {
   return axios.post('https://ff827abe-e27d-48d4-a09a-81355a2ce85d.bspapp.com/path/add', {
     ...data,
     createTime: Date.now(),
+  }).then(({ status }) => {
+    if (status !== 200) {
+      throw new Error();
+    }
+  }).catch(() => {
+    tui.Toast.error('网络开小差了，请重试~');
   }).finally(hide);
 };
 
@@ -12,7 +18,8 @@ export const fetchPath = (query) => {
     if (status === 200 && data.data.length) {
       return data.data[0];
     }
-    tui.Toast.error('数据加载失败，请重试');
     throw new Error(res);
+  }).catch(() => {
+    tui.Toast.error('数据加载失败，请重试~');
   }).finally(hide);
 };

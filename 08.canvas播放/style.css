@@ -40,10 +40,10 @@ li {
 
 /* 颜色选择 */
 
-.color-bar {
+.color-bar,
+.width-bar {
   padding: 8px 0;
   position: fixed;
-  right: 16px;
   top: 45%;
   transform: translateY(-50%);
   display: flex;
@@ -52,33 +52,67 @@ li {
   border-radius: 100px;
 }
 
-.color-bar .button {
+.color-bar {
+  right: 16px;
+}
+
+.width-bar {
+  left: 16px;
+}
+
+.color-bar .button,
+.width-bar .button {
   position: relative;
   margin: 8px 0;
   width: 44px;
+  text-align: center;
 }
 
-.color-bar .button input {
-  width: 0;
-  height: 0;
+.button input[type="radio"],
+.button input[type="color"] {
+  display: block;
+  margin: 0;
+  width: 100%;
+  height: 22px;
+  opacity: 0;
 }
 
-.color-bar .button input:checked::after {
+.button input[type="radio"] + .icon,
+.button input[type="color"] + .icon {
+  padding: 4px;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  transform: translateX(-50%);
+  background-color: currentColor;
+  background-clip: content-box;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.button input[type="radio"] + .icon {
+  border-radius: 16px;
+}
+
+.button input[type="radio"]:checked + .icon,
+.color-bar .button input[type="radio"]:checked + .icon {
   box-shadow: 0 0 8px #00CCFF;
 }
 
-.color-bar .button input::after {
-  content: '';
-  padding: 4px;
-  position: absolute;
-  left: 11px;
-  top: 0;
-  width: 14px;
-  height: 14px;
-  background-color: currentColor;
-  background-clip: content-box;
-  border-radius: 16px;
+.color-bar .button input[type="radio"] + .icon {
   box-shadow: 0 0 1px currentColor;
+}
+
+.width-bar .button input[type="radio"]::after {
+  width: inherit;
+  height: inherit;
+}
+
+.line {
+  margin: 4px 8px;
+  border-bottom: 1px solid #ddd;
 }
 
 /* 预览控制 */
@@ -99,7 +133,7 @@ li {
 }
 
 .preview-cover.mask {
-  background-color: rgba(165, 165, 165, .4);
+  background-color: rgba(44, 44, 44, .4);
   opacity: 1;
 }
 

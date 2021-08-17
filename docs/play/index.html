@@ -11,8 +11,8 @@
   <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@moohng/tui@1.2.0/dist/tui.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@moohng/dan@2.1.0/dist/dan.min.js"></script>
-  <script type="module" crossorigin src="./assets/index.5f4b45d5.js"></script>
-    <link rel="stylesheet" href="./assets/index.af33db56.css">
+  <script type="module" crossorigin src="./assets/index.1740dd6b.js"></script>
+    <link rel="stylesheet" href="./assets/index.bcea092a.css">
   </head>
 <body>
   <canvas id="canvas"></canvas>
@@ -28,13 +28,68 @@
 
   <!-- 颜色选择 -->
   <ul class="color-bar">
-    <li class="button"><input class="red" type="radio" name="color" value="#ffffff" style="color: #ffffff" /></li>
-    <li class="button"><input class="red" type="radio" name="color" value="#000000" style="color: #000000" checked /></li>
-    <li class="button"><input class="red" type="radio" name="color" value="#FF3333" style="color: #FF3333" /></li>
-    <li class="button"><input class="red" type="radio" name="color" value="#0066FF" style="color: #0066FF" /></li>
-    <li class="button"><input class="red" type="radio" name="color" value="#FFFF33" style="color: #FFFF33" /></li>
-    <li class="button"><input class="red" type="radio" name="color" value="#33CC66" style="color: #33CC66" /></li>
-    <li class="button"><input class="red" type="radio" name="color" value="#666666" style="color: #666666" /></li>
+    <li class="button">
+      <input type="radio" name="color" value="#ffffff" />
+      <i class="icon" style="color: #ffffff"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="color" value="#000000" checked />
+      <i class="icon" style="color: #000000"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="color" value="#FF3333" />
+      <i class="icon" style="color: #FF3333"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="color" value="#0066FF" />
+      <i class="icon" style="color: #0066FF"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="color" value="#FFFF33" />
+      <i class="icon" style="color: #FFFF33"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="color" value="#33CC66" />
+      <i class="icon" style="color: #33CC66"></i>
+    </li>
+    <div class="line"></div>
+    <li class="button">
+      <input id="colorSelect" type="color" name="color" value="#000000">
+      <i class="icon" style="color: #000000"></i>
+    </li>
+    <div class="line"></div>
+    <li class="button">
+      <input id="backgroundSelect" type="color" name="color" value="#ffffff">
+      <i class="icon" style="color: #ffffff"></i>
+    </li>
+  </ul>
+
+  <!-- 画笔宽度 -->
+  <ul class="width-bar">
+    <li class="button">
+      <input type="radio" name="width" value="2" />
+      <i class="icon" style="width: 4px; height: 4px;"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="width" value="4" />
+      <i class="icon" style="width: 6px; height: 6px;"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="width" value="6" checked />
+      <i class="icon" style="width: 8px; height: 8px;"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="width" value="12" />
+      <i class="icon" style="width: 10px; height: 10px;"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="width" value="20" />
+      <i class="icon" style="width: 12px; height: 12px;"></i>
+    </li>
+    <li class="button">
+      <input type="radio" name="width" value="30" />
+      <i class="icon" style="width: 14px; height: 14px;"></i>
+    </li>
   </ul>
 
   <!-- 播放控制 -->

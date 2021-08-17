@@ -4,22 +4,24 @@ interface Dot {
 }
 
 interface Path {
-  password: string;
   pos: Dot[];
-  title?: string;
-  background?: string;
-  backgroundColor?: string;
+  color?: string;
+  width?: number;
 }
 
 class Paint {
   private restarting: boolean;
 
-  constructor(private ctx: CanvasRenderingContext2D) {
+  public isPlay: boolean = false;
+  public isComplete: boolean = false;
+
+  constructor(private ctx: CanvasRenderingContext2D, color: string = '#000000', width: number = 6) {
     this.background = '#fff';
 
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
-    this.width = 6;
+    this.color = color;
+    this.width = width;
   }
 
   set color(color: string) {
@@ -69,15 +71,65 @@ class Paint {
   clear() {
     const { width, height } = this.ctx.canvas;
     this.ctx.clearRect(0, 0, width, height);
+    this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
   }
 
   drawPath(path: Path[]) {
     this.clear();
-    path.forEach(({ pos }) => {
+    path.forEach(({ pos, color, width }) => {
+      this.width = width;
+      this.color = color;
       pos.forEach(({ x, y }) => {
         this.drawLine(x, y);
       });
       this.end();
+    });
+  }
+
+  async playPath(path: Path[]): Promise<void> {
+    console.log('path', path);
+    if (!path.length) return Promise.resolve();
+
+    this.isPlay = true;
+    this.isComplete = false;
+    this.clear();
+
+    await new Promise((resolve) => {
+      let i = 0; // 线
+      let j = 0; // 点
+
+      const draw = ({ x, y }) => {
+        this.drawLine(x, y);
+        requestAnimationFrame(run);
+      };
+
+      const run = () => {
+        if (!this.isPlay) {
+          return requestAnimationFrame(run);
+        }
+        if (j >= path[i].pos.length) {
+          this.end();
+          if (++i < path.length) {
+            j = 0;
+            this.color = path[i].color;
+            this.width = path[i].width;
+          } else {
+            // 结束
+            this.isComplete = true;
+            return resolve(void 0);
+          }
+
+          setTimeout(() => {
+            draw(path[i].pos[j++]);
+          }, 240);
+        } else {
+          draw(path[i].pos[j++]);
+        }
+      };
+
+      this.color = path[0].color;
+      this.width = path[0].width;
+      requestAnimationFrame(run);
     });
   }
 }
