@@ -28,6 +28,11 @@ class Paint {
 
     return this;
   }
+
+  clear() {
+    const { width, height } = this.ctx.canvas;
+    this.ctx.clearRect(0, 0, width, height);
+  }
 }
 
 export default Paint;

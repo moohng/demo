@@ -5,37 +5,34 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>七夕礼物</title>
-  <link rel="stylesheet" href="//at.alicdn.com/t/font_2748127_hf058657tsd.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moohng/tui@1.1.0/dist/tui.min.css">
+  <link rel="stylesheet" href="https://at.alicdn.com/t/font_2748127_0qspql3hqmc.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moohng/tui@1.2.0/dist/tui.min.css">
   <link rel="stylesheet" href="./style.css">
   <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@moohng/tui@1.1.0/dist/tui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@moohng/tui@1.2.0/dist/tui.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@moohng/dan@2.1.0/dist/dan.min.js"></script>
 </head>
 <body>
   <canvas id="canvas"></canvas>
 
+  <!-- 操作区域 -->
   <div class="toolbar">
+    <div id="revoke" class="button"><i class="iconfont icon-revoke"></i></div>
     <div id="clear" class="button"><i class="iconfont icon-clear"></i></div>
-    <div id="save" class="button"><i class="iconfont icon-save"></i></div>
+    <div id="share" class="button"><i class="iconfont icon-share"></i></div>
   </div>
 
-  <div class="tui-dialog">
-    <div class="mask cover"></div>
-    <div class="tui-dialog__body">
-      <div class="tui-dialog__hd">请输入口令：</div>
-      <div class="tui-dialog__content">
-        <input id="passwordInput" type="text" placeholder="秦丹">
-      </div>
-      <div class="tui-dialog__ft">
-        <a id="passwordConfirm" class="btn">确定</a>
-      </div>
-    </div>
+  <!-- 播放控制 -->
+  <div id="previewCover" class="preview-cover">
+    <i class="iconfont icon-play"></i>
+    <p><a href="?edit">我也要玩</a></p>
   </div>
 
   <script type="module">
     import Paint from './Paint';
     import { fetchPath, addPath } from './api';
 
+    /** 初始化 Canvas */
     const canvas = document.querySelector('#canvas');
     canvas.width = innerWidth;
     canvas.height = innerHeight;
@@ -44,93 +41,157 @@
     const paint = new Paint(ctx);
 
     // [[{x, y}, {x, y}...], [...]]
-    let path = [];
-    let currentLine = [];
-    let painting = false;
-    let disabled = true;
+    let path = []; // 记录全部轨迹
+    let currentLine = []; // 记录每一笔
+    let painting = false; // 正在绘图
 
-    canvas.addEventListener('touchstart', function (e) {
-      if (disabled) return;
+    // 获取口令
+    const { password = '秦丹', edit } = dan.querystring(location.search);
+    console.log(password, edit);
+    let isPreview = !!password && edit === undefined;
+
+    const canTouch = 'ontouchstart' in document.documentElement;
+
+    if (!isPreview) {
+      /** 绘画事件监听 */
+      const TOUCHSTART = canTouch ? 'touchstart' : 'mousedown';
+      const TOUCHMOVE = canTouch ? 'touchmove' : 'mousemove';
+      const TOUCHEND = canTouch ? 'touchend' : 'mouseup';
+      const TOUCHCANCEL = canTouch ? 'touchcancel' : 'mouseleave';
+
+      canvas.addEventListener(TOUCHSTART, onTouchStart, false);
+      canvas.addEventListener(TOUCHMOVE, onTouchMove, false);
+      canvas.addEventListener(TOUCHEND, onTouchEnd, false);
+      canvas.addEventListener(TOUCHCANCEL, onTouchEnd, false);
+
+      document.querySelector('.toolbar').style.opacity = 1;
+    } else {
+      /** 播放 */
+      fetchPath({ password }).then(data => {
+        path = data;
+        return play(data);
+      });
+
+      document.querySelector('.toolbar').style.opacity = 0;
+    }
+
+    function onTouchStart(e) {
+      if (isPreview) return;
       painting = true;
-      const { clientX: x, clientY: y } = e.touches[0];
+      const { clientX: x, clientY: y } = canTouch ? e.touches[0] : e;
       const dot = { x, y };
       currentLine = [dot];
       paint.drawLine(x, y);
-    });
-    canvas.addEventListener('touchmove', function (e) {
+    }
+
+    function onTouchMove(e) {
       if (painting) {
-        const { clientX: x, clientY: y } = e.touches[0];
+        const { clientX: x, clientY: y } = canTouch ? e.touches[0] : e;
         currentLine.push({ x, y });
         paint.drawLine(x, y);
       }
-    });
-    canvas.addEventListener('touchend', function (e) {
+    }
+
+    function onTouchEnd() {
       painting = false;
       path.push(currentLine);
       currentLine = [];
       paint.end();
-    });
-
-    // 播放轨迹
-    function play(path) {
-      let i = 0; // 线
-      let j = 0; // 点
-      let lineEnd = false;
-
-      const draw = ({ x, y }) => {
-        paint.drawLine(x, y);
-        requestAnimationFrame(run);
-      };
-
-      const run = () => {
-        if (j >= path[i].length) {
-          paint.end();
-          if (++i < path.length) {
-            j = 0;
-          } else {
-            // 结束
-            return;
-          }
-
-          setTimeout(() => {
-            draw(path[i][j++]);
-          }, 240);
-        } else {
-          draw(path[i][j++]);
-        }
-      };
-
-      requestAnimationFrame(run);
     }
 
-    let isSave = false;
+    /** 播放 */
+    let isPlay = false;
+    let isComplete = false;
 
-    document.querySelector('#save').addEventListener('click', function(e) {
-      document.querySelector('.tui-dialog').style.display = 'flex';
-      isSave = true;
+    document.querySelector('#previewCover').addEventListener('click', function(e) {
+      if (isComplete) {
+        this.classList.remove('mask');
+        return play(path);
+      }
+      isPlay = !isPlay;
+      if (isPlay) {
+        this.classList.remove('mask');
+      } else {
+        this.classList.add('mask');
+      }
+    }, false);
+
+    function play(path) {
+      isPlay = true;
+      isComplete = false;
+      paint.clear();
+
+      return new Promise((resolve, reject) => {
+        let i = 0; // 线
+        let j = 0; // 点
+        let lineEnd = false;
+
+        const draw = ({ x, y }) => {
+          paint.drawLine(x, y);
+          requestAnimationFrame(run);
+        };
+
+        const run = () => {
+          if (!isPlay) {
+            return requestAnimationFrame(run);
+          }
+          if (j >= path[i].length) {
+            paint.end();
+            if (++i < path.length) {
+              j = 0;
+            } else {
+              // 结束
+              isComplete = true;
+              return resolve();
+            }
+
+            setTimeout(() => {
+              draw(path[i][j++]);
+            }, 240);
+          } else {
+            draw(path[i][j++]);
+          }
+        };
+
+        requestAnimationFrame(run);
+      }).then(() => {
+        document.querySelector('#previewCover').classList.add('mask');
+      });
+    }
+
+    /** 操作栏 */
+    document.querySelector('#share').addEventListener('click', function(e) {
+      if (!path.length) {
+        return tui.Toast.error('随便画点什么吧~');
+      }
+      // 生成随机口令
+      const password = dan.random(8);
+      addPath({ password, path }).then(() => {
+        const shareUrl = location.origin + location.path + '?password=' + password;
+        dan.copy(shareUrl);
+        tui.Toast.success('链接已复制，赶紧分享给小伙伴吧~');
+      });
     }, false);
 
     document.querySelector('#clear').addEventListener('click', function(e) {
-      disabled = false;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      isPreview = false;
+      paint.clear();
     }, false);
 
-    document.querySelector('#passwordConfirm').addEventListener('click', function(e) {
-      document.querySelector('.tui-dialog').style.display = 'none';
-      const password = document.querySelector('#passwordInput').value;
+    document.querySelector('#revoke').addEventListener('click', function(e) {
+      path.pop();
+      drawPath(path);
+    }, false);
 
-      if (isSave) {
-        // 保存轨迹
-        addPath({ password, path });
-      } else {
-        fetchPath({ password }).then(({ data }) => {
-          if (data.length) {
-            // 播放轨迹
-            play(data[0].path);
-          }
+    function drawPath(path) {
+      paint.clear();
+      path.forEach(line => {
+        line.forEach(({ x, y }) => {
+          paint.drawLine(x, y);
         });
-      }
-    }, false);
+        paint.end();
+      });
+    }
   </script>
 </body>
 </html>

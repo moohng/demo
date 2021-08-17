@@ -12,12 +12,11 @@ canvas {
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  display: grid;
-  grid-column-gap: 12px;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
 }
 
 .toolbar .button {
+  margin-left: 8px;
   padding: 6px 8px;
   color: #999;
   border: 1px solid;
@@ -28,13 +27,30 @@ canvas {
   font-size: 20px;
 }
 
-
-.tui-dialog__content input {
-  padding: 8px 12px;
-  width: 80%;
-  font-size: 14px;
-  border: 1px solid #bbb;
-  border-radius: 8px;
-  box-sizing: border-box;
-  outline: none;
+.preview-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.4s;
+  opacity: 0;
+  pointer-events: none;
+}
+.preview-cover.mask {
+  background-color: rgba(165, 165, 165, .4);
+  opacity: 1;
+  pointer-events: initial;
+}
+.preview-cover .icon-play {
+  color: #fff;
+  font-size: 44px;
+}
+.preview-cover p {
+  color: #fff;
 }
