@@ -2,12 +2,36 @@ class Paint {
   private restarting: boolean;
 
   constructor(private ctx: CanvasRenderingContext2D) {
-    this.ctx.fillStyle = '#fff';
-    this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+    this.background = '#fff';
 
-    this.ctx.lineWidth = 6;
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
+    this.width = 6;
+  }
+
+  set color(color: string) {
+    this.ctx.strokeStyle = color || '#000000';
+  }
+
+  get color(): string {
+    return this.ctx.strokeStyle as string;
+  }
+
+  set width(width: number) {
+    this.ctx.lineWidth = width || 6;
+  }
+
+  get width(): number {
+    return this.ctx.lineWidth;
+  }
+
+  set background(color: string) {
+    this.ctx.fillStyle = color || '#ffffff';
+    this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+  }
+
+  get background(): string {
+    return this.ctx.fillStyle as string;
   }
 
   drawLine(x: number, y: number) {

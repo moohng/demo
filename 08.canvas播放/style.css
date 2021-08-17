@@ -7,6 +7,17 @@ canvas {
   position: absolute;
 }
 
+ul {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
+/* 操作栏 */
+
 .toolbar {
   position: fixed;
   bottom: 20px;
@@ -18,14 +29,59 @@ canvas {
 .toolbar .button {
   margin-left: 8px;
   padding: 6px 8px;
-  color: #999;
+  color: #00CCFF;
   border: 1px solid;
-  border-radius: 4px;
+  border-radius: 100px;
 }
 
 .toolbar .button .iconfont {
   font-size: 20px;
 }
+
+/* 颜色选择 */
+
+.color-bar {
+  padding: 8px 0;
+  position: fixed;
+  right: 16px;
+  top: 45%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  background-color: #efefef;
+  border-radius: 100px;
+}
+
+.color-bar .button {
+  position: relative;
+  margin: 8px 0;
+  width: 44px;
+}
+
+.color-bar .button input {
+  width: 0;
+  height: 0;
+}
+
+.color-bar .button input:checked::after {
+  box-shadow: 0 0 8px #00CCFF;
+}
+
+.color-bar .button input::after {
+  content: '';
+  padding: 4px;
+  position: absolute;
+  left: 11px;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  background-clip: content-box;
+  border-radius: 16px;
+  box-shadow: 0 0 1px currentColor;
+}
+
+/* 预览控制 */
 
 .preview-cover {
   position: fixed;
@@ -40,17 +96,31 @@ canvas {
   align-items: center;
   transition: opacity 0.4s;
   opacity: 0;
-  pointer-events: none;
 }
+
 .preview-cover.mask {
   background-color: rgba(165, 165, 165, .4);
   opacity: 1;
-  pointer-events: initial;
 }
+
 .preview-cover .icon-play {
   color: #fff;
   font-size: 44px;
 }
+
 .preview-cover p {
-  color: #fff;
+  position: absolute;
+  bottom: 60px;
+  padding: 6px 16px;
+  background-color: #fff;
+  border-radius: 6px;
+}
+
+.preview-cover p a {
+  color: #00CCFF;
+  pointer-events: none;
+}
+
+.preview-cover.mask p a {
+  pointer-events: initial;
 }

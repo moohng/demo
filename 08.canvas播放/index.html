@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>七夕礼物</title>
-  <link rel="stylesheet" href="https://at.alicdn.com/t/font_2748127_0qspql3hqmc.css">
+  <title>画个啥呀送给ta</title>
+  <link rel="stylesheet" href="https://at.alicdn.com/t/font_2748127_n9ut3u38o3.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moohng/tui@1.2.0/dist/tui.min.css">
   <link rel="stylesheet" href="./style.css">
   <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
@@ -16,16 +16,28 @@
   <canvas id="canvas"></canvas>
 
   <!-- 操作区域 -->
-  <div class="toolbar">
-    <div id="revoke" class="button"><i class="iconfont icon-revoke"></i></div>
-    <div id="clear" class="button"><i class="iconfont icon-clear"></i></div>
-    <div id="share" class="button"><i class="iconfont icon-share"></i></div>
-  </div>
+  <ul class="toolbar">
+    <li id="revoke" class="button"><i class="iconfont icon-revoke"></i></li>
+    <li id="clear" class="button"><i class="iconfont icon-clear"></i></li>
+    <li id="preview" class="button"><i class="iconfont icon-preview"></i></li>
+    <li id="share" class="button"><i class="iconfont icon-share"></i></li>
+  </ul>
+
+  <!-- 颜色选择 -->
+  <ul class="color-bar">
+    <li class="button"><input class="red" type="radio" name="color" value="#ffffff" style="color: #ffffff" /></li>
+    <li class="button"><input class="red" type="radio" name="color" value="#000000" style="color: #000000" checked /></li>
+    <li class="button"><input class="red" type="radio" name="color" value="#FF3333" style="color: #FF3333" /></li>
+    <li class="button"><input class="red" type="radio" name="color" value="#0066FF" style="color: #0066FF" /></li>
+    <li class="button"><input class="red" type="radio" name="color" value="#FFFF33" style="color: #FFFF33" /></li>
+    <li class="button"><input class="red" type="radio" name="color" value="#33CC66" style="color: #33CC66" /></li>
+    <li class="button"><input class="red" type="radio" name="color" value="#666666" style="color: #666666" /></li>
+  </ul>
 
   <!-- 播放控制 -->
   <div id="previewCover" class="preview-cover">
     <i class="iconfont icon-play"></i>
-    <p><a href="?edit">我也要玩</a></p>
+    <p><a href="?edit">我也要玩~</a></p>
   </div>
 
   <script type="module">
@@ -40,9 +52,9 @@
     const ctx = canvas.getContext('2d');
     const paint = new Paint(ctx);
 
-    // [[{x, y}, {x, y}...], [...]]
+    // { path: [], background: '', backgroundColor: '', title: '' },
     let path = []; // 记录全部轨迹
-    let currentLine = []; // 记录每一笔
+    let currentLine = {}; // 记录每一笔 { pos: [{x, y}, {x, y}], width: 12, color: 'red' }
     let painting = false; // 正在绘图
 
     // 获取口令
@@ -64,15 +76,21 @@
       canvas.addEventListener(TOUCHEND, onTouchEnd, false);
       canvas.addEventListener(TOUCHCANCEL, onTouchEnd, false);
 
-      document.querySelector('.toolbar').style.opacity = 1;
+      // document.querySelector('.toolbar').style.opacity = 1;
+      // document.querySelector('.color-bar').style.opacity = 1;
+      document.querySelector('#previewCover').style.display = 'none';
     } else {
       /** 播放 */
-      fetchPath({ password }).then(data => {
-        path = data;
-        return play(data);
+      fetchPath({ password }).then(({ path: _path, background }) => {
+        path = _path;
+        paint.background = background;
+        return play(_path);
       });
 
+      document.querySelector('#previewCover').addEventListener('click', onPlay, false);
+
       document.querySelector('.toolbar').style.opacity = 0;
+      document.querySelector('.color-bar').style.opacity = 0;
     }
 
     function onTouchStart(e) {
@@ -80,14 +98,18 @@
       painting = true;
       const { clientX: x, clientY: y } = canTouch ? e.touches[0] : e;
       const dot = { x, y };
-      currentLine = [dot];
+      currentLine = {
+        width: paint.width,
+        color: paint.color,
+        pos: [dot],
+      };
       paint.drawLine(x, y);
     }
 
     function onTouchMove(e) {
       if (painting) {
         const { clientX: x, clientY: y } = canTouch ? e.touches[0] : e;
-        currentLine.push({ x, y });
+        currentLine.pos.push({ x, y });
         paint.drawLine(x, y);
       }
     }
@@ -95,15 +117,14 @@
     function onTouchEnd() {
       painting = false;
       path.push(currentLine);
-      currentLine = [];
+      currentLine = {};
       paint.end();
     }
 
-    /** 播放 */
     let isPlay = false;
     let isComplete = false;
 
-    document.querySelector('#previewCover').addEventListener('click', function(e) {
+    function onPlay(e) {
       if (isComplete) {
         this.classList.remove('mask');
         return play(path);
@@ -114,9 +135,12 @@
       } else {
         this.classList.add('mask');
       }
-    }, false);
+    }
 
     function play(path) {
+      console.log('path', path);
+      if (!path.length) return Promise.resolve();
+
       isPlay = true;
       isComplete = false;
       paint.clear();
@@ -135,10 +159,11 @@
           if (!isPlay) {
             return requestAnimationFrame(run);
           }
-          if (j >= path[i].length) {
+          if (j >= path[i].pos.length) {
             paint.end();
             if (++i < path.length) {
               j = 0;
+              paint.color = path[i].color;
             } else {
               // 结束
               isComplete = true;
@@ -146,13 +171,14 @@
             }
 
             setTimeout(() => {
-              draw(path[i][j++]);
+              draw(path[i].pos[j++]);
             }, 240);
           } else {
-            draw(path[i][j++]);
+            draw(path[i].pos[j++]);
           }
         };
 
+        paint.color = path[0].color;
         requestAnimationFrame(run);
       }).then(() => {
         document.querySelector('#previewCover').classList.add('mask');
@@ -162,19 +188,22 @@
     /** 操作栏 */
     document.querySelector('#share').addEventListener('click', function(e) {
       if (!path.length) {
-        return tui.Toast.error('随便画点什么吧~');
+        return tui.Toast.error('先随便画点什么吧~');
       }
       // 生成随机口令
       const password = dan.random(8);
-      addPath({ password, path }).then(() => {
+      addPath({ password, path, background: paint.background }).then(() => {
         const shareUrl = location.origin + location.path + '?password=' + password;
+        // location.search = '?password=' + password;
+        console.log('share url', shareUrl);
         dan.copy(shareUrl);
-        tui.Toast.success('链接已复制，赶紧分享给小伙伴吧~');
+        tui.Toast.success('链接已复制，赶紧去微信粘贴分享给小伙伴吧~');
       });
     }, false);
 
     document.querySelector('#clear').addEventListener('click', function(e) {
       isPreview = false;
+      path = [];
       paint.clear();
     }, false);
 
@@ -183,15 +212,32 @@
       drawPath(path);
     }, false);
 
+    document.querySelector('#preview').addEventListener('click', function(e) {
+      if (!path.length) {
+        return tui.Toast.error('先随便画点什么吧~');
+      }
+      isPreview = true;
+      play(path).then(() => {
+        isPreview = false;
+      });
+    }, false);
+
     function drawPath(path) {
       paint.clear();
-      path.forEach(line => {
-        line.forEach(({ x, y }) => {
+      path.forEach(({ pos }) => {
+        pos.forEach(({ x, y }) => {
           paint.drawLine(x, y);
         });
         paint.end();
       });
     }
+
+    /** 颜色选择 */
+    document.querySelector('.color-bar').addEventListener('click', function(e) {
+      if (e.target.checked) {
+        paint.color = e.target.value;
+      }
+    }, false);
   </script>
 </body>
 </html>
