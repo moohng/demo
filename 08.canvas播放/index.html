@@ -141,8 +141,25 @@
       // document.querySelector('.color-bar').style.opacity = 1;
       document.querySelector('#previewCover').style.display = 'none';
     } else {
+      document.querySelector('.toolbar').style.opacity = 0;
+      document.querySelector('.color-bar').style.opacity = 0;
+      document.querySelector('.width-bar').style.opacity = 0;
+
       /** 播放 */
-      fetchPath({ password }).then(({ path: _path, background, title }) => {
+      fetchPath({ password }).then((data) => {
+        if (!data.length) {
+          return tui.Dialog({
+            title: '提示',
+            content: '链接已失效~',
+            buttons: [{
+              text: '去分享',
+              onClick: async () => {
+                return location.search = '?edit';
+              },
+            }],
+          });
+        }
+        const { path: _path, background, title } = data[0];
         if (title) {
           document.title = title;
         }
@@ -156,10 +173,6 @@
       });
 
       document.querySelector('#previewCover').addEventListener('click', onPlay, false);
-
-      document.querySelector('.toolbar').style.opacity = 0;
-      document.querySelector('.color-bar').style.opacity = 0;
-      document.querySelector('.width-bar').style.opacity = 0;
     }
 
     function onTouchStart(e) {
