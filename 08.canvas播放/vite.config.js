@@ -4,7 +4,7 @@ export default defineConfig({
   base: './',
   build: {
     outDir: '../docs/play',
-    emptyOutDir: false,
+    emptyOutDir: true,
   },
   host: '0.0.0.0',
 });

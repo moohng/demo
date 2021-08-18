@@ -4,6 +4,6 @@ export default defineConfig({
   base: './',
   build: {
     outDir: '../docs/star-line',
-    emptyOutDir: false,
+    emptyOutDir: true,
   }
 });

@@ -1,1 +1,0 @@
-body{margin:0;overflow:hidden}canvas{position:absolute}.toolbar{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);display:grid;grid-column-gap:12px;grid-template-columns:repeat(2,1fr)}.toolbar .button{padding:6px 8px;color:#999;border:1px solid;border-radius:4px}.toolbar .button .iconfont{font-size:20px}

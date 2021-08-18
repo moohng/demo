@@ -4,6 +4,6 @@ export default defineConfig({
   base: './',
   build: {
     outDir: '../docs/wuziqi',
-    emptyOutDir: false,
+    emptyOutDir: true,
   }
 });
