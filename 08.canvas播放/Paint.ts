@@ -16,7 +16,7 @@ class Paint {
   public isComplete: boolean = false;
 
   constructor(private ctx: CanvasRenderingContext2D, color: string = '#000000', width: number = 6) {
-    this.background = '#fff';
+    this.setBackground();
 
     this.ctx.lineCap = 'round';
     this.ctx.lineJoin = 'round';
@@ -38,11 +38,6 @@ class Paint {
 
   get width(): number {
     return this.ctx.lineWidth;
-  }
-
-  set background(color: string) {
-    this.ctx.fillStyle = color || '#ffffff';
-    this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
   }
 
   get background(): string {
@@ -68,14 +63,20 @@ class Paint {
     return this;
   }
 
+  setBackground(color?: string) {
+    this.ctx.fillStyle = color || '#ffffff';
+    const { width, height } = this.ctx.canvas;
+    this.ctx.fillRect(0, 0, width, height);
+  }
+
   clear() {
     const { width, height } = this.ctx.canvas;
     this.ctx.clearRect(0, 0, width, height);
-    this.ctx.fillRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
   }
 
   drawPath(path: Path[]) {
-    this.clear();
+    console.log('drawPath', path);
+    if (!path.length) return;
     path.forEach(({ pos, color, width }) => {
       this.width = width;
       this.color = color;
@@ -87,12 +88,11 @@ class Paint {
   }
 
   async playPath(path: Path[]): Promise<void> {
-    console.log('path', path);
+    console.log('playPath', path);
     if (!path.length) return Promise.resolve();
 
     this.isPlay = true;
     this.isComplete = false;
-    this.clear();
 
     await new Promise((resolve) => {
       let i = 0; // 线

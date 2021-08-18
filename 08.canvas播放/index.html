@@ -120,7 +120,7 @@
 
     // 获取口令
     const { password = '秦丹', edit } = dan.querystring(location.search);
-    console.log(password, edit);
+    console.log('口令', password, edit);
     let isPreview = !!password && edit === undefined;
 
     const canTouch = 'ontouchstart' in document.documentElement;
@@ -148,7 +148,8 @@
         }
         path = _path;
         paintBackgroundColor = background;
-        paint.background = background;
+        paint.clear();
+        paint.setBackground(background);
         return paint.playPath(_path).then(() => {
           document.querySelector('#previewCover').classList.add('mask');
         });
@@ -196,6 +197,8 @@
     function onPlay(e) {
       if (paint.isComplete) {
         this.classList.remove('mask');
+        paint.clear();
+        paint.setBackground(paintBackgroundColor);
         return paint.playPath(path).then(() => {
           document.querySelector('#previewCover').classList.add('mask');
         });
@@ -238,11 +241,15 @@
       if (isPreview) return;
       path = [];
       paint.clear();
+      paint.setBackground();
+      paintBackgroundColor = paint.background;
     }, false);
 
     document.querySelector('#revoke').addEventListener('click', function(e) {
       if (isPreview) return;
       path.pop();
+      paint.clear();
+      paint.setBackground(paintBackgroundColor);
       paint.drawPath(path);
     }, false);
 
@@ -252,7 +259,8 @@
         return tui.Toast.error('先随便画点什么吧~');
       }
       isPreview = true;
-      paint.background = paintBackgroundColor;
+      paint.clear();
+      paint.setBackground(paintBackgroundColor);
       paint.playPath(path).then(() => {
         isPreview = false;
         document.querySelector('#previewCover').classList.add('mask');
@@ -272,14 +280,14 @@
       if (e.target.checked) {
         paintColor = e.target.value;
       }
-      console.log('e.target.value', e.target.value)
+      console.log('color select', e.target.value)
     }, false);
 
     document.querySelector('.width-bar').addEventListener('click', function(e) {
       if (e.target.checked) {
         paintWidth = e.target.value;
       }
-      console.log('e.target.value', e.target.value)
+      console.log('width select', e.target.value)
     }, false);
 
     /** 自定义颜色 */
@@ -297,7 +305,8 @@
     document.querySelector('#backgroundSelect').addEventListener('input', function(e) {
       paintBackgroundColor = e.target.value;
       this.nextElementSibling.style.color = paintBackgroundColor;
-      paint.background = paintBackgroundColor;
+      paint.clear();
+      paint.setBackground(paintBackgroundColor);
       paint.drawPath(path);
     }, false);
   </script>
