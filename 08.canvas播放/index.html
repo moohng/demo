@@ -185,10 +185,12 @@
     }
 
     function onTouchEnd() {
-      painting = false;
-      path.push(currentLine);
-      currentLine = {};
-      paint.end();
+      if (painting) {
+        painting = false;
+        path.push(currentLine);
+        currentLine = {};
+        paint.end();
+      }
     }
 
     function onPlay(e) {
@@ -233,17 +235,19 @@
     }, false);
 
     document.querySelector('#clear').addEventListener('click', function(e) {
-      isPreview = false;
+      if (isPreview) return;
       path = [];
       paint.clear();
     }, false);
 
     document.querySelector('#revoke').addEventListener('click', function(e) {
+      if (isPreview) return;
       path.pop();
       paint.drawPath(path);
     }, false);
 
     document.querySelector('#preview').addEventListener('click', function(e) {
+      if (isPreview) return;
       if (!path.length) {
         return tui.Toast.error('先随便画点什么吧~');
       }
