@@ -172,26 +172,26 @@ li {
 
 /* 弹窗 */
 
-.tui-dialog {
+.tui-dialog.my {
   display: none;
 }
 
-.tui-dialog:target {
+.tui-dialog.my:target {
   display: flex;
 }
 
-.tui-dialog input[name="code"] {
+.tui-dialog.my input[name="code"] {
   padding: 8px 12px;
   border: 1px solid #999;
   border-radius: 6px;
 }
 
-.tui-dialog input[name="code"]:focus {
+.tui-dialog.my input[name="code"]:focus {
   border-color: var(--primaryColor);
   outline: none;
 }
 
-.tui-dialog .btn {
+.tui-dialog.my .btn {
   color: #333;
   letter-spacing: 2px;
   text-decoration: none;
