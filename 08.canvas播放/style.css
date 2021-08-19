@@ -1,6 +1,8 @@
 body {
   margin: 0;
   overflow: hidden;
+
+  --primaryColor: #00CCFF;
 }
 
 canvas {
@@ -29,7 +31,7 @@ li {
 .toolbar .button {
   margin-left: 8px;
   padding: 6px 8px;
-  color: #00CCFF;
+  color: var(--primaryColor);
   border: 1px solid;
   border-radius: 100px;
 }
@@ -98,7 +100,7 @@ li {
 
 .button input[type="radio"]:checked + .icon,
 .color-bar .button input[type="radio"]:checked + .icon {
-  box-shadow: 0 0 8px #00CCFF;
+  box-shadow: 0 0 8px var(--primaryColor);
 }
 
 .color-bar .button input[type="radio"] + .icon {
@@ -128,32 +130,69 @@ li {
   justify-content: center;
   align-items: center;
   transition: opacity 0.4s;
-  opacity: 0;
+  opacity: 0
 }
 
 .preview-cover.mask {
   background-color: rgba(44, 44, 44, .4);
   opacity: 1;
+  z-index: 0;
 }
 
 .preview-cover .icon-play {
   color: #fff;
   font-size: 44px;
-}
-
-.preview-cover p {
-  position: absolute;
-  bottom: 60px;
-  padding: 6px 16px;
-  background-color: #fff;
-  border-radius: 6px;
-}
-
-.preview-cover p a {
-  color: #00CCFF;
   pointer-events: none;
 }
 
-.preview-cover.mask p a {
+.preview-cover .bottom {
+  position: absolute;
+  bottom: 40px;
+  pointer-events: none;
+}
+
+.preview-cover.mask .bottom {
   pointer-events: initial;
+}
+
+.preview-cover .bottom .btn {
+  display: block;
+  margin: 16px 0;
+  padding: 8px 16px;
+  color: #666;
+  text-align: center;
+  background-color: #fff;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.preview-cover .bottom .btn:first-child {
+  color: var(--primaryColor);
+}
+
+/* 弹窗 */
+
+.tui-dialog {
+  display: none;
+}
+
+.tui-dialog:target {
+  display: flex;
+}
+
+.tui-dialog input[name="code"] {
+  padding: 8px 12px;
+  border: 1px solid #999;
+  border-radius: 6px;
+}
+
+.tui-dialog input[name="code"]:focus {
+  border-color: var(--primaryColor);
+  outline: none;
+}
+
+.tui-dialog .btn {
+  color: #333;
+  letter-spacing: 2px;
+  text-decoration: none;
 }

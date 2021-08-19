@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>画个啥呀送给ta</title>
+  <title>画个啥呀</title>
   <link rel="stylesheet" href="https://at.alicdn.com/t/font_2748127_1ywubg7ty46.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moohng/tui@1.2.0/dist/tui.min.css">
   
   <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@moohng/tui@1.2.0/dist/tui.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@moohng/dan@2.1.0/dist/dan.min.js"></script>
-  <script type="module" crossorigin src="./assets/index.b48be81e.js"></script>
-    <link rel="stylesheet" href="./assets/index.c48618a3.css">
+  <script type="module" crossorigin src="./assets/index.fb5c77be.js"></script>
+    <link rel="stylesheet" href="./assets/index.42f38818.css">
   </head>
 <body>
   <canvas id="canvas"></canvas>
@@ -93,9 +93,27 @@
   </ul>
 
   <!-- 播放控制 -->
-  <div id="previewCover" class="preview-cover">
+  <div class="preview-cover">
     <i class="iconfont icon-play"></i>
-    <p><a href="?edit">我也要玩~</a></p>
+    <div class="bottom">
+      <a class="btn" href="?edit">我也要玩~</a>
+      <a class="btn" href="#inputPwd">输入口令</a>
+    </div>
+  </div>
+
+  <!-- 口令弹窗 -->
+  <div class="tui-dialog" id="inputPwd">
+    <div class="cover mask"></div>
+    <div class="tui-dialog__body">
+      <div class="tui-dialog__hd">请输入口令：</div>
+      <div class="tui-dialog__content">
+        <input id="code" type="text" name="code" placeholder="口令">
+      </div>
+      <div class="tui-dialog__ft">
+        <a href="#" class="btn">取消</a>
+        <a id="pwdConfirm" href="javascript:void(0)" class="btn">确定</a>
+      </div>
+    </div>
   </div>
 
   
