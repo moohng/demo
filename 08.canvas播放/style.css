@@ -130,29 +130,18 @@ li {
   justify-content: center;
   align-items: center;
   transition: opacity 0.4s;
-  opacity: 0
-}
-
-.preview-cover.mask {
   background-color: rgba(44, 44, 44, .4);
-  opacity: 1;
   z-index: 0;
 }
 
 .preview-cover .icon-play {
   color: #fff;
   font-size: 44px;
-  pointer-events: none;
 }
 
 .preview-cover .bottom {
   position: absolute;
   bottom: 40px;
-  pointer-events: none;
-}
-
-.preview-cover.mask .bottom {
-  pointer-events: initial;
 }
 
 .preview-cover .bottom .btn {
@@ -172,26 +161,18 @@ li {
 
 /* 弹窗 */
 
-.tui-dialog.my {
-  display: none;
-}
-
-.tui-dialog.my:target {
-  display: flex;
-}
-
-.tui-dialog.my input[name="code"] {
+.tui-dialog input[name="code"] {
   padding: 8px 12px;
   border: 1px solid #999;
   border-radius: 6px;
 }
 
-.tui-dialog.my input[name="code"]:focus {
+.tui-dialog input[name="code"]:focus {
   border-color: var(--primaryColor);
   outline: none;
 }
 
-.tui-dialog.my .btn {
+.tui-dialog .btn {
   color: #333;
   letter-spacing: 2px;
   text-decoration: none;

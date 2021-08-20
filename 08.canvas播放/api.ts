@@ -1,3 +1,5 @@
+import axios from 'axios';
+import { Toast } from '@moohng/tui/lib/index';
 import { Path } from './Paint';
 
 axios.interceptors.request.use((config: any) => {
@@ -26,12 +28,12 @@ interface PaintPath {
  * @returns
  */
 export const addPath = (data: PaintPath) => {
-  const hide = tui.Toast.loading('');
+  const hide = Toast.loading('');
   return axios.post('path/add', {
     ...data,
     createTime: Date.now(),
   }).catch((err: any) => {
-    tui.Toast.error('网络开小差了，请重试~');
+    Toast.error('网络开小差了，请重试~');
     throw new Error(err);
   }).finally(hide);
 };
@@ -42,11 +44,11 @@ export const addPath = (data: PaintPath) => {
  * @returns
  */
 export const fetchPath = (query: { code: string }) => {
-  const hide = tui.Toast.loading('');
+  const hide = Toast.loading('');
   return axios.get('path/get', { params: query }).then(({ data }: any) => {
     return data;
   }).catch((err: any) => {
-    tui.Toast.error('数据加载失败，请重试~');
+    Toast.error('数据加载失败，请重试~');
     throw new Error(err);
   }).finally(hide);
 };

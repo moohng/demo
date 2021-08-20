@@ -9,7 +9,7 @@ export interface Path {
   width?: number;
 }
 
-class Paint {
+export class Paint {
   private readonly defaultWidth = 6;
   private readonly defaultColor = '#000000';
 
@@ -47,7 +47,7 @@ class Paint {
     return this.ctx.fillStyle as string;
   }
 
-  drawLine(x: number, y: number) {
+  drawLine({ x, y }: Dot) {
     if (this.restarting) {
       this.restarting = false;
       this.ctx.moveTo(x, y);
@@ -83,8 +83,8 @@ class Paint {
     path.forEach(({ pos, color, width }) => {
       this.width = width || this.defaultWidth;
       this.color = color || this.defaultColor;
-      pos.forEach(({ x, y }) => {
-        this.drawLine(x, y);
+      pos.forEach((dot) => {
+        this.drawLine(dot);
       });
       this.end();
     });
@@ -101,8 +101,8 @@ class Paint {
       let i = 0; // 线
       let j = 0; // 点
 
-      const draw = ({ x, y }: Dot) => {
-        this.drawLine(x, y);
+      const draw = (dot: Dot) => {
+        this.drawLine(dot);
         requestAnimationFrame(run);
       };
 
@@ -147,4 +147,14 @@ class Paint {
   }
 }
 
-export default Paint;
+let paint: Paint;
+
+export function createPaint(ctx?: CanvasRenderingContext2D) {
+  if (paint) {
+    return paint;
+  }
+  if (!ctx) {
+    throw new Error('请提供 ctx');
+  }
+  return new Paint(ctx);
+}
