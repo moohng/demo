@@ -4,25 +4,23 @@ import { Dialog } from '@moohng/tui';
 import Canvas from './components/Canvas';
 import ToolBar from './components/ToolBar';
 import PwdDialog from './components/PwdDialog';
-import PreviewCover, { ActionCallback } from './components/PreviewCover';
-import { Path } from './Paint';
+import PreviewCover from './components/PreviewCover';
+import { initState, reducer, StateContext } from './state';
 import { fetchPath } from './api';
 import { pathFallback } from './util';
-
-// useReducer((state, action) => {
-//   return state;
-// }, { a: 1 });
 
 // 获取口令
 const { code = '秦丹', edit } = querystring(location.search);
 console.log('口令', code, edit);
 
+
+
 const App = () => {
+
+  const [state, dispatch] = useReducer(reducer, initState);
 
   // 是否预览状态
   let [isPreview, setPreview] = useState(!!code && edit === undefined);
-
-  let [showPreviewCover, setShowPreviewCover] = useState(false);
 
   let [showPwdDialog, setShowPwdDialog] = useState(false);
 
@@ -31,32 +29,6 @@ const App = () => {
       fetchData(code as string);
     }
   }, []);
-
-  // { path: [], background: '', backgroundColor: '', title: '' },
-  let [path, setPath] = useState<Path[]>([]); // 记录全部轨迹
-  let [background, setBackground] = useState('#ffffff');
-  let [play, setPlay] = useState(false);
-  let [color, setColor] = useState('#000000');
-  let [width, setWidth] = useState(6);
-
-  const handleDrawEnd = (path: Path[]) => {
-    console.log('handleDrawEnd', path);
-    setPath(path);
-  };
-
-  const handlePause = () => {
-    setShowPreviewCover(true);
-    setPlay(false);
-  };
-
-  const handlePreviewCoverAction: ActionCallback = (type) => {
-    if (type === 'play') {
-      setShowPreviewCover(false);
-      setPlay(true);
-    } else if (type === 'pwd') {
-      setShowPwdDialog(true);
-    }
-  };
 
   const fetchData = (code: string) => {
     return fetchPath({ code }).then((data: any[]) => {
@@ -79,52 +51,40 @@ const App = () => {
       if (title) {
         document.title = title;
       }
-      setPath(code ? _path : pathFallback(_path));
-      setBackground(background);
+      dispatch({ type: 'setBackgroundColor', payload: background });
+      dispatch({ type: 'setPath', payload: code ? _path : pathFallback(_path) });
     });
   }
 
-  const handlePwdConfig = (text: string) => {
-    setShowPreviewCover(false);
-    setShowPwdDialog(false);
+  const handlePwdConfirm = (text: string) => {
     fetchData(text);
   };
 
   /** 操作 */
 
   const handleRevoke = () => {
-    setPath(pre => {
-      return pre.slice(0, pre.length - 1);
-    });
+    const path = state.path.slice(0, state.path.length - 1);
+    dispatch({ type: 'setPath', payload: path});
   };
 
-  return <>
-    <Canvas
-      mode={isPreview ? 'preview' : 'draw'}
-      width={width}
-      color={color}
-      path={path}
-      play={play}
-      backgroundColor={background}
-      onDrawEnd={handleDrawEnd}
-      onPause={handlePause}
-    />
+  return <StateContext.Provider value={{ state, dispatch }}>
+    <Canvas mode={isPreview ? 'preview' : 'draw'} />
 
     {/* 播放控制 */}
-    <PreviewCover show={showPreviewCover} onAction={handlePreviewCoverAction} />
+    <PreviewCover />
 
     {/* 口令弹窗 */}
-    <PwdDialog show={showPwdDialog} onCancel={() => setShowPwdDialog(false)} onConfirm={handlePwdConfig}/>
+    <PwdDialog onConfirm={handlePwdConfirm}/>
 
     {/* 工具面板 */}
     <ToolBar
       show={!isPreview}
-      onColorSelect={(color) => setColor(color)}
-      onBgColorSelect={(color) => setBackground(color)}
-      onWidthSelect={(width) => setWidth(width)}
+      onColorSelect={(color) => dispatch({ type: 'setColor', payload: color })}
+      onBgColorSelect={(color) => dispatch({ type: 'setBackgroundColor', payload: color })}
+      onWidthSelect={(width) => dispatch({ type: 'setWidth', payload: width })}
       onRevoke={handleRevoke}
     />
-  </>;
+  </StateContext.Provider>;
 };
 
 export default App;

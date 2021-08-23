@@ -1,21 +1,12 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useContext } from 'react';
+import { StateContext } from '../state';
 import { Dot, Path, createPaint, Paint } from '../Paint';
 import { getTouchDot } from '../util';
 
 interface Props {
-  /** 画笔宽度 */
-  width?: number;
-  /** 画笔颜色 */
-  color?: string;
-  /** 背景颜色 */
-  backgroundColor?: string;
   mode?: 'preview' | 'draw';
-  path?: Path[];
-  /** 播放 */
-  play?: boolean;
   onDrawChange?: (dot: Dot) => void;
   onDrawEnd?: (path: Path[]) => void;
-  onPause: () => void;
 }
 
 const pop = () => {};
@@ -25,20 +16,16 @@ let currentLine: Path;
 let painting = false;
 
 const Canvas = ({
-  color = '#000000',
-  width = 4,
-  backgroundColor = '#ffffff',
   mode = 'preview',
-  path = [],
-  play = false,
   onDrawChange = pop,
   onDrawEnd = pop,
-  onPause = pop,
 }: Props) => {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   let paintRef = useRef<Paint>();
+
+  let { state, dispatch } = useContext(StateContext);
 
   useEffect(() => {
     canvasRef.current!.width = innerWidth;
@@ -50,44 +37,47 @@ const Canvas = ({
   }, []);
 
   useEffect(() => {
-    paintRef.current?.setBackground(backgroundColor);
-  }, [backgroundColor]);
+    paintRef.current?.setBackground(state.backgroundColor);
+  }, [state.backgroundColor]);
 
   useEffect(() => {
-    paintRef.current!.color = color;
-  }, [color]);
+    paintRef.current!.color = state.color;
+  }, [state.color]);
 
   useEffect(() => {
-    paintRef.current!.width = width;
-  }, [width]);
+    paintRef.current!.width = state.width;
+  }, [state.width]);
 
   useEffect(() => {
     if (mode === 'preview') {
-      path.length && startPlay();
+      state.path.length && startPlay();
     } else {
       paintRef.current?.clear();
-      paintRef.current?.setBackground(backgroundColor);
-      paintRef.current?.drawPath(path);
+      paintRef.current?.setBackground(state.backgroundColor);
+      paintRef.current?.drawPath(state.path);
     }
-  }, [mode, path]);
+  }, [mode, state.path]);
 
   useEffect(() => {
-    if (play && mode === 'preview' && path.length) {
-      // 如果播放完成，重新开始播放
-      if (paintRef.current!.isComplete) {
-        startPlay();
-      } else {
-        // 播放未完成，继续播放
-        paintRef.current!.isPlay = true;
+    if (mode === 'preview') {
+      if (state.play && state.path.length) {
+        // 如果播放完成，重新开始播放
+        if (paintRef.current!.isComplete) {
+          startPlay();
+        } else {
+          // 播放未完成，继续播放
+          paintRef.current!.isPlay = true;
+        }
       }
     }
-  }, [play]);
+  }, [state.play]);
 
   const startPlay = () => {
     paintRef.current?.clear();
-    paintRef.current?.setBackground(backgroundColor);
-    paintRef.current?.playPath(path).then(() => {
-      onPause();
+    paintRef.current?.setBackground(state.backgroundColor);
+    paintRef.current?.playPath(state.path).then(() => {
+      dispatch?.({ type: 'setPlay', payload: false });
+      dispatch?.({ type: 'setShowPreviewCover', payload: true });
     });
   };
 
@@ -96,8 +86,8 @@ const Canvas = ({
     painting = true;
     const dot = getTouchDot(e, canvasRef.current!);
     currentLine = {
-      width,
-      color,
+      width: state.width,
+      color: state.color,
       pos: [dot],
     };
     paintRef.current?.drawLine(dot);
@@ -119,6 +109,7 @@ const Canvas = ({
       currentPath.push(currentLine);
       paintRef.current?.end();
       onDrawEnd(currentPath);
+      dispatch?.({ type: 'setPath', payload: currentPath });
     }
   };
 
@@ -126,7 +117,8 @@ const Canvas = ({
     if (mode === 'preview') {
       // 暂停播放
       paintRef.current!.isPlay = false;
-      onPause();
+      dispatch?.({ type: 'setPlay', payload: false});
+      dispatch?.({ type: 'setShowPreviewCover', payload: true });
     }
   };
 

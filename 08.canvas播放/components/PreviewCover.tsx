@@ -1,39 +1,40 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { StateContext } from '../state';
 
-interface Props {
-  show?: boolean;
-  onAction: ActionCallback;
-}
+let closeTimer: number;
 
-export interface ActionCallback {
-  (type: 'play' | 'draw' | 'pwd'): void;
-}
+const PreviewCover = () => {
 
-const PreviewCover = ({ show = false, onAction = () => {} }: Props) => {
-
-  let [_show, setShow] = useState(show);
+  const { state, dispatch } = useContext(StateContext);
+  let [_show, setShow] = useState(state.showPreviewCover);
   let [opacity, setOpacity] = useState('0');
 
   useEffect(() => {
-    if (show) {
+    if (state.showPreviewCover) {
+      clearTimeout(closeTimer);
       setShow(true);
       setTimeout(() => {
         setOpacity('1');
-      }, 100);
+      }, 50);
     } else {
       setOpacity('0');
-      setTimeout(() => {
+      closeTimer = setTimeout(() => {
         setShow(false);
       }, 400);
     }
-  }, [show]);
+  }, [state.showPreviewCover]);
+
+  const handlePlay = () => {
+    dispatch?.({ type: 'setPlay', payload: true });
+    dispatch?.({ type: 'setShowPreviewCover', payload: false });
+  };
 
   return _show ? (
     <div className="preview-cover" style={{ opacity }}>
-      <i className="iconfont icon-play" onClick={() => onAction('play')}></i>
+      <i className="iconfont icon-play" onClick={handlePlay}></i>
       <div className="bottom">
         <a className="btn" href="?edit">我也要玩~</a>
-        <a className="btn" onClick={() => onAction('pwd')}>输入口令</a>
+        <a className="btn" onClick={() => dispatch?.({ type: 'setShowPwdDialog', payload: true })}>输入口令</a>
       </div>
     </div>
   ) : null;

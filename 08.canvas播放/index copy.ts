@@ -95,20 +95,3 @@ document.querySelector('#download')!.addEventListener(
   },
   false
 );
-
-/** 自定义颜色 */
-
-document.querySelector('#colorSelect')!.addEventListener(
-  'click',
-  (e) => {
-    e.stopPropagation();
-  },
-  false
-);
-document.querySelector('#backgroundSelect')!.addEventListener(
-  'click',
-  (e) => {
-    e.stopPropagation();
-  },
-  false
-);
