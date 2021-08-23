@@ -1,39 +1,29 @@
-import React, { useEffect, useState, useReducer } from 'react';
-import { querystring } from '@moohng/dan';
+import React, { useEffect, useReducer } from 'react';
 import { Dialog } from '@moohng/tui';
+import * as dan from '@moohng/dan';
 import Canvas from './components/Canvas';
 import ToolBar from './components/ToolBar';
 import PwdDialog from './components/PwdDialog';
 import PreviewCover from './components/PreviewCover';
 import { initState, reducer, StateContext } from './state';
-import { fetchPath } from './api';
+import { fetchPath, addPath } from './api';
 import { pathFallback } from './util';
-
-// 获取口令
-const { code = '秦丹', edit } = querystring(location.search);
-console.log('口令', code, edit);
-
 
 
 const App = () => {
 
   const [state, dispatch] = useReducer(reducer, initState);
 
-  // 是否预览状态
-  let [isPreview, setPreview] = useState(!!code && edit === undefined);
-
-  let [showPwdDialog, setShowPwdDialog] = useState(false);
-
   useEffect(() => {
-    if (isPreview) {
-      fetchData(code as string);
+    if (state.previewMode) {
+      fetchData(state.code);
     }
   }, []);
 
   const fetchData = (code: string) => {
     return fetchPath({ code }).then((data: any[]) => {
       if (!data.length) {
-        return Dialog({
+        Dialog({
           title: '提示',
           content: '链接已失效~',
           buttons: [
@@ -46,6 +36,7 @@ const App = () => {
             },
           ],
         });
+        return;
       }
       const { path: _path, background = '#ffffff', title, code } = data[0];
       if (title) {
@@ -56,34 +47,47 @@ const App = () => {
     });
   }
 
-  const handlePwdConfirm = (text: string) => {
-    fetchData(text);
-  };
-
-  /** 操作 */
-
-  const handleRevoke = () => {
-    const path = state.path.slice(0, state.path.length - 1);
-    dispatch({ type: 'setPath', payload: path});
+  const handlePwdConfirm = (code?: string) => {
+    if (state.isSave) {
+      code = code || state.code;
+      addPath({
+        code,
+        path: state.path,
+        background: state.backgroundColor,
+      }).then(() => {
+        const shareUrl = location.origin + location.pathname + '?code=' + code;
+        console.log('share url', shareUrl);
+        dan.copy(shareUrl);
+        // Toast.success('链接已复制，赶紧去微信粘贴分享给小伙伴吧~');
+        Dialog({
+          title: '提示',
+          content: '链接已复制，赶紧去微信粘贴分享给小伙伴吧~\n' + shareUrl,
+          buttons: [
+            {
+              text: '确定',
+              onClick: async () => {
+                dan.copy(shareUrl);
+                return;
+              },
+            },
+          ],
+        });
+      });
+    } else {
+      code && fetchData(code);
+    }
   };
 
   return <StateContext.Provider value={{ state, dispatch }}>
-    <Canvas mode={isPreview ? 'preview' : 'draw'} />
+    <Canvas />
+    {/* 工具面板 */}
+    <ToolBar />
 
     {/* 播放控制 */}
     <PreviewCover />
 
     {/* 口令弹窗 */}
-    <PwdDialog onConfirm={handlePwdConfirm}/>
-
-    {/* 工具面板 */}
-    <ToolBar
-      show={!isPreview}
-      onColorSelect={(color) => dispatch({ type: 'setColor', payload: color })}
-      onBgColorSelect={(color) => dispatch({ type: 'setBackgroundColor', payload: color })}
-      onWidthSelect={(width) => dispatch({ type: 'setWidth', payload: width })}
-      onRevoke={handleRevoke}
-    />
+    <PwdDialog onConfirm={handlePwdConfirm} />
   </StateContext.Provider>;
 };
 

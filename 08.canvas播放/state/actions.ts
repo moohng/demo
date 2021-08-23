@@ -1,6 +1,6 @@
 import { State } from './index';
 
-export type ActionType = 'setPath' | 'setPlay' | 'setShowPreviewCover' | 'setColor' | 'setBackgroundColor' | 'setWidth' | 'setShowPwdDialog';
+export type ActionType = 'setPath' | 'setPlay' | 'setShowPreviewCover' | 'setColor' | 'setBackgroundColor' | 'setWidth' | 'setShowPwdDialog' | 'setPreviewMode' | 'setPreview' | 'setSave' | 'setCode';
 
 export const actions: {
   [key in ActionType]: (state: State, payload: any) => State;
@@ -45,6 +45,30 @@ export const actions: {
     return {
       ...state,
       showPwdDialog,
+    };
+  },
+  setPreviewMode (state, previewMode) {
+    return {
+      ...state,
+      previewMode,
+    };
+  },
+  setPreview (state, preview) {
+    return {
+      ...state,
+      preview,
+    };
+  },
+  setSave (state, isSave) {
+    return {
+      ...state,
+      isSave,
+    };
+  },
+  setCode (state, code) {
+    return {
+      ...state,
+      code,
     };
   },
 };

@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+import { querystring } from '@moohng/dan';
 import { actions, ActionType } from './actions';
 
 export interface Dot {
@@ -18,8 +19,16 @@ export interface State {
   backgroundColor: string;
   width: number;
   play: boolean;
+
+  code: string;
+  previewMode: boolean;
+
   showPreviewCover: boolean;
   showPwdDialog: boolean;
+  isSave: boolean;
+
+  /** 操作 */
+  preview: boolean;
 }
 
 export interface Action {
@@ -27,15 +36,25 @@ export interface Action {
   payload?: any;
 }
 
+// 获取口令
+const { code = '秦丹', edit } = querystring(location.search);
+console.log('口令', code, edit);
+
 export const initState: State = {
   path: [],
   color: '#000000',
   backgroundColor: '#ffffff',
-  width: 6,
+  width: 4,
   play: false,
+
+  code: code as string,
+  previewMode: !!code && edit === undefined,
 
   showPreviewCover: false,
   showPwdDialog: false,
+  isSave: false,
+
+  preview: false,
 };
 
 export const reducer = (state: State, action: Action) => {

@@ -4,19 +4,16 @@ import { Dot, Path, createPaint, Paint } from '../Paint';
 import { getTouchDot } from '../util';
 
 interface Props {
-  mode?: 'preview' | 'draw';
   onDrawChange?: (dot: Dot) => void;
   onDrawEnd?: (path: Path[]) => void;
 }
 
 const pop = () => {};
 
-let currentPath: Path[] = [];
 let currentLine: Path;
 let painting = false;
 
 const Canvas = ({
-  mode = 'preview',
   onDrawChange = pop,
   onDrawEnd = pop,
 }: Props) => {
@@ -38,6 +35,7 @@ const Canvas = ({
 
   useEffect(() => {
     paintRef.current?.setBackground(state.backgroundColor);
+    paintRef.current?.drawPath(state.path);
   }, [state.backgroundColor]);
 
   useEffect(() => {
@@ -49,21 +47,35 @@ const Canvas = ({
   }, [state.width]);
 
   useEffect(() => {
-    if (mode === 'preview') {
-      state.path.length && startPlay();
+    if (state.previewMode) {
+      state.path.length && startPlay()?.then(() => {
+        dispatch?.({ type: 'setPlay', payload: false });
+        dispatch?.({ type: 'setShowPreviewCover', payload: true });
+      });
     } else {
       paintRef.current?.clear();
       paintRef.current?.setBackground(state.backgroundColor);
       paintRef.current?.drawPath(state.path);
     }
-  }, [mode, state.path]);
+  }, [state.previewMode, state.path]);
 
   useEffect(() => {
-    if (mode === 'preview') {
+    if (state.preview) {
+      state.path.length && startPlay()?.then(() => {
+        dispatch?.({ type: 'setPreview', payload: false });
+      });
+    }
+  }, [state.preview]);
+
+  useEffect(() => {
+    if (state.previewMode) {
       if (state.play && state.path.length) {
         // 如果播放完成，重新开始播放
         if (paintRef.current!.isComplete) {
-          startPlay();
+          startPlay()?.then(() => {
+            dispatch?.({ type: 'setPlay', payload: false });
+            dispatch?.({ type: 'setShowPreviewCover', payload: true });
+          });
         } else {
           // 播放未完成，继续播放
           paintRef.current!.isPlay = true;
@@ -75,14 +87,11 @@ const Canvas = ({
   const startPlay = () => {
     paintRef.current?.clear();
     paintRef.current?.setBackground(state.backgroundColor);
-    paintRef.current?.playPath(state.path).then(() => {
-      dispatch?.({ type: 'setPlay', payload: false });
-      dispatch?.({ type: 'setShowPreviewCover', payload: true });
-    });
+    return paintRef.current?.playPath(state.path);
   };
 
   const handleTouchStart = (e: any) => {
-    if (mode === 'preview') return;
+    if (state.previewMode || state.preview) return;
     painting = true;
     const dot = getTouchDot(e, canvasRef.current!);
     currentLine = {
@@ -90,6 +99,8 @@ const Canvas = ({
       color: state.color,
       pos: [dot],
     };
+    paintRef.current!.color = state.color;
+    paintRef.current!.width = state.width;
     paintRef.current?.drawLine(dot);
     onDrawChange(dot);
   };
@@ -106,15 +117,15 @@ const Canvas = ({
   const handleTouchEnd = () => {
     if (painting) {
       painting = false;
-      currentPath.push(currentLine);
+      const currentPath = [...state.path, currentLine];
+      dispatch?.({ type: 'setPath', payload: currentPath });
       paintRef.current?.end();
       onDrawEnd(currentPath);
-      dispatch?.({ type: 'setPath', payload: currentPath });
     }
   };
 
   const handlePause = () => {
-    if (mode === 'preview') {
+    if (state.previewMode) {
       // 暂停播放
       paintRef.current!.isPlay = false;
       dispatch?.({ type: 'setPlay', payload: false});

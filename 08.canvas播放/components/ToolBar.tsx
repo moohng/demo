@@ -1,4 +1,8 @@
-import React, { useState, MouseEventHandler, FormEventHandler } from 'react';
+import React, { useContext, MouseEventHandler, FormEventHandler } from 'react';
+import { Toast } from '@moohng/tui';
+import * as dan from '@moohng/dan';
+import { StateContext } from '../state';
+import { download } from '../util';
 
 const colorList = ['#ffffff', '#000000', '#FF3333', '#0066FF', '#FFFF33', '#33CC66'];
 
@@ -11,73 +15,83 @@ const widthList = [
   { value: 30, width: 14 },
 ];
 
-interface Props {
-  show?: boolean;
-  onColorSelect?: (color: string) => void;
-  onBgColorSelect?: (color: string) => void;
-  onWidthSelect?: (width: number) => void;
-  onRevoke?: () => void;
-  onClear?: () => void;
-  onPreview?: () => void;
-  onDownload?: () => void;
-  onShare?: () => void;
-}
+const ToolBar = () => {
 
-const pop = () => {};
-
-const ToolBar = ({
-  show = false,
-  onColorSelect = pop,
-  onBgColorSelect = pop,
-  onWidthSelect = pop,
-  onRevoke = pop,
-  onClear = pop,
-  onPreview = pop,
-  onDownload = pop,
-  onShare = pop,
-}: Props) => {
-
-  let [selectWidth, setSelectWidth] = useState(widthList[1].value);
-  let [selectColor, setSelectColor] = useState(colorList[1]);
-  let [selectBgColor, setSelectBgColor] = useState('#ffffff');
+  const { state, dispatch } = useContext(StateContext);
 
   const handleColorSelect: MouseEventHandler = (e) => {
     const target = e.target as HTMLInputElement;
     if (target.checked) {
-      setSelectColor(target.value);
-      onColorSelect(target.value);
+      dispatch?.({ type: 'setColor', payload: target.value });
     }
   };
 
   const handleWidthSelect: MouseEventHandler = (e) => {
     const target = e.target as HTMLInputElement;
     if (target.checked) {
-      setSelectWidth(+(target).value);
-      onWidthSelect(+(target).value);
+      dispatch?.({ type: 'setWidth', payload: +(target).value });
     }
   };
 
   const handleColorInput: FormEventHandler = (e) => {
     const target = e.target as HTMLInputElement;
-    setSelectColor(target.value);
-    onColorSelect(target.value);
+    dispatch?.({ type: 'setColor', payload: target.value });
   }
 
   const handleBgColorInput: FormEventHandler = (e) => {
     const target = e.target as HTMLInputElement;
-    setSelectBgColor(target.value);
-    onBgColorSelect(target.value);
+    dispatch?.({ type: 'setBackgroundColor', payload: target.value });
   }
 
-  return show ? (
+  /** 操作 */
+
+  const handleRevoke = () => {
+    if (state.preview) return;
+    const path = state.path.slice(0, state.path.length - 1);
+    dispatch?.({ type: 'setPath', payload: path});
+  };
+
+  const handleClear = () => {
+    if (state.preview) return;
+    dispatch?.({ type: 'setPath', payload: [] });
+  };
+
+  const handlePreview = () => {
+    if (state.preview) return;
+    if (!state.path.length) {
+      return Toast.error('先随便画点什么吧~');
+    }
+    dispatch?.({ type: 'setPreview', payload: true });
+  };
+
+  const handleDownload = () => {
+    if (!state.path.length) {
+      return Toast.error('先随便画点什么吧~');
+    }
+    download(document.querySelector('canvas')?.toDataURL()!);
+  };
+
+  const handleShare = () => {
+    if (!state.path.length) {
+      return Toast.error('先随便画点什么吧~');
+    }
+    // 生成随机口令
+    const code = dan.random(8) as string;
+
+    dispatch?.({ type: 'setCode', payload: code });
+    dispatch?.({ type: 'setSave', payload: true });
+    dispatch?.({ type: 'setShowPwdDialog', payload: true });
+  };
+
+  return !state.previewMode ? (
     <>
       {/* <!-- 操作区域 --> */}
       <ul className="toolbar">
-        <li className="button" onClick={onRevoke}><i className="iconfont icon-revoke"></i></li>
-        <li className="button" onClick={onClear}><i className="iconfont icon-clear"></i></li>
-        <li className="button" onClick={onPreview}><i className="iconfont icon-preview"></i></li>
-        <li className="button" onClick={onDownload}><i className="iconfont icon-download"></i></li>
-        <li className="button" onClick={onShare}><i className="iconfont icon-share"></i></li>
+        <li className="button" onClick={handleRevoke}><i className="iconfont icon-revoke"></i></li>
+        <li className="button" onClick={handleClear}><i className="iconfont icon-clear"></i></li>
+        <li className="button" onClick={handlePreview}><i className="iconfont icon-preview"></i></li>
+        <li className="button" onClick={handleDownload}><i className="iconfont icon-download"></i></li>
+        <li className="button" onClick={handleShare}><i className="iconfont icon-share"></i></li>
       </ul>
 
       {/* <!-- 颜色选择 --> */}
@@ -85,20 +99,20 @@ const ToolBar = ({
         {
           colorList.map((color, index) => (
             <li className="button" key={index}>
-              <input type="radio" name="color" value={color} checked={selectColor === color} readOnly />
+              <input type="radio" name="color" value={color} checked={state.color === color} readOnly />
               <i className="icon" style={{ color }}></i>
             </li>
           ))
         }
         <div className="line"></div>
         <li className="button">
-          <input type="color" name="color" value={selectColor} onInput={handleColorInput} />
-          <i className="icon" style={{ color: selectColor }}></i>
+          <input type="color" name="color" value={state.color} onInput={handleColorInput} />
+          <i className="icon" style={{ color: state.color }}></i>
         </li>
         <div className="line"></div>
         <li className="button">
-          <input type="color" name="color" value={selectBgColor} onInput={handleBgColorInput} />
-          <i className="icon" style={{ color: selectBgColor }}></i>
+          <input type="color" name="color" value={state.backgroundColor} onInput={handleBgColorInput} />
+          <i className="icon" style={{ color: state.backgroundColor }}></i>
         </li>
       </ul>
 
@@ -107,7 +121,7 @@ const ToolBar = ({
         {
           widthList.map(({ value, width }, index) => (
             <li className="button" key={index}>
-              <input type="radio" name="width" value={value} checked={value === selectWidth} readOnly />
+              <input type="radio" name="width" value={value} checked={value === state.width} readOnly />
               <i className="icon" style={{ width: `${width}px`, height: `${width}px`, }}></i>
             </li>
           ))

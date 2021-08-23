@@ -29,12 +29,17 @@ const PreviewCover = () => {
     dispatch?.({ type: 'setShowPreviewCover', payload: false });
   };
 
+  const handlePwd = () => {
+    dispatch?.({ type: 'setSave', payload: false });
+    dispatch?.({ type: 'setShowPwdDialog', payload: true });
+  };
+
   return _show ? (
     <div className="preview-cover" style={{ opacity }}>
       <i className="iconfont icon-play" onClick={handlePlay}></i>
       <div className="bottom">
         <a className="btn" href="?edit">我也要玩~</a>
-        <a className="btn" onClick={() => dispatch?.({ type: 'setShowPwdDialog', payload: true })}>输入口令</a>
+        <a className="btn" onClick={handlePwd}>输入口令</a>
       </div>
     </div>
   ) : null;
