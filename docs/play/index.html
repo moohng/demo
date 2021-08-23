@@ -8,113 +8,12 @@
   <link rel="stylesheet" href="https://at.alicdn.com/t/font_2748127_1ywubg7ty46.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@moohng/tui@1.2.0/dist/tui.min.css">
   
-  <script src="https://cdn.jsdelivr.net/npm/axios@0.21.1/dist/axios.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@moohng/tui@1.2.0/dist/tui.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@moohng/dan@2.1.0/dist/dan.min.js"></script>
-  <script type="module" crossorigin src="./assets/index.f38d7171.js"></script>
-    <link rel="stylesheet" href="./assets/index.3418ec6f.css">
+  <script type="module" crossorigin src="./assets/index.77996fd5.js"></script>
+    <link rel="modulepreload" href="./assets/vendor.effd306c.js">
+    <link rel="stylesheet" href="./assets/index.00d39f5e.css">
   </head>
 <body>
-  <canvas id="canvas"></canvas>
-
-  <!-- 操作区域 -->
-  <ul class="toolbar">
-    <li id="revoke" class="button"><i class="iconfont icon-revoke"></i></li>
-    <li id="clear" class="button"><i class="iconfont icon-clear"></i></li>
-    <li id="preview" class="button"><i class="iconfont icon-preview"></i></li>
-    <li id="download" class="button"><i class="iconfont icon-download"></i></li>
-    <li id="share" class="button"><i class="iconfont icon-share"></i></li>
-  </ul>
-
-  <!-- 颜色选择 -->
-  <ul class="color-bar">
-    <li class="button">
-      <input type="radio" name="color" value="#ffffff" />
-      <i class="icon" style="color: #ffffff"></i>
-    </li>
-    <li class="button">
-      <input type="radio" name="color" value="#000000" checked />
-      <i class="icon" style="color: #000000"></i>
-    </li>
-    <li class="button">
-      <input type="radio" name="color" value="#FF3333" />
-      <i class="icon" style="color: #FF3333"></i>
-    </li>
-    <li class="button">
-      <input type="radio" name="color" value="#0066FF" />
-      <i class="icon" style="color: #0066FF"></i>
-    </li>
-    <li class="button">
-      <input type="radio" name="color" value="#FFFF33" />
-      <i class="icon" style="color: #FFFF33"></i>
-    </li>
-    <li class="button">
-      <input type="radio" name="color" value="#33CC66" />
-      <i class="icon" style="color: #33CC66"></i>
-    </li>
-    <div class="line"></div>
-    <li class="button">
-      <input id="colorSelect" type="color" name="color" value="#000000">
-      <i class="icon" style="color: #000000"></i>
-    </li>
-    <div class="line"></div>
-    <li class="button">
-      <input id="backgroundSelect" type="color" name="color" value="#ffffff">
-      <i class="icon" style="color: #ffffff"></i>
-    </li>
-  </ul>
-
-  <!-- 画笔宽度 -->
-  <ul class="width-bar">
-    <li class="button">
-      <input type="radio" name="width" value="2" />
-      <i class="icon" style="width: 4px; height: 4px;"></i>
-    </li>
-    <li class="button">
-      <input type="radio" name="width" value="4" />
-      <i class="icon" style="width: 6px; height: 6px;"></i>
-    </li>
-    <li class="button">
-      <input type="radio" name="width" value="6" checked />
-      <i class="icon" style="width: 8px; height: 8px;"></i>
-    </li>
-    <li class="button">
-      <input type="radio" name="width" value="12" />
-      <i class="icon" style="width: 10px; height: 10px;"></i>
-    </li>
-    <li class="button">
-      <input type="radio" name="width" value="20" />
-      <i class="icon" style="width: 12px; height: 12px;"></i>
-    </li>
-    <li class="button">
-      <input type="radio" name="width" value="30" />
-      <i class="icon" style="width: 14px; height: 14px;"></i>
-    </li>
-  </ul>
-
-  <!-- 播放控制 -->
-  <div class="preview-cover">
-    <i class="iconfont icon-play"></i>
-    <div class="bottom">
-      <a class="btn" href="?edit">我也要玩~</a>
-      <a class="btn" href="#inputPwd">输入口令</a>
-    </div>
-  </div>
-
-  <!-- 口令弹窗 -->
-  <div class="tui-dialog my" id="inputPwd">
-    <div class="cover mask"></div>
-    <div class="tui-dialog__body">
-      <div class="tui-dialog__hd">请输入口令：</div>
-      <div class="tui-dialog__content">
-        <input id="code" type="text" name="code" placeholder="口令">
-      </div>
-      <div class="tui-dialog__ft">
-        <a href="#" class="btn">取消</a>
-        <a id="pwdConfirm" href="javascript:void(0)" class="btn">确定</a>
-      </div>
-    </div>
-  </div>
+  <div id="app"></div>
 
   
 </body>
