@@ -1,22 +1,11 @@
-import React, { useRef, useEffect, useContext } from 'react';
+import React, { useRef, useEffect, useLayoutEffect, useContext } from 'react';
 import { StateContext } from '../state';
-import { Dot, Path, createPaint, Paint } from '../Paint';
-import { getTouchDot } from '../util';
-
-interface Props {
-  onDrawChange?: (dot: Dot) => void;
-  onDrawEnd?: (path: Path[]) => void;
-}
-
-const pop = () => {};
+import { Path, createPaint, Paint } from '../Paint';
+import { useTouchMove } from '../uses';
 
 let currentLine: Path;
-let painting = false;
 
-const Canvas = ({
-  onDrawChange = pop,
-  onDrawEnd = pop,
-}: Props) => {
+const Canvas = () => {
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -24,7 +13,8 @@ const Canvas = ({
 
   let { state, dispatch } = useContext(StateContext);
 
-  useEffect(() => {
+  /** 初始化 canvas */
+  useLayoutEffect(() => {
     canvasRef.current!.width = innerWidth;
     canvasRef.current!.height = innerHeight;
 
@@ -33,20 +23,20 @@ const Canvas = ({
     paintRef.current = createPaint(ctx);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     paintRef.current?.setBackground(state.backgroundColor);
     paintRef.current?.drawPath(state.path);
   }, [state.backgroundColor]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     paintRef.current!.color = state.color;
   }, [state.color]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     paintRef.current!.width = state.width;
   }, [state.width]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (state.previewMode) {
       state.path.length && startPlay()?.then(() => {
         dispatch?.({ type: 'setPlay', payload: false });
@@ -59,7 +49,7 @@ const Canvas = ({
     }
   }, [state.previewMode, state.path]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (state.preview) {
       state.path.length && startPlay()?.then(() => {
         dispatch?.({ type: 'setPreview', payload: false });
@@ -67,7 +57,7 @@ const Canvas = ({
     }
   }, [state.preview]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (state.previewMode) {
       if (state.play && state.path.length) {
         // 如果播放完成，重新开始播放
@@ -90,39 +80,26 @@ const Canvas = ({
     return paintRef.current?.playPath(state.path);
   };
 
-  const handleTouchStart = (e: any) => {
-    if (state.previewMode || state.preview) return;
-    painting = true;
-    const dot = getTouchDot(e, canvasRef.current!);
-    currentLine = {
-      width: state.width,
-      color: state.color,
-      pos: [dot],
-    };
-    paintRef.current!.color = state.color;
-    paintRef.current!.width = state.width;
-    paintRef.current?.drawLine(dot);
-    onDrawChange(dot);
-  };
+  const { dot, status } = useTouchMove(canvasRef, !state.previewMode && !state.preview);
 
-  const handleTouchMove = (e: any) => {
-    if (painting) {
-      const dot = getTouchDot(e, canvasRef.current!);
-      currentLine.pos.push(dot);
+  useLayoutEffect(() => {
+    if (status === 'down') {
+      paintRef.current?.start(dot, state.color, state.width);
       paintRef.current?.drawLine(dot);
-      onDrawChange(dot);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    if (painting) {
-      painting = false;
+      currentLine = {
+        width: state.width,
+        color: state.color,
+        pos: [dot],
+      };
+    } else if (status === 'move') {
+      paintRef.current?.drawLine(dot);
+      currentLine.pos.push(dot);
+    } else if (status === 'up') {
+      paintRef.current?.drawLine(dot);
       const currentPath = [...state.path, currentLine];
       dispatch?.({ type: 'setPath', payload: currentPath });
-      paintRef.current?.end();
-      onDrawEnd(currentPath);
     }
-  };
+  }, [dot]);
 
   const handlePause = () => {
     if (state.previewMode) {
@@ -133,21 +110,7 @@ const Canvas = ({
     }
   };
 
-  return (
-    <>
-      <canvas
-        ref={canvasRef}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onTouchCancel={handleTouchEnd}
-        onMouseDown={handleTouchStart}
-        onMouseMove={handleTouchMove}
-        onMouseUp={handleTouchEnd}
-        onClick={handlePause}
-      ></canvas>
-    </>
-  );
+  return <canvas ref={canvasRef} onClick={handlePause} ></canvas>;
 };
 
 export default Canvas;

@@ -20,31 +20,30 @@ const App = () => {
     }
   }, []);
 
-  const fetchData = (code: string) => {
-    return fetchPath({ code }).then((data: any[]) => {
-      if (!data.length) {
-        Dialog({
-          title: '提示',
-          content: '链接已失效~',
-          buttons: [
-            {
-              text: '去分享',
-              onClick: async () => {
-                (location.search = '?edit');
-                return;
-              },
+  const fetchData = async (parmCode: string) => {
+    const data = await fetchPath({ code: parmCode });
+    if (!data.length) {
+      Dialog({
+        title: '提示',
+        content: '链接已失效~',
+        buttons: [
+          {
+            text: '去分享',
+            onClick: async () => {
+              (location.search = '?edit');
+              return;
             },
-          ],
-        });
-        return;
-      }
-      const { path: _path, background = '#ffffff', title, code } = data[0];
-      if (title) {
-        document.title = title;
-      }
-      dispatch({ type: 'setBackgroundColor', payload: background });
-      dispatch({ type: 'setPath', payload: code ? _path : pathFallback(_path) });
-    });
+          },
+        ],
+      });
+      return;
+    }
+    const { path: _path, background = '#ffffff', title, code } = data[0];
+    if (title) {
+      document.title = title;
+    }
+    dispatch({ type: 'setBackgroundColor', payload: background });
+    dispatch({ type: 'setPath', payload: code ? _path : pathFallback(_path) });
   }
 
   const handlePwdConfirm = (code?: string) => {
@@ -78,17 +77,19 @@ const App = () => {
     }
   };
 
-  return <StateContext.Provider value={{ state, dispatch }}>
-    <Canvas />
-    {/* 工具面板 */}
-    <ToolBar />
+  return (
+    <StateContext.Provider value={{ state, dispatch }}>
+      <Canvas />
+      {/* 工具面板 */}
+      <ToolBar />
 
-    {/* 播放控制 */}
-    <PreviewCover />
+      {/* 播放控制 */}
+      <PreviewCover />
 
-    {/* 口令弹窗 */}
-    <PwdDialog onConfirm={handlePwdConfirm} />
-  </StateContext.Provider>;
+      {/* 口令弹窗 */}
+      <PwdDialog onConfirm={handlePwdConfirm} />
+    </StateContext.Provider>
+  );
 };
 
 export default App;

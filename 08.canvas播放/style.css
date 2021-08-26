@@ -137,6 +137,7 @@ li {
 .preview-cover .icon-play {
   color: #fff;
   font-size: 44px;
+  cursor: pointer;
 }
 
 .preview-cover .bottom {
@@ -153,6 +154,7 @@ li {
   background-color: #fff;
   border-radius: 6px;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .preview-cover .bottom .btn:first-child {

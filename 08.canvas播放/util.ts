@@ -32,10 +32,9 @@ export function pathFallback(path: Path[]): Path[] {
  * @param param1
  * @returns
  */
-export function getTouchDot(e: any, { width, height }: HTMLCanvasElement): Dot {
-  const { clientX, clientY } = e.touches ? e.touches[0] : e;
+export function getRelativeDot({ x, y }: Dot, { width, height }: HTMLCanvasElement): Dot {
   return {
-    x: clientX - width * 0.5,
-    y: clientY - height * 0.5,
+    x: x - width * 0.5,
+    y: y - height * 0.5,
   };
 }

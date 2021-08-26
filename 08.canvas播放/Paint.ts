@@ -13,8 +13,6 @@ export class Paint {
   private readonly defaultWidth = 6;
   private readonly defaultColor = '#000000';
 
-  private restarting: boolean = true;
-
   public isPlay: boolean = false;
   public isComplete: boolean = false;
 
@@ -48,22 +46,15 @@ export class Paint {
   }
 
   drawLine({ x, y }: Dot) {
-    if (this.restarting) {
-      this.restarting = false;
-      this.ctx.moveTo(x, y);
-      this.ctx.beginPath();
-    }
     this.ctx.lineTo(x, y);
     this.ctx.stroke();
-
-    return this;
   }
 
-  end() {
-    this.restarting = true;
-    this.ctx.closePath();
-
-    return this;
+  start({ x, y }: Dot, color = this.defaultColor, width = this.defaultWidth) {
+    this.ctx.beginPath();
+    this.ctx.moveTo(x, y);
+    this.color = color;
+    this.width = width;
   }
 
   setBackground(color?: string) {
@@ -78,68 +69,71 @@ export class Paint {
   }
 
   drawPath(path: Path[]) {
-    console.log('drawPath', path);
+    console.log('绘制轨迹', path);
     if (!path.length) return;
     path.forEach(({ pos, color, width }) => {
-      this.width = width || this.defaultWidth;
-      this.color = color || this.defaultColor;
+      this.start(pos[0], color, width);
       pos.forEach((dot) => {
         this.drawLine(dot);
       });
-      this.end();
     });
   }
 
-  async playPath(path: Path[]): Promise<void> {
-    console.log('playPath', path);
+  playPath(path: Path[]): Promise<void> {
+    console.log('播放轨迹', path);
     if (!path.length) return Promise.resolve();
 
-    // 标记已完成
+    // 标记已完成（结束上一次播放）
     this.isComplete = true;
 
-    await new Promise((resolve) => {
+    return new Promise((resolve) => {
       let i = 0; // 线
       let j = 0; // 点
 
-      const draw = (dot: Dot) => {
-        this.drawLine(dot);
-        requestAnimationFrame(run);
-      };
-
       const run = () => {
+        // 结束绘制（下一次播放的时候要结束上一次播放）
         if (this.isComplete) {
-          this.end();
           return;
         }
+
+        // 暂停（原地死循环，便于继续播放）
         if (!this.isPlay) {
-          return requestAnimationFrame(run);
+          requestAnimationFrame(run);
+          return;
         }
-        if (j >= path[i].pos.length) {
-          this.end();
+
+        if (j < path[i].pos.length) {
+          // 绘制第 n 条轨迹
+          this.drawLine(path[i].pos[j++]);
+          requestAnimationFrame(run);
+        } else {
+          // 一条轨迹制完成
           if (++i < path.length) {
+            // 初始化下一条轨迹
             j = 0;
-            this.color = path[i].color || this.defaultColor;
-            this.width = path[i].width || this.defaultWidth;
+            const { pos, color, width } = path[i];
+            this.start(pos[0], color, width);
+
+            // 延时一会儿开始绘制下一条轨迹
+            setTimeout(() => {
+              // this.drawLine(pos[j++]);
+              requestAnimationFrame(run);
+            }, 240);
           } else {
             // 结束
             this.isComplete = true;
-            return resolve(void 0);
+            resolve();
           }
-
-          setTimeout(() => {
-            draw(path[i].pos[j++]);
-          }, 240);
-        } else {
-          draw(path[i].pos[j++]);
         }
       };
 
       setTimeout(() => {
-        // 初始化
+        // 初始化第一条轨迹
         this.isPlay = true;
         this.isComplete = false;
-        this.color = path[0].color || this.defaultColor;
-        this.width = path[0].width || this.defaultWidth;
+
+        const { pos, color, width } = path[0];
+        this.start(pos[0], color, width);
 
         run();
       }, 100);
