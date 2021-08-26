@@ -13,8 +13,11 @@ export class Paint {
   private readonly defaultWidth = 6;
   private readonly defaultColor = '#000000';
 
-  public isPlay: boolean = false;
-  public isComplete: boolean = false;
+  private row = 0;
+  private column = 0;
+  private stop = false;
+  private path: Path[] = [];
+  public isComplete = false;
 
   constructor(private ctx: CanvasRenderingContext2D, color?: string, width: number = 6) {
     this.setBackground();
@@ -79,65 +82,72 @@ export class Paint {
     });
   }
 
-  playPath(path: Path[]): Promise<void> {
+  /**
+   * 从头绘制路径
+   * @param path 路径
+   * @param completed 完成回调
+   * @returns
+   */
+  playPath(path: Path[], completed?: () => void) {
     console.log('播放轨迹', path);
     if (!path.length) return Promise.resolve();
 
-    // 标记已完成（结束上一次播放）
-    this.isComplete = true;
+    this.path = path;
 
-    return new Promise((resolve) => {
-      let i = 0; // 线
-      let j = 0; // 点
+    // 初始化
+    this.row = 0;
+    this.column = 0;
+    this.stop = false;
+    this.isComplete = false;
 
-      const run = () => {
-        // 结束绘制（下一次播放的时候要结束上一次播放）
-        if (this.isComplete) {
-          return;
-        }
+    const { pos, color, width } = path[0];
+    this.start(pos[0], color, width);
 
-        // 暂停（原地死循环，便于继续播放）
-        if (!this.isPlay) {
-          requestAnimationFrame(run);
-          return;
-        }
+    this.run(completed);
+    if (completed) {
+      this.completed = completed;
+    }
+  }
 
-        if (j < path[i].pos.length) {
-          // 绘制第 n 条轨迹
-          this.drawLine(path[i].pos[j++]);
-          requestAnimationFrame(run);
-        } else {
-          // 一条轨迹制完成
-          if (++i < path.length) {
-            // 初始化下一条轨迹
-            j = 0;
-            const { pos, color, width } = path[i];
-            this.start(pos[0], color, width);
+  private completed() {}
 
-            // 延时一会儿开始绘制下一条轨迹
-            setTimeout(() => {
-              // this.drawLine(pos[j++]);
-              requestAnimationFrame(run);
-            }, 240);
-          } else {
-            // 结束
-            this.isComplete = true;
-            resolve();
-          }
-        }
-      };
+  private run(completed = this.completed) {
+    // 结束绘制（下一次播放的时候要结束上一次播放）
+    if (this.stop) {
+      return;
+    }
 
-      setTimeout(() => {
-        // 初始化第一条轨迹
-        this.isPlay = true;
-        this.isComplete = false;
-
-        const { pos, color, width } = path[0];
+    if (this.column < this.path[this.row].pos.length) {
+      // 绘制第 n 条轨迹
+      this.drawLine(this.path[this.row].pos[this.column++]);
+      requestAnimationFrame(() => this.run());
+    } else {
+      // 一条轨迹制完成
+      if (++this.row < this.path.length) {
+        // 初始化下一条轨迹
+        this.column = 0;
+        const { pos, color, width } = this.path[this.row];
         this.start(pos[0], color, width);
 
-        run();
-      }, 100);
-    });
+        // 延时一会儿开始绘制下一条轨迹
+        setTimeout(() => {
+          requestAnimationFrame(() => this.run());
+        }, 240);
+      } else {
+        // 结束
+        this.isComplete = true;
+        completed();
+      }
+    }
+  }
+
+  pause() {
+    this.stop = true;
+  }
+
+  play(completed?: () => void) {
+    this.stop = false;
+    this.run(completed);
   }
 }
 

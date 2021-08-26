@@ -38,7 +38,7 @@ const Canvas = () => {
 
   useLayoutEffect(() => {
     if (state.previewMode) {
-      state.path.length && startPlay()?.then(() => {
+      state.path.length && startPlay(() => {
         dispatch?.({ type: 'setPlay', payload: false });
         dispatch?.({ type: 'setShowPreviewCover', payload: true });
       });
@@ -51,7 +51,7 @@ const Canvas = () => {
 
   useLayoutEffect(() => {
     if (state.preview) {
-      state.path.length && startPlay()?.then(() => {
+      state.path.length && startPlay(() => {
         dispatch?.({ type: 'setPreview', payload: false });
       });
     }
@@ -61,23 +61,23 @@ const Canvas = () => {
     if (state.previewMode) {
       if (state.play && state.path.length) {
         // 如果播放完成，重新开始播放
-        if (paintRef.current!.isComplete) {
-          startPlay()?.then(() => {
+        if (paintRef.current?.isComplete) {
+          startPlay(() => {
             dispatch?.({ type: 'setPlay', payload: false });
             dispatch?.({ type: 'setShowPreviewCover', payload: true });
           });
         } else {
           // 播放未完成，继续播放
-          paintRef.current!.isPlay = true;
+          paintRef.current?.play();
         }
       }
     }
   }, [state.play]);
 
-  const startPlay = () => {
+  const startPlay = (completed?: () => void) => {
     paintRef.current?.clear();
     paintRef.current?.setBackground(state.backgroundColor);
-    return paintRef.current?.playPath(state.path);
+    return paintRef.current?.playPath(state.path, completed);
   };
 
   const { dot, status } = useTouchMove(canvasRef, !state.previewMode && !state.preview);
@@ -104,7 +104,7 @@ const Canvas = () => {
   const handlePause = () => {
     if (state.previewMode) {
       // 暂停播放
-      paintRef.current!.isPlay = false;
+      paintRef.current?.pause();
       dispatch?.({ type: 'setPlay', payload: false});
       dispatch?.({ type: 'setShowPreviewCover', payload: true });
     }
