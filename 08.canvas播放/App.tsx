@@ -6,8 +6,8 @@ import ToolBar from './components/ToolBar';
 import PwdDialog from './components/PwdDialog';
 import PreviewCover from './components/PreviewCover';
 import { initState, reducer, StateContext } from './state';
-import { fetchPath, addPath } from './api';
-import { pathFallback } from './util';
+import { fetchPath, addPath } from './commons/api';
+import { pathFallback } from './commons/util';
 
 
 const App = () => {

@@ -48,11 +48,21 @@ export class Paint {
     return this.ctx.fillStyle as string;
   }
 
+  /**
+   * 绘制轨迹
+   * @param param 坐标点
+   */
   drawLine({ x, y }: Dot) {
     this.ctx.lineTo(x, y);
     this.ctx.stroke();
   }
 
+  /**
+   * 开始绘制轨迹
+   * @param dot 坐标点
+   * @param color 轨迹颜色
+   * @param width 轨迹宽度
+   */
   start({ x, y }: Dot, color = this.defaultColor, width = this.defaultWidth) {
     this.ctx.beginPath();
     this.ctx.moveTo(x, y);
@@ -60,17 +70,29 @@ export class Paint {
     this.width = width;
   }
 
+  /**
+   * 设置背景
+   * @param color 背景颜色
+   */
   setBackground(color?: string) {
     this.ctx.fillStyle = color || '#ffffff';
     const { width, height } = this.ctx.canvas;
     this.ctx.fillRect(-width / 2, -height / 2, width, height);
   }
 
+  /**
+   * 清空画布
+   */
   clear() {
     const { width, height } = this.ctx.canvas;
     this.ctx.clearRect(-width / 2, -height / 2, width, height);
   }
 
+  /**
+   * 绘制路径
+   * @param path 路径
+   * @returns
+   */
   drawPath(path: Path[]) {
     console.log('绘制轨迹', path);
     if (!path.length) return;
@@ -141,10 +163,17 @@ export class Paint {
     }
   }
 
+  /**
+   * 暂停播放
+   */
   pause() {
     this.stop = true;
   }
 
+  /**
+   * 继续播放
+   * @param completed 完成回调
+   */
   play(completed?: () => void) {
     this.stop = false;
     this.run(completed);

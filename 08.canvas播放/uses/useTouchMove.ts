@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from 'react';
-import { getRelativeDot } from '../util';
+import { getRelativeDot } from '../commons/util';
 
 interface Dot {
   x: number;

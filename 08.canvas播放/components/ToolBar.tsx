@@ -2,7 +2,7 @@ import React, { useContext, MouseEventHandler, FormEventHandler } from 'react';
 import { Toast } from '@moohng/tui';
 import * as dan from '@moohng/dan';
 import { StateContext } from '../state';
-import { download } from '../util';
+import { download } from '../commons/util';
 
 const colorList = ['#ffffff', '#000000', '#FF3333', '#0066FF', '#FFFF33', '#33CC66'];
 

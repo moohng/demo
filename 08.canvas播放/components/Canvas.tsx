@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useLayoutEffect, useContext } from 'react';
 import { StateContext } from '../state';
-import { Path, createPaint, Paint } from '../Paint';
+import { Path, createPaint, Paint } from '../commons/Paint';
 import { useTouchMove } from '../uses';
 
 let currentLine: Path;
