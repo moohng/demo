@@ -122,7 +122,7 @@ const ToolBar = () => {
           widthList.map(({ value, width }, index) => (
             <li className="button" key={index}>
               <input type="radio" name="width" value={value} checked={value === state.width} readOnly />
-              <i className="icon" style={{ width: `${width}px`, height: `${width}px`, }}></i>
+              <i className="icon" style={{ width: `${width}px`, height: `${width}px`, color: state.color }}></i>
             </li>
           ))
         }
