@@ -98,7 +98,7 @@ const Canvas = () => {
       const currentPath = [...state.path, currentLine];
       dispatch?.({ type: 'setPath', payload: currentPath });
     }
-  }, [status]);
+  }, [dot, status]);
 
   const handlePause = () => {
     if (state.previewMode) {
