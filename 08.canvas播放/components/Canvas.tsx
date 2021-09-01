@@ -95,11 +95,10 @@ const Canvas = () => {
       paintRef.current?.drawLine(dot);
       currentLine.pos.push(dot);
     } else if (status === 'up') {
-      paintRef.current?.drawLine(dot);
       const currentPath = [...state.path, currentLine];
       dispatch?.({ type: 'setPath', payload: currentPath });
     }
-  }, [dot]);
+  }, [status]);
 
   const handlePause = () => {
     if (state.previewMode) {
