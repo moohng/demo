@@ -94,11 +94,15 @@ const Canvas = () => {
     } else if (status === 'move') {
       paintRef.current?.drawLine(dot);
       currentLine.pos.push(dot);
-    } else if (status === 'up') {
+    }
+  }, [dot]);
+
+  useLayoutEffect(() => {
+    if (status === 'up') {
       const currentPath = [...state.path, currentLine];
       dispatch?.({ type: 'setPath', payload: currentPath });
     }
-  }, [dot, status]);
+  }, [status]);
 
   const handlePause = () => {
     if (state.previewMode) {
