@@ -61,12 +61,10 @@ export function useTouchMove(canvasRef: React.RefObject<HTMLCanvasElement>, enab
 
   /** 结束 */
   useLayoutEffect(() => {
-    const handler = (event: MouseEvent | TouchEvent) => {
+    const handler = () => {
       if (!enabled || !painting) return;
       painting = false;
       setStatus('up');
-      const dot = getRelativeDot(getDot(event), canvasRef.current!);;
-      setDot(dot);
     };
 
     canvasRef.current!.addEventListener('touchend', handler, false);
