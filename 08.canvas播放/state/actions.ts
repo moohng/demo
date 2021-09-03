@@ -1,74 +1,81 @@
 import { State } from './index';
+import { TypeKeys } from './types';
 
-export type ActionType = 'setPath' | 'setPlay' | 'setShowPreviewCover' | 'setColor' | 'setBackgroundColor' | 'setWidth' | 'setShowPwdDialog' | 'setPreviewMode' | 'setPreview' | 'setSave' | 'setCode';
+type ActionType = {
+  [key in TypeKeys]: (state: State, payload: any) => State
+};
 
-export const actions: {
-  [key in ActionType]: (state: State, payload: any) => State;
-} = {
-  setPath (state, path) {
+export const actions: ActionType = {
+  [TypeKeys.SET_PATH] (state, path) {
     return {
       ...state,
       path,
     };
   },
-  setPlay (state, play) {
+  [TypeKeys.SET_PLAY] (state, play) {
     return {
       ...state,
       play,
     };
   },
-  setShowPreviewCover (state, showPreviewCover) {
+  [TypeKeys.SET_SHOW_PREVIEW_COVER] (state, showPreviewCover) {
     return {
       ...state,
       showPreviewCover,
     };
   },
-  setColor (state, color) {
+  [TypeKeys.SET_COLOR] (state, color) {
     return {
       ...state,
       color,
     };
   },
-  setBackgroundColor(state, backgroundColor) {
+  [TypeKeys.SET_BACKGROUND_COLOR](state, backgroundColor) {
     return {
       ...state,
       backgroundColor,
     };
   },
-  setWidth (state, width) {
+  [TypeKeys.SET_WIDTH] (state, width) {
     return {
       ...state,
       width,
     };
   },
-  setShowPwdDialog (state, showPwdDialog) {
+  [TypeKeys.SET_SHOW_PWD_DIALOG] (state, showPwdDialog) {
     return {
       ...state,
       showPwdDialog,
     };
   },
-  setPreviewMode (state, previewMode) {
+  [TypeKeys.SET_PREVIEW_MODE] (state, previewMode) {
     return {
       ...state,
       previewMode,
     };
   },
-  setPreview (state, preview) {
+  [TypeKeys.SET_PREVIEW] (state, preview) {
     return {
       ...state,
       preview,
     };
   },
-  setSave (state, isSave) {
+  [TypeKeys.SET_SAVE] (state, isSave) {
     return {
       ...state,
       isSave,
     };
   },
-  setCode (state, code) {
+  [TypeKeys.SET_CODE] (state, code) {
     return {
       ...state,
       code,
     };
+  },
+  [TypeKeys.SET_ENV] (state, env) {
+    return {
+      ...state,
+      env,
+    }
   },
 };

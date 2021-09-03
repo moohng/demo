@@ -142,7 +142,7 @@ export class Paint {
     if (this.column < this.path[this.row].pos.length) {
       // 绘制第 n 条轨迹
       this.drawLine(this.path[this.row].pos[this.column++]);
-      requestAnimationFrame(() => this.run());
+      setTimeout(() => this.run(), 16.7);
     } else {
       // 一条轨迹制完成
       if (++this.row < this.path.length) {
@@ -153,7 +153,7 @@ export class Paint {
 
         // 延时一会儿开始绘制下一条轨迹
         setTimeout(() => {
-          requestAnimationFrame(() => this.run());
+          setTimeout(() => this.run(), 16.7);
         }, 240);
       } else {
         // 结束

@@ -3,6 +3,8 @@ import { Toast } from '@moohng/tui';
 import * as dan from '@moohng/dan';
 import { StateContext } from '../state';
 import { download } from '../commons/util';
+import { TypeKeys } from '../state/types';
+// import wx from 'weixin-js-sdk';
 
 const colorList = ['#ffffff', '#000000', '#FF3333', '#0066FF', '#FFFF33', '#33CC66'];
 
@@ -22,25 +24,25 @@ const ToolBar = () => {
   const handleColorSelect: MouseEventHandler = (e) => {
     const target = e.target as HTMLInputElement;
     if (target.checked) {
-      dispatch?.({ type: 'setColor', payload: target.value });
+      dispatch?.({ type: TypeKeys.SET_COLOR, payload: target.value });
     }
   };
 
   const handleWidthSelect: MouseEventHandler = (e) => {
     const target = e.target as HTMLInputElement;
     if (target.checked) {
-      dispatch?.({ type: 'setWidth', payload: +(target).value });
+      dispatch?.({ type: TypeKeys.SET_WIDTH, payload: +(target).value });
     }
   };
 
   const handleColorInput: FormEventHandler = (e) => {
     const target = e.target as HTMLInputElement;
-    dispatch?.({ type: 'setColor', payload: target.value });
+    dispatch?.({ type: TypeKeys.SET_COLOR, payload: target.value });
   }
 
   const handleBgColorInput: FormEventHandler = (e) => {
     const target = e.target as HTMLInputElement;
-    dispatch?.({ type: 'setBackgroundColor', payload: target.value });
+    dispatch?.({ type: TypeKeys.SET_BACKGROUND_COLOR, payload: target.value });
   }
 
   /** 操作 */
@@ -48,12 +50,12 @@ const ToolBar = () => {
   const handleRevoke = () => {
     if (state.preview) return;
     const path = state.path.slice(0, state.path.length - 1);
-    dispatch?.({ type: 'setPath', payload: path});
+    dispatch?.({ type: TypeKeys.SET_PATH, payload: path});
   };
 
   const handleClear = () => {
     if (state.preview) return;
-    dispatch?.({ type: 'setPath', payload: [] });
+    dispatch?.({ type: TypeKeys.SET_PATH, payload: [] });
   };
 
   const handlePreview = () => {
@@ -61,14 +63,28 @@ const ToolBar = () => {
     if (!state.path.length) {
       return Toast.error('先随便画点什么吧~');
     }
-    dispatch?.({ type: 'setPreview', payload: true });
+    dispatch?.({ type: TypeKeys.SET_PREVIEW, payload: true });
   };
 
   const handleDownload = () => {
     if (!state.path.length) {
       return Toast.error('先随便画点什么吧~');
     }
-    download(document.querySelector('canvas')?.toDataURL()!);
+    if (state.env === 'miniProgram') {
+      //
+    } else if (state.env === 'h5') {
+      download(document.querySelector('canvas')?.toDataURL()!);
+    } else if (state.env === 'weixin') {
+      // wx.downloadImage({
+      //   serverId: document.querySelector('canvas')?.toDataURL()!,
+      //   success: (res: any) => {
+      //     alert(JSON.stringify(res));
+      //   },
+      //   fail: (err: any) => {
+      //     alert(JSON.stringify(err));
+      //   }
+      // });
+    }
   };
 
   const handleShare = () => {
@@ -78,9 +94,9 @@ const ToolBar = () => {
     // 生成随机口令
     const code = dan.random(8) as string;
 
-    dispatch?.({ type: 'setCode', payload: code });
-    dispatch?.({ type: 'setSave', payload: true });
-    dispatch?.({ type: 'setShowPwdDialog', payload: true });
+    dispatch?.({ type: TypeKeys.SET_CODE, payload: code });
+    dispatch?.({ type: TypeKeys.SET_SAVE, payload: true });
+    dispatch?.({ type: TypeKeys.SET_SHOW_PWD_DIALOG, payload: true });
   };
 
   return !state.previewMode ? (
@@ -90,7 +106,7 @@ const ToolBar = () => {
         <li className="button" onClick={handleRevoke}><i className="iconfont icon-revoke"></i></li>
         <li className="button" onClick={handleClear}><i className="iconfont icon-clear"></i></li>
         <li className="button" onClick={handlePreview}><i className="iconfont icon-preview"></i></li>
-        <li className="button" onClick={handleDownload}><i className="iconfont icon-download"></i></li>
+        {state.env === 'h5' && <li className="button" onClick={handleDownload}><i className="iconfont icon-download"></i></li>}
         <li className="button" onClick={handleShare}><i className="iconfont icon-share"></i></li>
       </ul>
 

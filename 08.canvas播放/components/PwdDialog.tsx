@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect, FormEvent } from 'react';
 import { Toast } from '@moohng/tui';
 import { StateContext } from '../state';
+import { TypeKeys } from '../state/types';
 
 interface Props {
   onConfirm?: (text: string) => void;
@@ -64,13 +65,13 @@ const PwdDialog = ({ onConfirm = pop, onCancel = pop }: Props) => {
       Toast.error('请输入一个口令');
       return;
     }
-    dispatch?.({ type: 'setShowPreviewCover', payload: false });
-    dispatch?.({ type: 'setShowPwdDialog', payload: false });
+    dispatch?.({ type: TypeKeys.SET_SHOW_PREVIEW_COVER, payload: false });
+    dispatch?.({ type: TypeKeys.SET_SHOW_PWD_DIALOG, payload: false });
     onConfirm(text);
   };
 
   const handleCancel = () => {
-    dispatch?.({ type: 'setShowPwdDialog', payload: false });
+    dispatch?.({ type: TypeKeys.SET_SHOW_PWD_DIALOG, payload: false });
     onCancel();
   };
 

@@ -1,6 +1,7 @@
 import { createContext } from 'react';
 import { querystring } from '@moohng/dan';
-import { actions, ActionType } from './actions';
+import { actions } from './actions';
+import { TypeKeys } from './types';
 
 export interface Dot {
   x: number;
@@ -29,11 +30,13 @@ export interface State {
 
   /** 操作 */
   preview: boolean;
+
+  env: 'h5' | 'miniProgram' | 'weixin' | '';
 }
 
-export interface Action {
-  type: ActionType;
-  payload?: any;
+export interface Action<T> {
+  type: TypeKeys;
+  payload?: T;
 }
 
 // 获取口令
@@ -55,12 +58,16 @@ export const initState: State = {
   isSave: false,
 
   preview: false,
+
+  env: '',
 };
 
-export const reducer = (state: State, action: Action) => {
+export const reducer = <T>(state: State, action: Action<T>) => {
   return actions[action.type]?.(state, action.payload);
 };
 
-export const StateContext = createContext<{ state: State, dispatch?: React.Dispatch<Action> }>({
+/** 创建全局 state context */
+export const StateContext = createContext({
   state: initState,
+  dispatch: <T>(action: Action<T>): void => {},
 });

@@ -98,3 +98,8 @@ scheduler@^0.20.2:
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
+
+weixin-js-sdk@^1.6.0:
+  version "1.6.0"
+  resolved "https://registry.nlark.com/weixin-js-sdk/download/weixin-js-sdk-1.6.0.tgz#ff50484d8118ce1208f11248cf4a1c0831577514"
+  integrity sha1-/1BITYEYzhII8RJIz0ocCDFXdRQ=

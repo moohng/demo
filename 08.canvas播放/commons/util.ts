@@ -38,3 +38,15 @@ export function getRelativeDot({ x, y }: Dot, { width, height }: HTMLCanvasEleme
     y: y - height * 0.5,
   };
 }
+
+
+export function getEnv(): string {
+  const ua = window.navigator.userAgent.toLowerCase();
+  let env = 'h5';
+  if (/miniProgram/i.test(ua)) {
+    env = 'miniProgram';
+  } else if (/MicroMessenger/i.test(ua)) {
+    env = 'weixin';
+  }
+  return env;
+}

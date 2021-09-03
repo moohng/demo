@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { StateContext } from '../state';
+import { TypeKeys } from '../state/types';
+import wx from 'weixin-js-sdk';
 
 let closeTimer: number;
 
@@ -25,20 +27,28 @@ const PreviewCover = () => {
   }, [state.showPreviewCover]);
 
   const handlePlay = () => {
-    dispatch?.({ type: 'setPlay', payload: true });
-    dispatch?.({ type: 'setShowPreviewCover', payload: false });
+    dispatch?.({ type: TypeKeys.SET_PLAY, payload: true });
+    dispatch?.({ type: TypeKeys.SET_SHOW_PREVIEW_COVER, payload: false });
   };
 
   const handlePwd = () => {
-    dispatch?.({ type: 'setSave', payload: false });
-    dispatch?.({ type: 'setShowPwdDialog', payload: true });
+    dispatch?.({ type: TypeKeys.SET_SAVE, payload: false });
+    dispatch?.({ type: TypeKeys.SET_SHOW_PWD_DIALOG, payload: true });
+  };
+
+  const handleGoPlay = () => {
+    if (state.env === 'miniProgram') {
+      wx.miniProgram.reLaunch({ url: '/pages/index/index' });
+    } else {
+      location.search = '?edit';
+    }
   };
 
   return _show ? (
     <div className="preview-cover" style={{ opacity }}>
       <i className="iconfont icon-play" onClick={handlePlay}></i>
       <div className="bottom">
-        <a className="btn" href="?edit">我也要玩~</a>
+        <a className="btn" onClick={handleGoPlay}>我也要玩~</a>
         <a className="btn" onClick={handlePwd}>输入口令</a>
       </div>
     </div>

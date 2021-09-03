@@ -2,6 +2,7 @@ import React, { useRef, useLayoutEffect, useContext } from 'react';
 import { StateContext } from '../state';
 import { Path, createPaint, Paint } from '../commons/Paint';
 import { useTouchMove } from '../uses';
+import { TypeKeys } from '../state/types';
 
 let currentLine: Path;
 
@@ -39,8 +40,8 @@ const Canvas = () => {
   useLayoutEffect(() => {
     if (state.previewMode) {
       state.path.length && startPlay(() => {
-        dispatch?.({ type: 'setPlay', payload: false });
-        dispatch?.({ type: 'setShowPreviewCover', payload: true });
+        dispatch?.({ type: TypeKeys.SET_PLAY, payload: false });
+        dispatch?.({ type: TypeKeys.SET_SHOW_PREVIEW_COVER, payload: true });
       });
     } else {
       paintRef.current?.clear();
@@ -52,7 +53,7 @@ const Canvas = () => {
   useLayoutEffect(() => {
     if (state.preview) {
       state.path.length && startPlay(() => {
-        dispatch?.({ type: 'setPreview', payload: false });
+        dispatch?.({ type: TypeKeys.SET_PREVIEW, payload: false });
       });
     }
   }, [state.preview]);
@@ -63,8 +64,8 @@ const Canvas = () => {
         // 如果播放完成，重新开始播放
         if (paintRef.current?.isComplete) {
           startPlay(() => {
-            dispatch?.({ type: 'setPlay', payload: false });
-            dispatch?.({ type: 'setShowPreviewCover', payload: true });
+            dispatch?.({ type: TypeKeys.SET_PLAY, payload: false });
+            dispatch?.({ type: TypeKeys.SET_SHOW_PREVIEW_COVER, payload: true });
           });
         } else {
           // 播放未完成，继续播放
@@ -100,7 +101,7 @@ const Canvas = () => {
   useLayoutEffect(() => {
     if (status === 'up') {
       const currentPath = [...state.path, currentLine];
-      dispatch?.({ type: 'setPath', payload: currentPath });
+      dispatch?.({ type: TypeKeys.SET_PATH, payload: currentPath });
     }
   }, [status]);
 
@@ -108,8 +109,8 @@ const Canvas = () => {
     if (state.previewMode) {
       // 暂停播放
       paintRef.current?.pause();
-      dispatch?.({ type: 'setPlay', payload: false});
-      dispatch?.({ type: 'setShowPreviewCover', payload: true });
+      dispatch?.({ type: TypeKeys.SET_PLAY, payload: false});
+      dispatch?.({ type: TypeKeys.SET_SHOW_PREVIEW_COVER, payload: true });
     }
   };
 
