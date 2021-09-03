@@ -1,3 +1,5 @@
+@import '@moohng/tui/lib/style/index.css';
+
 body {
   margin: 0;
   overflow: hidden;
