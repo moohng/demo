@@ -40,8 +40,7 @@ export interface Action<T> {
 }
 
 // 获取口令
-const { code = '秦丹', edit } = querystring(location.search);
-console.log('口令', code, edit);
+const { code = '秦丹', preview } = querystring(location.search);
 
 export const initState: State = {
   path: [],
@@ -51,7 +50,7 @@ export const initState: State = {
   play: false,
 
   code: code as string,
-  previewMode: !!code && edit === undefined,
+  previewMode: !!code && !!preview,
 
   showPreviewCover: false,
   showPwdDialog: false,

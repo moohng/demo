@@ -17,11 +17,11 @@ const App = () => {
   const [state, dispatch] = useReducer(reducer, initState);
 
   useEffect(() => {
-    if (state.previewMode) {
-      fetchData(state.code);
-    }
+    // if (state.previewMode) {
+    //   fetchData(state.code);
+    // }
 
-    // 获取当前环境
+    // // 获取当前环境
     const env = getEnv();
     dispatch({ type: TypeKeys.SET_ENV, payload: env });
   }, []);
