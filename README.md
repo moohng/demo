@@ -14,3 +14,8 @@ $ npm run dev **/*
 ```bash
 $ npm run build **/**
 ```
+
+## 参考
+
+- [Vite](https://vitejs.dev/)
+- [VitePress](https://vitepress.vuejs.org/)
