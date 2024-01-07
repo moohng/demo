@@ -4,31 +4,31 @@
 
 "@moohng/dan@^2.0.2", "@moohng/dan@^2.1.0":
   version "2.1.0"
-  resolved "https://registry.nlark.com/@moohng/dan/download/@moohng/dan-2.1.0.tgz#b2714cb91661163eb636db746307c974879bbed4"
+  resolved "https://registry.nlark.com/@moohng/dan/download/@moohng/dan-2.1.0.tgz"
   integrity sha1-snFMuRZhFj62Ntt0YwfJdIebvtQ=
 
 "@moohng/tui@^1.2.1":
   version "1.2.1"
-  resolved "https://registry.nlark.com/@moohng/tui/download/@moohng/tui-1.2.1.tgz#76a1b3758a0b7d3a5f5afab4318956ad47a2f7f6"
+  resolved "https://registry.nlark.com/@moohng/tui/download/@moohng/tui-1.2.1.tgz"
   integrity sha1-dqGzdYoLfTpfWvq0MYlWrUei9/Y=
   dependencies:
     "@moohng/dan" "^2.0.2"
 
 "@types/prop-types@*":
   version "15.7.4"
-  resolved "https://registry.nlark.com/@types/prop-types/download/@types/prop-types-15.7.4.tgz#fcf7205c25dff795ee79af1e30da2c9790808f11"
+  resolved "https://registry.nlark.com/@types/prop-types/download/@types/prop-types-15.7.4.tgz"
   integrity sha1-/PcgXCXf95Xuea8eMNosl5CAjxE=
 
 "@types/react-dom@^17.0.9":
   version "17.0.9"
-  resolved "https://registry.nlark.com/@types/react-dom/download/@types/react-dom-17.0.9.tgz#441a981da9d7be117042e1a6fd3dac4b30f55add"
+  resolved "https://registry.nlark.com/@types/react-dom/download/@types/react-dom-17.0.9.tgz"
   integrity sha1-RBqYHanXvhFwQuGm/T2sSzD1Wt0=
   dependencies:
     "@types/react" "*"
 
 "@types/react@*", "@types/react@^17.0.19":
   version "17.0.19"
-  resolved "https://registry.nlark.com/@types/react/download/@types/react-17.0.19.tgz?cache=0&sync_timestamp=1629349455820&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Freact%2Fdownload%2F%40types%2Freact-17.0.19.tgz#8f2a85e8180a43b57966b237d26a29481dacc991"
+  resolved "https://registry.nlark.com/@types/react/download/@types/react-17.0.19.tgz?cache=0&sync_timestamp=1629349455820&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Freact%2Fdownload%2F%40types%2Freact-17.0.19.tgz"
   integrity sha1-jyqF6BgKQ7V5ZrI30mopSB2syZE=
   dependencies:
     "@types/prop-types" "*"
@@ -37,55 +37,55 @@
 
 "@types/scheduler@*":
   version "0.16.2"
-  resolved "https://registry.nlark.com/@types/scheduler/download/@types/scheduler-0.16.2.tgz?cache=0&sync_timestamp=1625590049284&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fscheduler%2Fdownload%2F%40types%2Fscheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
+  resolved "https://registry.nlark.com/@types/scheduler/download/@types/scheduler-0.16.2.tgz?cache=0&sync_timestamp=1625590049284&other_urls=https%3A%2F%2Fregistry.nlark.com%2F%40types%2Fscheduler%2Fdownload%2F%40types%2Fscheduler-0.16.2.tgz"
   integrity sha1-GmL4lSVyPd4kuhsBsJK/XfitTTk=
 
 axios@^0.21.1:
   version "0.21.1"
-  resolved "https://registry.nlark.com/axios/download/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
+  resolved "https://registry.nlark.com/axios/download/axios-0.21.1.tgz"
   integrity sha1-IlY0gZYvTWvemnbVFu8OXTwJsrg=
   dependencies:
     follow-redirects "^1.10.0"
 
 csstype@^3.0.2:
   version "3.0.8"
-  resolved "https://registry.nlark.com/csstype/download/csstype-3.0.8.tgz#d2266a792729fb227cd216fb572f43728e1ad340"
+  resolved "https://registry.nlark.com/csstype/download/csstype-3.0.8.tgz"
   integrity sha1-0iZqeScp+yJ80hb7Vy9Dco4a00A=
 
 follow-redirects@^1.10.0:
   version "1.14.2"
-  resolved "https://registry.nlark.com/follow-redirects/download/follow-redirects-1.14.2.tgz?cache=0&sync_timestamp=1629288519293&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ffollow-redirects%2Fdownload%2Ffollow-redirects-1.14.2.tgz#cecb825047c00f5e66b142f90fed4f515dec789b"
+  resolved "https://registry.nlark.com/follow-redirects/download/follow-redirects-1.14.2.tgz?cache=0&sync_timestamp=1629288519293&other_urls=https%3A%2F%2Fregistry.nlark.com%2Ffollow-redirects%2Fdownload%2Ffollow-redirects-1.14.2.tgz"
   integrity sha1-zsuCUEfAD15msUL5D+1PUV3seJs=
 
 "js-tokens@^3.0.0 || ^4.0.0":
   version "4.0.0"
-  resolved "https://registry.nlark.com/js-tokens/download/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
+  resolved "https://registry.nlark.com/js-tokens/download/js-tokens-4.0.0.tgz"
   integrity sha1-GSA/tZmR35jjoocFDUZHzerzJJk=
 
 loose-envify@^1.1.0:
   version "1.4.0"
-  resolved "https://registry.nlark.com/loose-envify/download/loose-envify-1.4.0.tgz#71ee51fa7be4caec1a63839f7e682d8132d30caf"
+  resolved "https://registry.nlark.com/loose-envify/download/loose-envify-1.4.0.tgz"
   integrity sha1-ce5R+nvkyuwaY4OffmgtgTLTDK8=
   dependencies:
     js-tokens "^3.0.0 || ^4.0.0"
 
 object-assign@^4.1.1:
   version "4.1.1"
-  resolved "https://registry.nlark.com/object-assign/download/object-assign-4.1.1.tgz#2109adc7965887cfc05cbbd442cac8bfbb360863"
+  resolved "https://registry.nlark.com/object-assign/download/object-assign-4.1.1.tgz"
   integrity sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
 
 react-dom@^17.0.2:
   version "17.0.2"
-  resolved "https://registry.nlark.com/react-dom/download/react-dom-17.0.2.tgz?cache=0&sync_timestamp=1629390744304&other_urls=https%3A%2F%2Fregistry.nlark.com%2Freact-dom%2Fdownload%2Freact-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
+  resolved "https://registry.nlark.com/react-dom/download/react-dom-17.0.2.tgz?cache=0&sync_timestamp=1629390744304&other_urls=https%3A%2F%2Fregistry.nlark.com%2Freact-dom%2Fdownload%2Freact-dom-17.0.2.tgz"
   integrity sha1-7P+2hF462Nv83EmPDQqTlzZQLCM=
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     scheduler "^0.20.2"
 
-react@^17.0.2:
+react@^17.0.2, react@17.0.2:
   version "17.0.2"
-  resolved "https://registry.nlark.com/react/download/react-17.0.2.tgz?cache=0&sync_timestamp=1629390767066&other_urls=https%3A%2F%2Fregistry.nlark.com%2Freact%2Fdownload%2Freact-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
+  resolved "https://registry.nlark.com/react/download/react-17.0.2.tgz?cache=0&sync_timestamp=1629390767066&other_urls=https%3A%2F%2Fregistry.nlark.com%2Freact%2Fdownload%2Freact-17.0.2.tgz"
   integrity sha1-0LXMUW0p6z7uOD91tihkz7aAADc=
   dependencies:
     loose-envify "^1.1.0"
@@ -93,7 +93,7 @@ react@^17.0.2:
 
 scheduler@^0.20.2:
   version "0.20.2"
-  resolved "https://registry.nlark.com/scheduler/download/scheduler-0.20.2.tgz#4baee39436e34aa93b4874bddcbf0fe8b8b50e91"
+  resolved "https://registry.nlark.com/scheduler/download/scheduler-0.20.2.tgz"
   integrity sha1-S67jlDbjSqk7SHS93L8P6Li1DpE=
   dependencies:
     loose-envify "^1.1.0"
@@ -101,5 +101,5 @@ scheduler@^0.20.2:
 
 weixin-js-sdk@^1.6.0:
   version "1.6.0"
-  resolved "https://registry.nlark.com/weixin-js-sdk/download/weixin-js-sdk-1.6.0.tgz#ff50484d8118ce1208f11248cf4a1c0831577514"
+  resolved "https://registry.nlark.com/weixin-js-sdk/download/weixin-js-sdk-1.6.0.tgz"
   integrity sha1-/1BITYEYzhII8RJIz0ocCDFXdRQ=
