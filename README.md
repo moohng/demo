@@ -1,5 +1,7 @@
 # 小项目集合
 
+预览地址：[https://moohng.com/demo/](https://moohng.com/demo/)
+
 ## 本地运行
 
 ```bash
@@ -14,3 +16,8 @@ $ npm run dev **/*
 ```bash
 $ npm run build **/**
 ```
+
+## 参考
+
+- [Vite](https://vitejs.dev/)
+- [VitePress](https://vitepress.vuejs.org/)
