@@ -3,7 +3,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   base: './',
   build: {
-    outDir: '../docs/star-line',
+    outDir: '../dist/star-line',
     emptyOutDir: true,
   }
 });

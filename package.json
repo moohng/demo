@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "serve": "vite preview",
-    "build": "vite build",
+    "build": "vite build && vite build 05.五子棋 && vite build 06.星星连线 && vite build 07.dom操作 && vite build 08.canvas播放",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
