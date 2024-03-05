@@ -1,6 +1,6 @@
 # 小项目集合
 
-预览地址：[https://moohng.com/demo/](https://moohng.com/demo/)
+预览地址：[https://moohng.com/demo/](https://demo.moohng.com)
 
 ## 本地运行
 
