@@ -1,12 +1,12 @@
 {
-  "name": "draw-paly",
+  "name": "绘图与回放",
   "version": "1.0.0",
-  "description": "",
-  "main": "vite.config.js",
+  "description": "一个canvas绘图与轨迹回放的示例",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "颜漠",
   "license": "ISC",
   "dependencies": {
     "@moohng/dan": "^2.1.0",
