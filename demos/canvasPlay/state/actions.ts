@@ -1,7 +1,7 @@
 import { State } from './index';
 import { TypeKeys } from './types';
 
-type ActionType = {
+export type ActionType = {
   [key in TypeKeys]: (state: State, payload: any) => State
 };
 

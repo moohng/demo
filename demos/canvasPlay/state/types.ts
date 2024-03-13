@@ -1,4 +1,4 @@
-export enum TypeKeys {
+export const enum TypeKeys {
   SET_PATH = 'SET_PATH',
   SET_PLAY = 'SET_PLAY',
   SET_COLOR = 'SET_COLOR',

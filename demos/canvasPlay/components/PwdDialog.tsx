@@ -10,7 +10,7 @@ interface Props {
 
 const pop = () => {};
 
-let closeTimer: number;
+let closeTimer: NodeJS.Timeout;
 
 const PwdDialog = ({ onConfirm = pop, onCancel = pop }: Props) => {
 
