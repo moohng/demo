@@ -17,9 +17,9 @@ const App = () => {
   const [state, dispatch] = useReducer(reducer, initState);
 
   useEffect(() => {
-    // if (state.previewMode) {
-    //   fetchData(state.code);
-    // }
+    if (state.previewMode) {
+      fetchData(state.code);
+    }
 
     // // 获取当前环境
     const env = getEnv();
@@ -28,7 +28,7 @@ const App = () => {
 
   const fetchData = async (parmCode: string) => {
     const data = await fetchPath({ code: parmCode });
-    if (!data.length) {
+    if (!data) {
       Dialog({
         title: '提示',
         content: '链接已失效~',
@@ -44,7 +44,7 @@ const App = () => {
       });
       return;
     }
-    const { path: _path, background = '#ffffff', title, code } = data[0];
+    const { path: _path, background = '#ffffff', title, code } = data;
     if (title) {
       document.title = title;
     }

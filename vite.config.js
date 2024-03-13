@@ -22,16 +22,16 @@ export default defineConfig(async () => {
     const packagePath = resolve(__dirname, 'demos', dir, 'package.json');
     const routePath = join('/demos', dir, '/');
     if (fs.existsSync(packagePath)) {
-      const { name, description, author } = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
+      const { title, description, author } = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
       return {
-        name: name || dir,
+        title: title || dir,
         path: routePath,
         description,
         author,
       };
     }
     return {
-      name: dir,
+      title: dir,
       path: routePath,
     };
   });
@@ -53,6 +53,12 @@ export default defineConfig(async () => {
     server: {
       host: '0.0.0.0',
       port: 8824,
+      // proxy: {
+      //   '/1.1': {
+      //     target: 'https://budb3sbl.api.lncldglobal.com',
+      //     changeOrigin: true,
+      //   },
+      // },
     },
     define: {
       __DEMO_LIST__: JSON.stringify(demoList),

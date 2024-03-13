@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="item in demoList" :key="item.id" :class="item.id">
-      <a :href="item.path">{{ item.name }}</a>
+      <a :href="item.path">{{ item.title }}</a>
     </div>
   </div>
 </template>

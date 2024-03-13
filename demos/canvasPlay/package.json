@@ -1,6 +1,7 @@
 {
-  "name": "绘图与回放",
+  "name": "canvas-play",
   "version": "1.0.0",
+  "title": "绘图与回放",
   "description": "一个canvas绘图与轨迹回放的示例",
   "main": "index.js",
   "scripts": {
@@ -14,7 +15,8 @@
     "axios": "^0.21.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "weixin-js-sdk": "^1.6.0"
+    "weixin-js-sdk": "^1.6.0",
+    "leancloud-storage": "^4.15.2"
   },
   "devDependencies": {
     "@types/react": "^17.0.19",

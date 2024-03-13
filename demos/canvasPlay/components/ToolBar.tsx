@@ -107,7 +107,7 @@ const ToolBar = () => {
         <li className="button" onClick={handleClear}><i className="iconfont icon-clear"></i></li>
         <li className="button" onClick={handlePreview}><i className="iconfont icon-preview"></i></li>
         {state.env === 'h5' && <li className="button" onClick={handleDownload}><i className="iconfont icon-download"></i></li>}
-        {/* <li className="button" onClick={handleShare}><i className="iconfont icon-share"></i></li> */}
+        <li className="button" onClick={handleShare}><i className="iconfont icon-share"></i></li>
       </ul>
 
       {/* <!-- 颜色选择 --> */}

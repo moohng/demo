@@ -1,6 +1,6 @@
 import wx from 'weixin-js-sdk';
 import { random } from '@moohng/dan';
-import { fetchWXSDKConfig } from './api';
+// import { fetchWXSDKConfig } from './api';
 
 
 /**
@@ -11,13 +11,13 @@ export async function init() {
   const timestamp = '' + Date.now();
   const url = location.href;
 
-  const data = await fetchWXSDKConfig({ url, nonceStr, timestamp });
+  // const data = await fetchWXSDKConfig({ url, nonceStr, timestamp });
 
-  console.log(data);
+  // console.log(data);
 
   wx.config({
-    ...data,
-    timestamp: +(data as any).timestamp,
+    // ...data,
+    // timestamp: +(data as any).timestamp,
     appId: 'wx79fd704b15fe3852',
     jsApiList: ['downloadImage', 'chooseImage'],
   });
