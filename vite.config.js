@@ -57,5 +57,10 @@ export default defineConfig(async () => {
     define: {
       __DEMO_LIST__: JSON.stringify(demoList),
     },
+    resolve: {
+      alias: {
+        '@': resolve(__dirname, './src'),
+      },
+    },
   };
 });

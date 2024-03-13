@@ -7,7 +7,8 @@
 </template>
 
 <script lang="ts" setup>
-const demoList = __DEMO_LIST__;
+import { ref } from 'vue';
+const demoList = ref(__DEMO_LIST__ as unknown as any[]);
 </script>
 
 <style lang="scss" scoped>
