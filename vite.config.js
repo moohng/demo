@@ -9,23 +9,21 @@ export default defineConfig(async () => {
 
   console.log('===== demos dirs =====', dirs);
 
-  // 打包入口
-  const demosInputs = dirs.reduce((inputs, dir) => {
-    const dirPath = resolve(__dirname, 'demos', dir, 'index.html');
-    return { ...inputs, [dir]: dirPath };
-  }, {});
-
-  console.log('===== demosInputs =====', demosInputs);
-
   // 生成示例数据
   const demoList = dirs.map(dir => {
     const packagePath = resolve(__dirname, 'demos', dir, 'package.json');
+    const indexPath = resolve(__dirname, 'demos', dir, 'index.html');
     const routePath = join('/demos', dir, '/');
+    if (!fs.existsSync(indexPath)) {
+      return;
+    }
     if (fs.existsSync(packagePath)) {
-      const { title, description, author } = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
+      const { title, name, description, author } = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
       return {
-        title: title || dir,
+        title: title || name || dir,
         path: routePath,
+        key: dir,
+        indexPath,
         description,
         author,
       };
@@ -33,10 +31,19 @@ export default defineConfig(async () => {
     return {
       title: dir,
       path: routePath,
+      key: dir,
+      indexPath,
     };
-  });
+  }).filter(Boolean);
 
   console.log('===== demoList =====', demoList);
+
+  // 打包入口
+  const demosInputs = demoList.reduce((inputs, { key, indexPath }) => {
+    return { ...inputs, [key]: indexPath };
+  }, {});
+
+  console.log('===== demosInputs =====', demosInputs);
 
   return {
     appType: 'mpa',
