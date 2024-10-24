@@ -2,11 +2,11 @@
   <div class="layout">
     <aside class="aside">
       <header class="header">
-        <h1 @click="handleClick('/home')">DEMO 大杂烩</h1>
+        <h1 @click="handleClick('/demos/home/')">DEMO 大杂烩</h1>
       </header>
       <ul class="nav">
         <li :class="['nav-item', { active: currentDemo === item.path }]" v-for="item in demoList" :key="item.key" @click="handleClick(item.path)">
-          <div class="title" :href="item.path">{{ item.title }}</div>
+          <div class="title" :title="item.title">{{ item.title }}</div>
           <!-- <div class="desc">{{ item.description }}</div> -->
         </li>
       </ul>
@@ -21,7 +21,7 @@
 import { ref } from 'vue';
 const demoList = ref(__DEMO_LIST__ as unknown as any[]);
 
-const currentDemo = ref('');
+const currentDemo = ref('/demos/home/');
 
 const handleClick = (path: string) => {
   currentDemo.value = path;
@@ -71,6 +71,7 @@ const handleClick = (path: string) => {
   list-style: none;
   margin: 0;
   padding: 16px;
+  overflow: auto;
 }
 
 .nav-item {
@@ -89,6 +90,9 @@ const handleClick = (path: string) => {
   
   .title {
     font-size: 1em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .desc {

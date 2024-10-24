@@ -2,47 +2,21 @@ import { resolve, join } from 'path';
 import fs from 'fs';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import rootPackage from './package.json';
 
 export default defineConfig(async () => {
   // 获取所有 demo 示例
-  const dirs = fs.readdirSync(resolve(__dirname, 'demos'), { encoding: 'utf-8' });
-
+  const dirs = fs.readdirSync(resolve(__dirname, 'demos'), { encoding: 'utf-8' }).filter(dir => fs.existsSync(resolve(__dirname, 'demos', dir, 'index.html')));
   console.log('===== demos dirs =====', dirs);
 
   // 生成示例数据
-  const demoList = dirs.map(dir => {
-    const packagePath = resolve(__dirname, 'demos', dir, 'package.json');
-    const indexPath = resolve(__dirname, 'demos', dir, 'index.html');
-    const routePath = join('/demos', dir, '/');
-    if (!fs.existsSync(indexPath)) {
-      return;
-    }
-    if (fs.existsSync(packagePath)) {
-      const { title, name, description, author } = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
-      return {
-        title: title || name || dir,
-        path: routePath,
-        key: dir,
-        indexPath,
-        description,
-        author,
-      };
-    }
-    return {
-      title: dir,
-      path: routePath,
-      key: dir,
-      indexPath,
-    };
-  }).filter(Boolean);
-
+  const demoList = getDemoList(dirs);
   console.log('===== demoList =====', demoList);
 
   // 打包入口
-  const demosInputs = demoList.reduce((inputs, { key, indexPath }) => {
-    return { ...inputs, [key]: indexPath };
+  const demosInputs = dirs.reduce((inputs, dir) => {
+    return { ...inputs, [dir]: resolve(__dirname, 'demos', dir, 'index.html') };
   }, {});
-
   console.log('===== demosInputs =====', demosInputs);
 
   return {
@@ -77,3 +51,36 @@ export default defineConfig(async () => {
     },
   };
 });
+
+function getDemoList(dirs) {
+  // 内部 demos
+  const demos = dirs.map(dir => {
+    const packagePath = resolve(__dirname, 'demos', dir, 'package.json');
+    const indexPath = resolve(__dirname, 'demos', dir, 'index.html');
+    const routePath = join('/demos', dir, '/');
+
+    if (fs.existsSync(packagePath)) {
+      const { title, name, description, author } = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
+      return {
+        title: title || name || dir,
+        path: routePath,
+        key: dir,
+        indexPath,
+        description,
+        author,
+      };
+    }
+    return {
+      title: dir,
+      path: routePath,
+      key: dir,
+      indexPath,
+    };
+  });
+
+  // 外部 demos
+  let outerDemos = rootPackage.demos || [];
+  outerDemos = outerDemos.map((demo, index) => ({ ...demo, key: `outer-demo-${index}` }));
+
+  return [].concat(demos, outerDemos);
+}

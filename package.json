@@ -24,5 +24,13 @@
   "dependencies": {
     "@vercel/analytics": "^1.2.2",
     "vue": "^3.4.21"
-  }
+  },
+  "demos": [
+    {
+      "title": "百度",
+      "description": "百度搜索",
+      "path": "https://www.baidu.com",
+      "author": "百度"
+    }
+  ]
 }
