@@ -5,10 +5,10 @@ import vue from '@vitejs/plugin-vue';
 import rootPackage from './package.json';
 
 export default defineConfig(async () => {
-  // 获取所有 demo 示例
+  // 获取所有 demo 示例，忽略下划线开头的目录
   const dirs = fs
     .readdirSync(resolve(__dirname, 'demos'), { encoding: 'utf-8' })
-    .filter(dir => !dir.startsWith('_') && dir !== 'home' && fs.existsSync(resolve(__dirname, 'demos', dir, 'index.html')));
+    .filter(dir => !dir.startsWith('_') && fs.existsSync(resolve(__dirname, 'demos', dir, 'index.html')));
   console.log('===== demos dirs =====', dirs);
 
   // 生成示例数据
@@ -55,8 +55,8 @@ export default defineConfig(async () => {
 });
 
 function getDemoList(dirs) {
-  // 内部 demos
-  const demos = dirs.map(dir => {
+  // 内部 demos，忽略 home
+  const demos = dirs.filter(dir => dir !== 'home').map(dir => {
     const packagePath = resolve(__dirname, 'demos', dir, 'package.json');
     const indexPath = resolve(__dirname, 'demos', dir, 'index.html');
     const routePath = join('/demos', dir, '/');
