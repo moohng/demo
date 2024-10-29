@@ -6,7 +6,9 @@ import rootPackage from './package.json';
 
 export default defineConfig(async () => {
   // 获取所有 demo 示例
-  const dirs = fs.readdirSync(resolve(__dirname, 'demos'), { encoding: 'utf-8' }).filter(dir => fs.existsSync(resolve(__dirname, 'demos', dir, 'index.html')));
+  const dirs = fs
+    .readdirSync(resolve(__dirname, 'demos'), { encoding: 'utf-8' })
+    .filter(dir => !dir.startsWith('_') && dir !== 'home' && fs.existsSync(resolve(__dirname, 'demos', dir, 'index.html')));
   console.log('===== demos dirs =====', dirs);
 
   // 生成示例数据
