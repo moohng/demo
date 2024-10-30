@@ -10,9 +10,7 @@
 <body>
   <div class="layout">
     <main>
-      <!-- <div class="icon-wrap">
-        <i class="css-icon icon-arrow-up"></i>
-      </div> -->
+      <div class="icon-container"></div>
     </main>
     <aside>
       <div class="icon-info"></div>
@@ -38,7 +36,7 @@
       const iconElement = document.createElement('i');
       iconElement.classList.add('css-icon', icon);
       const iconWrap = document.createElement('div');
-      iconWrap.classList.add('icon-wrap');
+      iconWrap.classList.add('icon-item');
       iconWrap.setAttribute('data-name', icon);
       if (index === 0) {
         iconWrap.classList.add('active');
@@ -47,14 +45,14 @@
       iconFragment.appendChild(iconWrap);
     });
 
-    const main = document.querySelector('main');
-    main.appendChild(iconFragment);
+    const iconContainer = document.querySelector('.icon-container');
+    iconContainer.appendChild(iconFragment);
 
-    let lastActiveIcon = main.children[0];
+    let lastActiveIcon = iconContainer.children[0];
     updateSidebar(lastActiveIcon);
 
-    main.addEventListener('click', e => {
-      if (e.target.classList.contains('icon-wrap')) {
+    iconContainer.addEventListener('click', e => {
+      if (e.target.classList.contains('icon-item')) {
         if (lastActiveIcon) {
           lastActiveIcon.classList.remove('active');
         }
@@ -108,7 +106,6 @@
         }
         for (let j = 0; j < rules.length; j++) {
           const rule = rules[j];
-          console.log(rule.selectorText);
           if (rule.selectorText && rule.selectorText.match(iconName)) {
             iconCssText.push(rule.cssText);
           }
