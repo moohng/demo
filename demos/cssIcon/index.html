@@ -21,15 +21,12 @@
   </div>
 
   <script>
-    // 这里添加css图标的class名
-    const cssIcons = [
-      'icon-arrow-up', 'icon-arrow-down', 'icon-arrow-left', 'icon-arrow-right',
-      'icon-upward', 'icon-downward', 'icon-back', 'icon-forward',
-      'icon-more-horiz', 'icon-more-vert',
-      'icon-plus', 'icon-minus', 'icon-close', 'icon-check',
-      'icon-refresh', 'icon-search', 'icon-delete', 'icon-download', 'icon-upload', 'icon-copy',
-      'icon-person', 'icon-photo', 'icon-location',
-    ];
+    // 自动解析css文件，获取图标class名
+    const iconStyleSheet = [...document.styleSheets].find(styleSheet => styleSheet.href.endsWith('icon.css'));
+    const iconClasses = [...(iconStyleSheet.cssRules || iconStyleSheet.rules)]
+      .filter(rule => rule.selectorText && rule.selectorText.startsWith('.icon-'))
+      .map(rule => rule.selectorText.slice(1).replace(/::.*/g, ''))
+    const cssIcons = [...new Set(iconClasses)];
 
     const iconFragment = document.createDocumentFragment();
     cssIcons.forEach((icon, index) => {
@@ -94,21 +91,12 @@
     }
 
     function getIconStyle(iconName) {
-      const styleSheetList = document.styleSheets;
       const iconCssText = [];
-      for (let i = 0; i < styleSheetList.length; i++) {
-        const styleSheet = styleSheetList[i];
-        let rules;
-        try {
-          rules = styleSheet.rules || styleSheet.cssRules;
-        } catch (e) {
-          continue;
-        }
-        for (let j = 0; j < rules.length; j++) {
-          const rule = rules[j];
-          if (rule.selectorText && rule.selectorText.match(iconName)) {
-            iconCssText.push(rule.cssText);
-          }
+      const rules = iconStyleSheet.rules || iconStyleSheet.cssRules
+      for (let j = 0; j < rules.length; j++) {
+        const rule = rules[j];
+        if (rule.selectorText && rule.selectorText.match(iconName)) {
+          iconCssText.push(rule.cssText);
         }
       }
       return cssFormat(iconCssText.join('\n'));

@@ -1,3 +1,8 @@
+/* 
+ * CSS 图标
+ * 图标必须以 "icon-" 开头，后面跟上图标的名称，如 "icon-arrow-up"
+ * 代码会自动解析图标名称，并显示在页面上
+ */
 .css-icon {
   display: inline-block;
   width: 1em;
