@@ -19,7 +19,7 @@ body {
   margin-left: 8px;
   padding: 16px 12px;
   width: 360px;
-  background-color: #efefef;
+  background-color: #f2f2f2;
 }
 
 .icon-item {
@@ -57,12 +57,13 @@ body {
   color: #666;
 }
 
-.html-code,
-.css-code,
-.common-code {
+.code {
   margin-top: 12px;
 }
-pre {
+.code h4 {
+  margin: 4px 0;
+}
+.code pre {
   margin: 0;
   padding: 8px;
   max-height: 240px;

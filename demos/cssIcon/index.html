@@ -14,9 +14,9 @@
     </main>
     <aside>
       <div class="icon-info"></div>
-      <div class="html-code"></div>
-      <div class="css-code"></div>
-      <div class="common-code"></div>
+      <div class="code html-code"></div>
+      <div class="code css-code"></div>
+      <div class="code common-code"></div>
     </aside>
   </div>
 
@@ -80,13 +80,19 @@
       const cssCode = document.querySelector('.css-code');
       const cssPre = document.createElement('pre');
       cssPre.textContent = getIconStyle(iconWrap.getAttribute('data-name'));
+      // const cssTitle = document.createElement('h4');
+      // cssTitle.textContent = '图标样式：';
       cssCode.innerHTML = '';
+      // cssCode.appendChild(cssTitle);
       cssCode.appendChild(cssPre);
 
       const commonCode = document.querySelector('.common-code');
       const commonPre = document.createElement('pre');
       commonPre.textContent = getIconStyle('css-icon');
+      const commonTitle = document.createElement('h4');
+      commonTitle.textContent = '公共样式：';
       commonCode.innerHTML = '';
+      commonCode.appendChild(commonTitle);
       commonCode.appendChild(commonPre);
     }
 
