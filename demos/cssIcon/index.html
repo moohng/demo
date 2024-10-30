@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS 图标</title>
+  <link rel="stylesheet" href="icon.css">
+  <link rel="stylesheet" href="global.css">
+</head>
+<body>
+  <div class="layout">
+    <main>
+      <!-- <div class="icon-wrap">
+        <i class="css-icon icon-arrow-up"></i>
+      </div> -->
+    </main>
+    <aside>
+      <div class="icon-info"></div>
+      <div class="html-code"></div>
+      <div class="css-code"></div>
+      <div class="common-code"></div>
+    </aside>
+  </div>
+
+  <script>
+    // 这里可以写一些 js 代码
+    const cssIcons = ['icon-arrow-up', 'icon-arrow-down'];
+
+    const iconFragment = document.createDocumentFragment();
+    cssIcons.forEach((icon, index) => {
+      const iconElement = document.createElement('i');
+      iconElement.classList.add('css-icon', icon);
+      const iconWrap = document.createElement('div');
+      iconWrap.classList.add('icon-wrap');
+      iconWrap.setAttribute('data-name', icon);
+      if (index === 0) {
+        iconWrap.classList.add('active');
+      }
+      iconWrap.appendChild(iconElement);
+      iconFragment.appendChild(iconWrap);
+    });
+
+    const main = document.querySelector('main');
+    main.appendChild(iconFragment);
+
+    let lastActiveIcon = main.children[0];
+    updateSidebar(lastActiveIcon);
+
+    main.addEventListener('click', e => {
+      if (e.target.classList.contains('icon-wrap')) {
+        if (lastActiveIcon) {
+          lastActiveIcon.classList.remove('active');
+        }
+        e.target.classList.add('active');
+        lastActiveIcon = e.target;
+
+        // 展示在右侧
+        updateSidebar(e.target);
+      }
+    });
+
+    function updateSidebar(iconWrap) {
+      const cloneIcon = iconWrap.cloneNode(true);
+      const iconInfo = document.querySelector('.icon-info');
+      iconInfo.innerHTML = '';
+      iconInfo.appendChild(cloneIcon);
+      const iconName = document.createElement('p');
+      iconName.classList.add('icon-name');
+      iconName.textContent = iconWrap.getAttribute('data-name');
+      iconInfo.appendChild(iconName);
+
+      const htmlCode = document.querySelector('.html-code');
+      const htmlPre = document.createElement('pre');
+      htmlPre.textContent = cloneIcon.innerHTML;
+      htmlCode.innerHTML = '';
+      htmlCode.appendChild(htmlPre);
+
+      const cssCode = document.querySelector('.css-code');
+      const cssPre = document.createElement('pre');
+      cssPre.textContent = getIconStyle(iconWrap.getAttribute('data-name'));
+      cssCode.innerHTML = '';
+      cssCode.appendChild(cssPre);
+
+      const commonCode = document.querySelector('.common-code');
+      const commonPre = document.createElement('pre');
+      commonPre.textContent = getIconStyle('css-icon');
+      commonCode.innerHTML = '';
+      commonCode.appendChild(commonPre);
+    }
+
+    function getIconStyle(iconName) {
+      const styleSheetList = document.styleSheets;
+      const iconCssText = [];
+      for (let i = 0; i < styleSheetList.length; i++) {
+        const styleSheet = styleSheetList[i];
+        let rules;
+        try {
+          rules = styleSheet.rules || styleSheet.cssRules;
+        } catch (e) {
+          continue;
+        }
+        for (let j = 0; j < rules.length; j++) {
+          const rule = rules[j];
+          console.log(rule.selectorText);
+          if (rule.selectorText && rule.selectorText.match(iconName)) {
+            iconCssText.push(rule.cssText);
+          }
+        }
+      }
+      return cssFormat(iconCssText.join('\n'));
+    }
+
+    function cssFormat(cssText) {
+      return cssText
+       .replace(/\{\s*/g, '{\n  ')
+       .replace(/;\s*/g, ';\n  ')
+       .replace(/\s*\}/g, '\n}\n')
+       .replace(/,\s*\./g, ',\n\.')
+    }
+  </script>
+</body>
+</html>
