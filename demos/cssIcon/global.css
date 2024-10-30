@@ -12,8 +12,6 @@ body {
 }
 .layout main {
   flex: 1;
-  display: flex;
-  flex-wrap: wrap;
 }
 .layout aside {
   margin-left: 16px;
@@ -24,13 +22,14 @@ body {
 
 .icon-wrap {
   margin-right: 8px;
+  margin-bottom: 8px;
   width: 64px;
   height: 64px;
   color: #999;
   /* border: 1px solid currentColor; */
   border-style: dotted;
   border-width: 1px;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
 }
@@ -62,6 +61,7 @@ body {
 .common-code {
   margin-top: 16px;
   padding: 2px 8px;
+  max-height: 300px;
   background-color: #fff;
   border-radius: 4px;
   overflow: auto;

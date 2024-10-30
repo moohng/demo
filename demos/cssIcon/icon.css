@@ -6,6 +6,7 @@
   font-size: 24px;
   line-height: 1;
   vertical-align: middle;
+  box-sizing: border-box;
 }
 .css-icon::before,
 .css-icon::after {
@@ -18,17 +19,291 @@
 }
 
 .icon-arrow-up::before {
-  width: .65em;
-  height: .65em;
+  width: 0.65em;
+  height: 0.65em;
   border-style: solid;
   border-width: 0.1em 0 0 0.1em;
   transform: translate(-50%, -25%) rotate(45deg);
 }
 
 .icon-arrow-down::before {
-  width: .65em;
-  height: .65em;
+  width: 0.65em;
+  height: 0.65em;
   border-style: solid;
   border-width: 0.1em 0 0 0.1em;
   transform: translate(-50%, -75%) rotate(-135deg);
+}
+
+.icon-arrow-left::before {
+  height: 0.65em;
+  width: 0.65em;
+  border-style: solid;
+  border-width: 0.1em 0 0 0.1em;
+  -ms-transform: translate(-25%, -50%) rotate(-45deg);
+  transform: translate(-25%, -50%) rotate(-45deg);
+}
+
+.icon-arrow-right::before {
+  height: 0.65em;
+  width: 0.65em;
+  border-style: solid;
+  border-width: 0.1em 0 0 0.1em;
+  -ms-transform: translate(-75%, -50%) rotate(135deg);
+  transform: translate(-75%, -50%) rotate(135deg);
+}
+
+.icon-upward::before {
+  height: 0.65em;
+  width: 0.65em;
+  border-style: solid;
+  border-width: 0.1em 0 0 0.1em;
+  -ms-transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.icon-upward::after {
+  height: 0.8em;
+  border-left: 0.1em solid;
+  top: 55%;
+}
+
+.icon-downward::before {
+  height: 0.65em;
+  width: 0.65em;
+  border-style: solid;
+  border-width: 0.1em 0 0 0.1em;
+  -ms-transform: translate(-50%, -50%) rotate(-135deg);
+  transform: translate(-50%, -50%) rotate(-135deg);
+}
+.icon-downward::after {
+  height: 0.8em;
+  border-left: 0.1em solid;
+  top: 45%;
+}
+
+.icon-back::before {
+  height: 0.65em;
+  width: 0.65em;
+  border-style: solid;
+  border-width: 0.1em 0 0 0.1em;
+  -ms-transform: translate(-50%, -50%) rotate(-45deg);
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+.icon-back::after {
+  width: 0.8em;
+  border-top: 0.1em solid;
+  left: 55%;
+}
+
+.icon-forward::before {
+  height: 0.65em;
+  width: 0.65em;
+  border-style: solid;
+  border-width: 0.1em 0 0 0.1em;
+  -ms-transform: translate(-50%, -50%) rotate(135deg);
+  transform: translate(-50%, -50%) rotate(135deg);
+}
+.icon-forward::after {
+  width: 0.8em;
+  border-top: 0.1em solid;
+  left: 45%;
+}
+
+.icon-menu::before {
+  box-shadow: 0 -0.35em, 0 0.35em;
+  border-top: 0.1em solid;
+  width: 100%;
+}
+
+.icon-more-horiz::before {
+  height: 0.2em;
+  width: 0.2em;
+  background: currentColor;
+  border-radius: 50%;
+  box-shadow: -0.4em 0, 0.4em 0;  
+}
+
+.icon-more-vert::before {
+  height: 0.2em;
+  width: 0.2em;
+  background: currentColor;
+  border-radius: 50%;
+  box-shadow: 0 -0.4em, 0 0.4em;  
+}
+
+.icon-plus::before {
+  width: 90%;
+  border-top: 0.1em solid;
+}
+.icon-plus::after {
+  height: 90%;
+  border-left: 0.1em solid;
+}
+
+.icon-minus::before {
+  width: 90%;
+  border-top: 0.1em solid;
+}
+
+.icon-close::before {
+  width: 90%;
+  border-top: 0.1em solid;
+  -ms-transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.icon-close::after {
+  height: 90%;
+  border-left: 0.1em solid;
+  -ms-transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.icon-check::before {
+  border-style: solid;
+  border-width: 0 0 0.1em 0.1em;
+  height: .5em; width: .9em;
+  -ms-transform: translate(-50%, -.375em) rotate(-45deg); 
+  transform: translate(-50%, -.375em) rotate(-45deg);
+}
+
+.icon-refresh::before {
+  width: .9em; height: .9em;
+  border: 0.1em solid;  
+  border-right-color: transparent;
+  border-radius: 50%;  
+}
+.icon-refresh::after {
+  border: .2em solid;
+  border-left-color: transparent;
+  border-top-color: transparent;
+  left: 75%; top: 20%;
+}
+
+.icon-search::before {
+  width: .75em; height: .75em;
+  border: 0.1em solid;
+  border-radius: 50%;
+  left: 5%; top: 5%;
+  -ms-transform: translate(0, 0) rotate(45deg);
+  transform: translate(0, 0) rotate(45deg);
+}
+.icon-search::after {
+  width: .4em;
+  border-top: 0.1em solid;
+  left: 80%; top: 80%;
+  -ms-transform: translate(-50%, -50%) rotate(45deg);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.icon-delete::before {
+  width: .75em;
+  height: .6em;
+  border: 0.1em solid;
+  border-top: 0;
+  border-radius: 0 0 0.1em 0.1em;  
+  top: 70%;
+}
+.icon-delete::after {
+  width: .5em;
+  border-top: 0.1em solid;
+  box-shadow: -.2em .2em, .2em .2em;
+  top: 0.05em;  
+}
+
+.icon-download {
+  border: solid transparent;
+  border-width: 0 1px;
+  box-shadow: inset 0 -0.1em;
+}
+.icon-download::before {
+  width: .5em; height: .5em;
+  border-style: solid;
+  border-width: 0.1em 0 0 0.1em;
+  -ms-transform: translate(-50%, -.3em) rotate(-135deg); 
+  transform: translate(-50%, -.3em) rotate(-135deg); 
+}
+.icon-download::after {
+  height: .6em;
+  border-left: 0.1em solid;
+  top: 40%;
+}
+
+.icon-upload {
+  border: solid transparent;
+  border-width: 0 1px;
+  box-shadow: inset 0 -0.1em;
+}
+.icon-upload::before {
+  width: .5em; height: .5em;
+  border-style: solid;
+  border-width: 0.1em 0 0 0.1em;
+  -ms-transform: translate(-50%, -60%) rotate(45deg);
+  transform: translate(-50%, -60%) rotate(45deg); 
+}
+.icon-upload::after {
+  height: .6em;
+  border-left: 0.1em solid;
+}
+
+.icon-copy::before {
+  width: .7em; height: .8em;
+  border: 0.1em solid;
+  border-bottom-color: transparent;
+  border-right-color: transparent;
+  border-radius: .1em;  
+  left: 40%; top: 40%;
+}
+.icon-copy::after {
+  width: .7em; height: .8em;
+  border: 0.1em solid;
+  border-radius: .1em;
+  left: 60%; top: 60%;
+}
+
+.icon-person::before {
+  width: .45em; height: .45em;
+  border: 0.1em solid;
+  border-radius: 50%;
+  top: 25%;  
+}
+.icon-person::after {
+  width: .9em; height: .4em;
+  border: 0.1em solid;
+  border-radius: 50% 50% 0 0;
+  top: 75%;
+}
+
+.icon-photo {
+  border: solid transparent;
+  border-width: .1em .05em;
+  box-shadow: inset 0 0.1em, inset 0.1em 0, inset -0.1em 0, inset 0 -0.1em;
+  border-radius: .2em;
+}
+.icon-photo::before {
+  width: .3em; height: .3em;
+  border: 0.1em solid;
+  border-radius: 50%;
+  left: 35%; top: 35%;
+}
+.icon-photo::after {
+  width: .5em; height: .5em;
+  border-style: solid;
+  border-width: 0.1em 0.1em 0 0;
+  left: 60%;
+  -ms-transform: translate(-45%, 20%) rotate(-45deg);
+  transform: translate(-45%, 20%) rotate(-45deg);
+}
+
+.icon-location::before {
+  width: .8em; height: .8em;
+  border: 0.1em solid;
+  border-radius: 50% 50% 50% 0;
+  -ms-transform: translate(-50%, -60%) rotate(-45deg);
+  transform: translate(-50%, -60%) rotate(-45deg);
+}
+.icon-location::after {
+  width: .3em; height: .3em;
+  border: 0.1em solid;
+  border-radius: 50%;
+  -ms-transform: translate(-50%, -.25em);
+  transform: translate(-50%, -.25em);
 }
