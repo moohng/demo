@@ -1,3 +1,3 @@
-const { runBuild } = require('./bundle');
+import { runBuild } from './bundle.js';
 
 runBuild();

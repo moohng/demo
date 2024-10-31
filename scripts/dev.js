@@ -1,3 +1,3 @@
-const { runDev } = require('./bundle');
+import { runDev } from './bundle.js';
 
 runDev();

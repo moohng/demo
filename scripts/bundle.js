@@ -1,8 +1,9 @@
-const { join } = require('path');
-const fs = require('fs');
-const { build, createServer } = require('vite');
-const vue = require('@vitejs/plugin-vue');
-const rootPackage = require('../package.json');
+import { join } from 'path';
+import fs from 'fs';
+import { build, createServer, mergeConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import UnoCSS from 'unocss/vite';
+import rootPackage from '../package.json' assert { type: "json" };
 
 const relativeRoot = (...args) => join(process.cwd(), ...args);
 
@@ -49,7 +50,12 @@ function getDemoList(dirs) {
 }
 
 const commonConfig = {
-  plugins: [vue()],
+  plugins: [
+    UnoCSS({
+      // ...
+    }),
+    vue(),
+  ],
   resolve: {
     alias: {
       '@': relativeRoot('src'),
@@ -86,17 +92,18 @@ async function runBuild() {
     },
   });
 
-  await Promise.all(dirs.map(dir => {
-    return build({
+  await Promise.all(dirs.map(async (dir) => {
+    const config = await import(relativeRoot('demos', dir, 'vite.config.js')).catch(() => ({ default: {} }));
+    console.log('===== build demo', config);
+    return build(mergeConfig({
       ...commonConfig,
       root: relativeRoot('demos', dir),
       base: join('/demos', dir, '/'),
       build: {
         outDir: relativeRoot('dist', 'demos', dir),
       },
-    });
+    }), config.default);
   }));
 }
 
-exports.runDev = runDev;
-exports.runBuild = runBuild;
+export { runDev, runBuild };

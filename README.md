@@ -14,10 +14,11 @@ $ npm run build
 
 ## 如何参与
 
-该项目使用Vite作为打包工具，故所有的demo示例需遵循以下标准：
+该项目及子项目皆使用Vite作为打包工具，故所有的demo示例需遵循以下标准：
 
-1. 所有demo示例必须放在`/demos`目录下，创建新的目录作为demo的根目录；
-2. **demo根目录**下必须包含`index.html`，作为demo的唯一入口文件；
-3. **demo根目录下**必须包含`package.json`，作为demo的信息说明文件（`title`， `description`， `author`将会直接展示在demo的入口页面上）；
+1. 所有demo示例必须放在`/demos`目录下，作为独立的子项目；
+2. **子项目**下必须包含`index.html`，作为demo的唯一入口文件；
+3. **子项目**下必须包含`package.json`，作为demo的信息说明文件（`title`， `description`， `author`将会直接展示在demo的入口页面上）；
+4. 项目已集成`uno.css`，在入口文件处添加`import 'virtual:uno.css';`开启；
 
 其他规范请参考[vite](https://cn.vitejs.dev/guide/build.html#multi-page-app)。
