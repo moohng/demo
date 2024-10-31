@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CSS 图标</title>
-  <link title="icon" rel="stylesheet" href="icon.css">
+  <link data-name="icon" rel="stylesheet" href="icon.css">
   <link rel="stylesheet" href="global.css">
 </head>
 <body>
@@ -22,7 +22,7 @@
 
   <script>
     // 自动解析css文件，获取图标class名
-    const iconStyleSheet = [...document.styleSheets].find(styleSheet => styleSheet.title === 'icon');
+    const iconStyleSheet = [...document.styleSheets].find(styleSheet => styleSheet.ownerNode.dataset.name === 'icon');
     const iconClasses = [...(iconStyleSheet.cssRules || iconStyleSheet.rules)]
       .filter(rule => rule.selectorText && rule.selectorText.startsWith('.icon-'))
       .map(rule => rule.selectorText.slice(1).replace(/::.*/g, ''))
