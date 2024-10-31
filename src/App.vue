@@ -19,22 +19,55 @@
       </ul>
     </aside>
     <main class="main">
-      <iframe v-if="currentDemo" class="demo-iframe" :src="currentDemo" frameborder="0"></iframe>
+      <div v-show="!hideProgress" class="fixed-top">
+        <ProgressBar :progress="progress" />
+      </div>
+      <iframe v-if="currentDemo" class="demo-iframe" :src="currentDemo" frameborder="0" @load="progress = 100"></iframe>
     </main>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { ProgressBar } from './components/ProgressBar';
+
 const demoList = ref(__DEMO_LIST__ as unknown as any[]);
 
 const currentDemo = ref('/demos/home/');
+const hideProgress = ref(false);
 
-const handleClick = (path: string) => {
-  currentDemo.value = path;
+const updateProgress = () => {
+  const timer = setInterval(() => {
+    if (progress.value < 100) {
+      progress.value += 10;
+    } else {
+      clearInterval(timer);
+      setTimeout(() => {
+        hideProgress.value = true;
+      }, 300);
+    }
+  }, 100);
 };
 
+const handleClick = (path: string) => {
+  if (currentDemo.value === path) {
+    return;
+  }
+
+  currentDemo.value = path;
+  progress.value = 0;
+  hideProgress.value = false;
+
+  updateProgress();
+};
+
+onMounted(() => {
+  updateProgress();
+});
+
 const fold = ref(false);
+
+const progress = ref(0);
 </script>
 
 <style lang="scss" scoped>
@@ -79,12 +112,20 @@ const fold = ref(false);
 
 .main {
   flex: 1;
+  position: relative;
 
   .demo-iframe {
     display: block;
     width: 100%;
     height: 100%;
     border: none;
+  }
+
+  .fixed-top {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
   }
 }
 
