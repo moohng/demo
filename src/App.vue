@@ -1,28 +1,27 @@
 <template>
   <div class="layout" :class="{ fold }">
     <div class="expand-btn" @click="fold = !fold">
-      <span>展开</span>
-      <i class="css-icon icon-expand"></i>
+      <i class="css-icon icon-fold"></i>
     </div>
     <aside class="aside">
-      <header class="header">
-        <h1 @click="handleClick('/demos/home/')">DEMO 大杂烩</h1>
+      <header class="flex justify-between items-center mx-16px header">
+        <h1 class="my-16px text-1.2em cursor-pointer" @click="handleClick('/demos/home/')">DEMO 大杂烩</h1>
         <div class="fold-btn" @click="fold = !fold">
           <i class="css-icon icon-fold"></i>
         </div>
+        <i class="ri:menu-fold-line text-orange-400" />
       </header>
-      <ul class="nav">
+      <ul class="flex-1 list-style-none m-0 p-16px overflow-auto">
         <li :class="['nav-item', { active: currentDemo === item.path }]" v-for="item in demoList" :key="item.key" @click="handleClick(item.path)">
           <div class="title" :title="item.title">{{ item.title }}</div>
-          <!-- <div class="desc">{{ item.description }}</div> -->
         </li>
       </ul>
     </aside>
-    <main class="main">
-      <div v-show="!hideProgress" class="fixed-top">
+    <main class="main relative">
+      <div v-show="!hideProgress" class="absolute top-0 left-0 w-full">
         <ProgressBar :progress="progress" />
       </div>
-      <iframe v-if="currentDemo" class="demo-iframe" :src="currentDemo" frameborder="0" @load="progress = 100"></iframe>
+      <iframe v-if="currentDemo" class="block w-full h-100vh border-none" :src="currentDemo" frameborder="0" @load="progress = 100"></iframe>
     </main>
   </div>
 </template>
@@ -86,10 +85,6 @@ const progress = ref(0);
     width: 250px;
     white-space: nowrap;
   }
-  
-  .nav {
-    flex: 1;
-  }
 
   .main {
     margin-left: 250px;
@@ -110,47 +105,13 @@ const progress = ref(0);
 }
 
 .header {
-  margin: 0 16px;
   border-bottom: 1px solid var(--border-color);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-
-  h1 {
-    margin: 16px 0;
-    font-size: 1.2em;
-    cursor: pointer;
-  }
-}
-
-.main {
-  position: relative;
-
-  .demo-iframe {
-    display: block;
-    width: 100%;
-    height: 100vh;
-    border: none;
-  }
-
-  .fixed-top {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-  }
-}
-
-.nav {
-  list-style: none;
-  margin: 0;
-  padding: 16px;
-  overflow: auto;
 }
 
 .nav-item {
   padding: 8px;
   display: flex;
+  align-items: center;
   cursor: pointer;
 
   &:hover {
@@ -159,19 +120,14 @@ const progress = ref(0);
   }
 
   &.active {
+    padding-left: 8px;
     font-weight: bold;
   }
   
   .title {
-    font-size: 1em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .desc {
-    font-size: .8em;
-    color: var(--text-color-gray);
   }
 }
 
@@ -202,19 +158,19 @@ const progress = ref(0);
   &:hover {
     color: var(--text-color);
   }
+}
 
-  .icon-fold {
+.icon-fold {
+  border: 0.08em solid currentColor;
+  border-radius: 50%;
+
+  &::before {
+    width: 0.35em;
+    height: 0.35em;
     border: 0.08em solid currentColor;
-    border-radius: 50%;
-
-    &::before {
-      width: 0.4em;
-      height: 0.4em;
-      border: 0.08em solid currentColor;
-      border-right: none;
-      border-bottom: none;
-      transform: translate(-28%, -50%) rotate(-45deg);
-    }
+    border-right: none;
+    border-bottom: none;
+    transform: translate(-28%, -50%) rotate(-45deg);
   }
 }
 
@@ -222,12 +178,11 @@ const progress = ref(0);
   position: fixed;
   left: 0;
   top: 32px;
-  padding: 6px 8px;
-  // width: 40px;
-  font-size: 14px;
+  padding: 8px 8px 8px 12px;
+  color: var(--text-color-gray);
+  font-size: 1.5em;
   line-height: 1;
   background-color: var(--bg-color-gray);
-  // border: 1px solid var(--border-color);
   border-radius: 0 24px 24px 0;
   box-shadow: 2px 2px 6px rgba(0, 0, 0, .1);
   cursor: pointer;
@@ -237,27 +192,12 @@ const progress = ref(0);
   display: flex;
   align-items: center;
 
-  .icon-expand {
-    margin-left: 2px;
-    font-size: 1.34em;
-    &::before {
-      width: 0.36em;
-      height: 0.36em;
-      border: 0.08em solid currentColor;
-      border-right: none;
-      border-bottom: none;
-      transform: translate(-35%, -50%) rotate(135deg);
-      box-shadow: 4px;
-    }
-    &::after {
-      width: 0.36em;
-      height: 0.36em;
-      border: 0.08em solid currentColor;
-      border-right: none;
-      border-bottom: none;
-      transform: translate(-105%, -50%) rotate(135deg);
-      box-shadow: 4px;
-    }
+  &:hover {
+    color: var(--text-color);
+  }
+
+  .icon-fold {
+    transform: rotate(180deg);
   }
 }
 </style>
