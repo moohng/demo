@@ -1,10 +1,10 @@
 <template>
-  <div class="layout">
-    <div class="expand-btn" :class="{ expand: fold }" @click="fold = !fold">
+  <div class="layout" :class="{ fold }">
+    <div class="expand-btn" @click="fold = !fold">
       <span>展开</span>
       <i class="css-icon icon-expand"></i>
     </div>
-    <aside class="aside" :class="{ fold }">
+    <aside class="aside">
       <header class="header">
         <h1 @click="handleClick('/demos/home/')">DEMO 大杂烩</h1>
         <div class="fold-btn" @click="fold = !fold">
@@ -72,52 +72,64 @@ const progress = ref(0);
 
 <style lang="scss" scoped>
 .layout {
-  display: flex;
-  width: 100vw;
-  height: 100vh;
-  color: #333;
-
   .aside {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 99;
     display: flex;
     flex-direction: column;
-    border-right: 1px solid #e5e5e5;
+    background-color: var(--bg-color-gray);
     overflow: hidden;
-    position: relative;
-    transition: width 0.2s ease-in-out;
+    transition: width 0.2s ease;
     width: 250px;
     white-space: nowrap;
-
-    &.fold {
-      width: 0;
-    }
   }
   
   .nav {
     flex: 1;
   }
+
+  .main {
+    margin-left: 250px;
+    transition: margin-left 0.2s ease;
+  }
+
+  &.fold {
+    .aside {
+      width: 0;
+    }
+    .main {
+      margin-left: 0;
+    }
+    .expand-btn {
+      transform: translateX(0);
+    }
+  }
 }
 
 .header {
-  padding: 0 12px;
-  border-bottom: 1px solid #e5e5e5;
+  margin: 0 16px;
+  border-bottom: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   h1 {
+    margin: 16px 0;
     font-size: 1.2em;
     cursor: pointer;
   }
 }
 
 .main {
-  flex: 1;
   position: relative;
 
   .demo-iframe {
     display: block;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     border: none;
   }
 
@@ -138,16 +150,15 @@ const progress = ref(0);
 
 .nav-item {
   padding: 8px;
-  // width: 200px;
   display: flex;
   cursor: pointer;
 
   &:hover {
-    background-color: #efefef;
+    background-color: var(--bg-color-hover);
+    border-radius: 4px;
   }
 
   &.active {
-    color: #333;
     font-weight: bold;
   }
   
@@ -160,7 +171,7 @@ const progress = ref(0);
 
   .desc {
     font-size: .8em;
-    color: #666;
+    color: var(--text-color-gray);
   }
 }
 
@@ -185,11 +196,11 @@ const progress = ref(0);
   padding: 4px;
   cursor: pointer;
   font-size: 1.5em;
-  color: #666;
+  color: var(--text-color-gray);
   line-height: 1;
 
   &:hover {
-    color: #333;
+    color: var(--text-color);
   }
 
   .icon-fold {
@@ -215,9 +226,8 @@ const progress = ref(0);
   // width: 40px;
   font-size: 14px;
   line-height: 1;
-  color: #333;
-  background-color: #fff;
-  // border: 1px solid #e5e5e5;
+  background-color: var(--bg-color-gray);
+  // border: 1px solid var(--border-color);
   border-radius: 0 24px 24px 0;
   box-shadow: 2px 2px 6px rgba(0, 0, 0, .1);
   cursor: pointer;
@@ -226,10 +236,6 @@ const progress = ref(0);
   transform: translateX(-100%);
   display: flex;
   align-items: center;
-
-  &.expand {
-    transform: translateX(0);
-  }
 
   .icon-expand {
     margin-left: 2px;
