@@ -1,15 +1,14 @@
 <template>
   <div class="layout" :class="{ fold }">
     <div class="expand-btn" @click="fold = !fold">
-      <i class="css-icon icon-fold"></i>
+      <i class="i-ri:menu-fold-2-line" />
     </div>
     <aside class="aside">
       <header class="flex justify-between items-center mx-16px header">
         <h1 class="my-16px text-1.2em cursor-pointer" @click="handleClick('/demos/home/')">DEMO 大杂烩</h1>
         <div class="fold-btn" @click="fold = !fold">
-          <i class="css-icon icon-fold"></i>
+          <i class="i-ri:menu-fold-line" />
         </div>
-        <i class="ri:menu-fold-line text-orange-400" />
       </header>
       <ul class="flex-1 list-style-none m-0 p-16px overflow-auto">
         <li :class="['nav-item', { active: currentDemo === item.path }]" v-for="item in demoList" :key="item.key" @click="handleClick(item.path)">
@@ -131,23 +130,6 @@ const progress = ref(0);
   }
 }
 
-.css-icon {
-  position: relative;
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  vertical-align: middle;
-
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-}
-
 .fold-btn {
   padding: 4px;
   cursor: pointer;
@@ -157,20 +139,6 @@ const progress = ref(0);
 
   &:hover {
     color: var(--text-color);
-  }
-}
-
-.icon-fold {
-  border: 0.08em solid currentColor;
-  border-radius: 50%;
-
-  &::before {
-    width: 0.35em;
-    height: 0.35em;
-    border: 0.08em solid currentColor;
-    border-right: none;
-    border-bottom: none;
-    transform: translate(-28%, -50%) rotate(-45deg);
   }
 }
 
@@ -194,10 +162,6 @@ const progress = ref(0);
 
   &:hover {
     color: var(--text-color);
-  }
-
-  .icon-fold {
-    transform: rotate(180deg);
   }
 }
 </style>

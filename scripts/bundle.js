@@ -3,8 +3,8 @@ import fs from 'fs';
 import { build, createServer, mergeConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import UnoCSS from 'unocss/vite';
-import presetUno from 'unocss/preset-uno';
-import presetIcons from 'unocss/preset-icons';
+import presetUno from '@unocss/preset-uno';
+import presetIcons from '@unocss/preset-icons';
 import rootPackage from '../package.json' assert { type: "json" };
 
 const relativeRoot = (...args) => join(process.cwd(), ...args);
@@ -56,7 +56,14 @@ const commonConfig = {
     UnoCSS({
       presets: [
         presetUno(),
-        presetIcons(),
+        presetIcons({
+          prefix: 'i-',
+          extraProperties: {
+            display: 'inline-block',
+            'vertical-align': 'middle',
+            'line-height': '1',
+          },
+        }),
       ],
     }),
     vue(),
