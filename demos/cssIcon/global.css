@@ -43,9 +43,6 @@ body {
   border-color: #333;
   border-style: solid;
 }
-.icon-item * {
-  pointer-events: none;
-}
 
 .icon-info {
   display: flex;

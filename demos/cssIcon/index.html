@@ -33,14 +33,14 @@
     cssIcons.forEach((icon, index) => {
       const iconElement = document.createElement('i');
       iconElement.classList.add('css-icon', icon);
-      const iconWrap = document.createElement('div');
-      iconWrap.classList.add('icon-item');
-      iconWrap.setAttribute('data-name', icon);
+      const iconItem = document.createElement('div');
+      iconItem.classList.add('icon-item');
+      iconItem.setAttribute('data-name', icon);
       if (index === 0) {
-        iconWrap.classList.add('active');
+        iconItem.classList.add('active');
       }
-      iconWrap.appendChild(iconElement);
-      iconFragment.appendChild(iconWrap);
+      iconItem.appendChild(iconElement);
+      iconFragment.appendChild(iconItem);
     });
 
     const iconContainer = document.querySelector('.icon-container');
@@ -50,26 +50,27 @@
     updateSidebar(lastActiveIcon);
 
     iconContainer.addEventListener('click', e => {
-      if (e.target.classList.contains('icon-item')) {
+      const iconItem = e.target.closest('.icon-item');
+      if (iconItem) {
         if (lastActiveIcon) {
           lastActiveIcon.classList.remove('active');
         }
-        e.target.classList.add('active');
-        lastActiveIcon = e.target;
+        iconItem.classList.add('active');
+        lastActiveIcon = iconItem;
 
         // 展示在右侧
-        updateSidebar(e.target);
+        updateSidebar(iconItem);
       }
     });
 
-    function updateSidebar(iconWrap) {
-      const cloneIcon = iconWrap.cloneNode(true);
+    function updateSidebar(iconItem) {
+      const cloneIcon = iconItem.cloneNode(true);
       const iconInfo = document.querySelector('.icon-info');
       iconInfo.innerHTML = '';
       iconInfo.appendChild(cloneIcon);
       const iconName = document.createElement('p');
       iconName.classList.add('icon-name');
-      iconName.textContent = iconWrap.getAttribute('data-name');
+      iconName.textContent = iconItem.getAttribute('data-name');
       iconInfo.appendChild(iconName);
 
       const htmlCode = document.querySelector('.html-code');
@@ -80,7 +81,7 @@
 
       const cssCode = document.querySelector('.css-code');
       const cssPre = document.createElement('pre');
-      cssPre.textContent = getIconStyle(iconWrap.getAttribute('data-name'));
+      cssPre.textContent = getIconStyle(iconItem.getAttribute('data-name'));
       // const cssTitle = document.createElement('h4');
       // cssTitle.textContent = '图标样式：';
       cssCode.innerHTML = '';
@@ -99,7 +100,7 @@
 
     function getIconStyle(iconName) {
       const iconCssText = [];
-      const rules = iconStyleSheet.rules || iconStyleSheet.cssRules
+      const rules = iconStyleSheet.cssRules || iconStyleSheet.rules;
       for (let j = 0; j < rules.length; j++) {
         const rule = rules[j];
         if (rule.selectorText && rule.selectorText.match(iconName)) {
