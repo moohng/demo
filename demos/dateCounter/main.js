@@ -10,6 +10,9 @@ const dateInput = document.getElementById('dateInput');
 const colorInput = document.getElementById('colorInput');
 const unitSelect = document.getElementById('unitSelect');
 const cancelBtn = document.getElementById('cancelBtn');
+const shareInput = document.getElementById('shareInput');
+const shareBtn = document.getElementById('shareBtn');
+const shareTip = document.getElementById('shareTip');
 
 // 时间单位配置
 const TIME_UNITS = [
@@ -17,8 +20,8 @@ const TIME_UNITS = [
   { value: 'month', label: '月', divisor: 30 * 24 * 60 * 60 * 1000 },
   { value: 'week', label: '周', divisor: 7 * 24 * 60 * 60 * 1000 },
   { value: 'day', label: '天', divisor: 24 * 60 * 60 * 1000 },
-  { value: 'hour', label: '时', divisor: 60 * 60 * 1000 },
-  { value: 'minute', label: '分', divisor: 60 * 1000 },
+  { value: 'hour', label: '小时', divisor: 60 * 60 * 1000 },
+  { value: 'minute', label: '分钟', divisor: 60 * 1000 },
   { value: 'second', label: '秒', divisor: 1000 }
 ];
 
@@ -79,22 +82,87 @@ function initFormData() {
   unitSelect.value = dateInfo.unit;
 }
 
+// 根据表单数据生成配置对象
+function getFormData() {
+  return {
+    title: titleInput.value || DEFAULT_CONFIG.title,
+    date: dateInput.value,
+    color: colorInput.value || DEFAULT_CONFIG.color,
+    unit: unitSelect.value || DEFAULT_CONFIG.unit
+  };
+}
+
 // 生成分享链接
-function generateShareUrl() {
+function generateShareUrl(config = dateInfo) {
   const params = new URLSearchParams();
-  for (const [key, value] of Object.entries(dateInfo)) {
+  for (const [key, value] of Object.entries(config)) {
     params.set(key, key === 'title' ? encodeURIComponent(value) : value);
   }
-  return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+  return `${window.location.origin}${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
 }
+
+// 复制文本到剪贴板
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (err) {
+    console.error('复制失败:', err);
+    return false;
+  }
+}
+
+// 显示复制成功提示
+function showCopyTip() {
+  shareTip.classList.add('show');
+  setTimeout(() => {
+    shareTip.classList.remove('show');
+  }, 2000);
+}
+
+// 生成并复制分享链接
+async function handleShare() {
+  // 使用当前表单数据生成链接
+  const formData = getFormData();
+  const url = generateShareUrl(formData);
+  shareInput.value = url;
+  const success = await copyToClipboard(url);
+  if (success) {
+    showCopyTip();
+  }
+}
+
+// 点击输入框时自动选中
+shareInput.addEventListener('click', function() {
+  if (this.value) {
+    this.select();
+  }
+});
+
+// 生成分享链接按钮点击事件
+shareBtn.addEventListener('click', handleShare);
+
+// 表单提交时更新单位和重置定时器
+dateForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+
+  // 更新数据
+  dateInfo = getFormData();
+
+  // 保存并更新显示
+  saveData();
+  updateCard();
+  updateThemeColor();
+  hideDatePicker();
+});
 
 // 保存数据到本地存储
 function saveData() {
   localStorage.setItem('dateCounter', JSON.stringify(dateInfo));
-  // 更新 URL，但不包含默认值
+  // 更新 URL，但不包含默认值（除了单位和日期）
   const params = new URLSearchParams();
   for (const [key, value] of Object.entries(dateInfo)) {
-    if (value !== DEFAULT_CONFIG[key]) {
+    if (key === 'unit' || key === 'date' || value !== DEFAULT_CONFIG[key]) {
       params.set(key, key === 'title' ? encodeURIComponent(value) : value);
     }
   }
@@ -154,25 +222,6 @@ function hideDatePicker() {
 dateCard.addEventListener('click', showDatePicker);
 
 cancelBtn.addEventListener('click', hideDatePicker);
-
-// 表单提交时更新单位和重置定时器
-dateForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  // 更新数据
-  dateInfo = {
-    title: titleInput.value || DEFAULT_CONFIG.title,
-    date: dateInput.value,
-    color: colorInput.value || DEFAULT_CONFIG.color,
-    unit: unitSelect.value || DEFAULT_CONFIG.unit
-  };
-
-  // 保存并更新显示
-  saveData();
-  updateCard();
-  updateThemeColor();
-  hideDatePicker();
-});
 
 // 如果选择的是秒或分，需要更频繁地更新显示
 function startAutoUpdate() {

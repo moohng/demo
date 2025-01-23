@@ -39,14 +39,19 @@
             <option value="month">月</option>
             <option value="week">周</option>
             <option value="day">天</option>
-            <option value="hour">时</option>
-            <option value="minute">分</option>
+            <option value="hour">小时</option>
+            <option value="minute">分钟</option>
             <option value="second">秒</option>
           </select>
         </div>
         <div class="form-item">
           <label>主题颜色</label>
           <input type="color" id="colorInput">
+        </div>
+        <div class="form-share">
+          <input type="text" id="shareInput" readonly placeholder="点击生成分享链接">
+          <button type="button" id="shareBtn">生成链接</button>
+          <div class="share-tip" id="shareTip">链接已复制</div>
         </div>
         <div class="form-actions">
           <button type="button" id="cancelBtn">取消</button>

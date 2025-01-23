@@ -185,4 +185,61 @@ body {
     width: 100%;
     padding: 12px;
   }
+}
+
+/* 分享链接样式 */
+.form-share {
+  margin: 20px 0;
+  position: relative;
+  display: flex;
+  gap: 8px;
+}
+
+.form-share input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9em;
+  color: #666;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.form-share input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+.form-share button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--primary-color);
+  color: white;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.form-share button:hover {
+  opacity: 0.9;
+}
+
+.share-tip {
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.share-tip.show {
+  opacity: 1;
 } 
