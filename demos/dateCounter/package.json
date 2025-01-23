@@ -1,0 +1,7 @@
+{
+  "name": "date-counter",
+  "title": "日期计时器",
+  "description": "记录特殊日期，展示已过/剩余天数",
+  "version": "1.0.0",
+  "author": "demo"
+} 

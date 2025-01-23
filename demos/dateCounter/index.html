@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>日期计时器</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <!-- 日期卡片 -->
+  <div class="container">
+    <div class="date-card" id="dateCard">
+      <div class="card-title" id="cardTitle">我的日期</div>
+      <div class="card-days">
+        <span class="number" id="daysNumber">0</span>
+        <span class="unit" id="unitLabel">天</span>
+      </div>
+      <div class="card-date" id="cardDate"></div>
+    </div>
+  </div>
+
+  <!-- 设置弹窗 -->
+  <div class="date-picker-modal" id="datePickerModal">
+    <div class="modal-content">
+      <h3>设置日期</h3>
+      <form id="dateForm">
+        <div class="form-item">
+          <label>标题</label>
+          <input type="text" id="titleInput" placeholder="请输入标题">
+        </div>
+        <div class="form-item">
+          <label>日期</label>
+          <input type="date" id="dateInput">
+        </div>
+        <div class="form-item">
+          <label>时间单位</label>
+          <select id="unitSelect">
+            <option value="year">年</option>
+            <option value="month">月</option>
+            <option value="week">周</option>
+            <option value="day">天</option>
+            <option value="hour">时</option>
+            <option value="minute">分</option>
+            <option value="second">秒</option>
+          </select>
+        </div>
+        <div class="form-item">
+          <label>主题颜色</label>
+          <input type="color" id="colorInput">
+        </div>
+        <div class="form-actions">
+          <button type="button" id="cancelBtn">取消</button>
+          <button type="submit">确定</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="./main.js"></script>
+</body>
+</html> 

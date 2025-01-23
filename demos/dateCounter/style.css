@@ -1,0 +1,188 @@
+:root {
+  --primary-color: #6b8afd;
+  --text-color: #333;
+  --bg-color: #f5f7fa;
+  --card-width: min(90vw, 400px);
+  --card-padding: clamp(20px, 5vw, 30px);
+  --title-size: clamp(1.2em, 4vw, 1.5em);
+  --number-size: clamp(3em, 10vw, 4em);
+  --unit-size: clamp(1.5em, 5vw, 2em);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background-color: var(--bg-color);
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* 日期卡片样式 */
+.date-card {
+  width: var(--card-width);
+  padding: var(--card-padding);
+  background: white;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(107, 138, 253, 0.1);
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.date-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(107, 138, 253, 0.2);
+}
+
+.card-title {
+  font-size: var(--title-size);
+  color: var(--text-color);
+  margin-bottom: 20px;
+  word-break: break-word;
+}
+
+.card-days {
+  margin: 20px 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+}
+
+.card-days .number {
+  font-size: var(--number-size);
+  font-weight: bold;
+  color: var(--primary-color);
+  line-height: 1;
+}
+
+.card-days .unit {
+  font-size: var(--unit-size);
+  color: var(--text-color);
+}
+
+.card-date {
+  margin-top: 20px;
+  color: var(--text-color);
+  opacity: 0.6;
+}
+
+/* 设置面板样式 */
+.date-picker-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.date-picker-modal.show {
+  display: flex;
+}
+
+.modal-content {
+  background: white;
+  padding: clamp(20px, 5vw, 30px);
+  border-radius: 15px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-item {
+  margin: 20px 0;
+}
+
+.form-item label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-color);
+}
+
+.form-tip {
+  display: block;
+  margin-top: 4px;
+  color: #666;
+  font-size: 0.9em;
+}
+
+.form-item input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.form-item input[type="color"] {
+  height: 40px;
+  padding: 4px;
+}
+
+.form-item select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.form-item select:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.form-actions button {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+}
+
+.form-actions button[type="submit"] {
+  background: var(--primary-color);
+  color: white;
+}
+
+.form-actions button[type="button"] {
+  background: #eee;
+  color: var(--text-color);
+}
+
+/* 移动端适配 */
+@media (max-width: 480px) {
+  .modal-content {
+    margin: 20px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .form-actions button {
+    width: 100%;
+    padding: 12px;
+  }
+} 
