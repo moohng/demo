@@ -74,7 +74,6 @@ body {
   margin-top: 20px;
   margin-bottom: 40px;
   word-break: break-word;
-  font-weight: 300;
   letter-spacing: 0.05em;
 }
 
@@ -97,7 +96,6 @@ body {
 .card-days .unit {
   font-size: var(--unit-size);
   color: var(--text-color);
-  font-weight: 300;
 }
 
 .card-date {
@@ -202,6 +200,14 @@ body {
 .form-actions button[type="button"] {
   background: #eee;
   color: var(--text-color);
+}
+
+/* 表单项聚焦样式 */
+.form-item input:focus,
+.form-item select:focus,
+.datetime-picker input:focus {
+  outline: none;
+  border-color: var(--primary-color);
 }
 
 /* 移动端适配 */
