@@ -69,6 +69,7 @@ body {
 }
 
 .card-date {
+  display: none;
   margin-top: 20px;
   color: var(--text-color);
   opacity: 0.6;
@@ -242,4 +243,17 @@ body {
 
 .share-tip.show {
   opacity: 1;
+}
+
+.datetime-picker {
+  display: flex;
+  gap: 8px;
+}
+
+.datetime-picker input {
+  flex: 1;
+}
+
+.datetime-picker input[type="time"] {
+  min-width: 120px;
 } 

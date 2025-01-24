@@ -13,6 +13,7 @@ const cancelBtn = document.getElementById('cancelBtn');
 const shareInput = document.getElementById('shareInput');
 const shareBtn = document.getElementById('shareBtn');
 const shareTip = document.getElementById('shareTip');
+const timeInput = document.getElementById('timeInput');
 
 // 时间单位配置
 const TIME_UNITS = [
@@ -28,7 +29,7 @@ const TIME_UNITS = [
 // 默认配置
 const DEFAULT_CONFIG = {
   title: '我们已经相识',
-  date: formatDate(new Date()),
+  date: new Date().toISOString(), // 使用 ISO 格式存储完整的日期时间
   color: '#6b8afd',
   unit: 'day'
 };
@@ -74,19 +75,45 @@ function loadData() {
   startAutoUpdate();
 }
 
+// 格式化日期时间 YYYY-MM-DD HH:mm:ss
+function formatDateTime(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return {
+    date: `${year}-${month}-${day}`,
+    time: `${hours}:${minutes}:${seconds}`
+  };
+}
+
+// 解析日期时间字符串
+function parseDateTime(dateStr, timeStr = '00:00:00') {
+  const [year, month, day] = dateStr.split('-').map(Number);
+  const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+  return new Date(year, month - 1, day, hours, minutes, seconds);
+}
+
 // 初始化表单数据
 function initFormData() {
+  const currentDateTime = new Date(dateInfo.date);
+  const formatted = formatDateTime(currentDateTime);
+  
   titleInput.value = dateInfo.title;
-  dateInput.value = dateInfo.date;
+  dateInput.value = formatted.date;
+  timeInput.value = formatted.time;
   colorInput.value = dateInfo.color;
   unitSelect.value = dateInfo.unit;
 }
 
 // 根据表单数据生成配置对象
 function getFormData() {
+  const dateTime = parseDateTime(dateInput.value, timeInput.value);
   return {
     title: titleInput.value || DEFAULT_CONFIG.title,
-    date: dateInput.value,
+    date: dateTime.toISOString(),
     color: colorInput.value || DEFAULT_CONFIG.color,
     unit: unitSelect.value || DEFAULT_CONFIG.unit
   };
@@ -187,7 +214,10 @@ function updateCard() {
   cardTitle.textContent = dateInfo.title;
   daysNumber.textContent = count;
   document.getElementById('unitLabel').textContent = unitConfig.label;
-  cardDate.textContent = dateInfo.date;
+  
+  // 格式化显示日期时间
+  const formatted = formatDateTime(targetDate);
+  cardDate.textContent = `${formatted.date} ${formatted.time}`;
 
   // 更新后重新设置定时器
   startAutoUpdate();
