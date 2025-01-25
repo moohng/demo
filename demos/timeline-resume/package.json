@@ -1,0 +1,24 @@
+{
+  "name": "timeline-resume",
+  "title": "时间轴简历",
+  "description": "一个优雅的个人简历时间轴展示",
+  "version": "1.0.0",
+  "author": "demo",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "framer-motion": "^10.16.4",
+    "@emotion/styled": "^11.11.0",
+    "react-intersection-observer": "^9.5.2"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.0.0",
+    "vite": "^4.3.9",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0"
+  }
+} 
