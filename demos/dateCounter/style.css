@@ -23,30 +23,7 @@ body {
   padding: 20px;
   box-sizing: border-box;
   position: relative;
-  overflow: hidden;
   background: linear-gradient(45deg, var(--bg-color), white);
-}
-
-/* 添加背景动画 */
-.container::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(107, 138, 253, 0.1) 0%, transparent 60%);
-  animation: rotate 30s linear infinite;
-  z-index: -1;
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 /* 日期卡片样式 */
@@ -55,17 +32,15 @@ body {
   padding: var(--card-padding);
   background: white;
   border-radius: 30px;
-  box-shadow: 0 20px 60px rgba(107, 138, 253, 0.15);
+  box-shadow: 0 10px 30px rgba(107, 138, 253, 0.1);
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.9);
+  transition: transform 0.3s ease;
+  background: rgba(255, 255, 255, 0.95);
 }
 
 .date-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 30px 80px rgba(107, 138, 253, 0.2);
+  transform: translateY(-4px);
 }
 
 .card-title {
@@ -220,8 +195,16 @@ body {
     --unit-size: 1.5em;
   }
   
-  .container::before {
-    display: none;
+  .date-card {
+    transition: none;
+  }
+  
+  .date-card:hover {
+    transform: none;
+  }
+  
+  .container {
+    background: var(--bg-color);
   }
 
   .date-picker-modal {
@@ -330,7 +313,7 @@ body {
 }
 
 .form-share button:hover {
-  opacity: 0.9;
+  opacity: 0.95;
 }
 
 .share-tip {
@@ -344,12 +327,11 @@ body {
   border-radius: 4px;
   font-size: 0.8em;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s;
+  visibility: hidden;
 }
 
 .share-tip.show {
-  opacity: 1;
+  visibility: visible;
 }
 
 .datetime-picker {
@@ -390,11 +372,7 @@ body {
   .container {
     padding: 0;
     min-height: 100vh;
-    background: none;
-  }
-  
-  .container::before {
-    display: none;
+    background: var(--bg-color);
   }
   
   .date-card {
@@ -409,11 +387,11 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    transition: none;
   }
   
   .date-card:hover {
     transform: none;
-    box-shadow: none;
   }
   
   .card-title {
