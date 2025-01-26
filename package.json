@@ -11,7 +11,7 @@
   },
   "workspaces": [
     "demos/canvasPlay",
-    "demos/time-resume"
+    "demos/timeline-resume"
   ],
   "author": "",
   "license": "ISC",
