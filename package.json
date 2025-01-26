@@ -10,7 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "workspaces": [
-    "demos/canvasPlay"
+    "demos/canvasPlay",
+    "demos/time-resume"
   ],
   "author": "",
   "license": "ISC",
