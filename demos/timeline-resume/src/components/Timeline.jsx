@@ -23,6 +23,7 @@ const TimelineItem = styled(motion.div)`
   justify-content: ${props => props.align === 'left' ? 'flex-start' : 'flex-end'};
   padding: 20px 0;
   width: 100%;
+  position: relative;
 `;
 
 const Content = styled.div`
@@ -32,6 +33,7 @@ const Content = styled.div`
   border-radius: 15px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   position: relative;
+  margin-top: 15px;
   
   &::before {
     content: '';
@@ -55,6 +57,7 @@ const Dot = styled(motion.div)`
   background: #6c5ce7;
   border: 4px solid white;
   box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.2);
+  top: 35px;
 `;
 
 const Title = styled.h3`
