@@ -14,10 +14,22 @@
       <div class="icon-container"></div>
     </main>
     <aside>
-      <div class="icon-info"></div>
-      <div class="code html-code"></div>
-      <div class="code css-code"></div>
-      <div class="code common-code"></div>
+      <div class="info-card">
+        <div class="icon-info"></div>
+      </div>
+      <div class="code-card">
+        <div class="code-container">
+          <div class="code html-code">
+            <h4>HTML代码 <button class="copy-button">复制</button></h4>
+          </div>
+          <div class="code css-code">
+            <h4>CSS代码 <button class="copy-button">复制</button></h4>
+          </div>
+          <div class="code common-code">
+            <h4>公共样式 <button class="copy-button">复制</button></h4>
+          </div>
+        </div>
+      </div>
     </aside>
   </div>
 
@@ -58,7 +70,7 @@
         iconItem.classList.add('active');
         lastActiveIcon = iconItem;
 
-        // 展示在右侧
+        // 展示在右侧或下方
         updateSidebar(iconItem);
       }
     });
@@ -75,26 +87,26 @@
 
       const htmlCode = document.querySelector('.html-code');
       const htmlPre = document.createElement('pre');
-      htmlPre.textContent = cloneIcon.innerHTML;
+      htmlPre.innerHTML = formatHtmlCode(cloneIcon.innerHTML);
+      const htmlContent = htmlCode.querySelector('h4');
       htmlCode.innerHTML = '';
+      htmlCode.appendChild(htmlContent);
       htmlCode.appendChild(htmlPre);
 
       const cssCode = document.querySelector('.css-code');
       const cssPre = document.createElement('pre');
-      cssPre.textContent = getIconStyle(iconItem.getAttribute('data-name'));
-      // const cssTitle = document.createElement('h4');
-      // cssTitle.textContent = '图标样式：';
+      cssPre.innerHTML = formatCssCode(getIconStyle(iconItem.getAttribute('data-name')));
+      const cssContent = cssCode.querySelector('h4');
       cssCode.innerHTML = '';
-      // cssCode.appendChild(cssTitle);
+      cssCode.appendChild(cssContent);
       cssCode.appendChild(cssPre);
 
       const commonCode = document.querySelector('.common-code');
       const commonPre = document.createElement('pre');
-      commonPre.textContent = getIconStyle('css-icon');
-      const commonTitle = document.createElement('h4');
-      commonTitle.textContent = '公共样式：';
+      commonPre.innerHTML = formatCssCode(getIconStyle('css-icon'));
+      const commonContent = commonCode.querySelector('h4');
       commonCode.innerHTML = '';
-      commonCode.appendChild(commonTitle);
+      commonCode.appendChild(commonContent);
       commonCode.appendChild(commonPre);
     }
 
@@ -117,6 +129,117 @@
        .replace(/\s*\}/g, '\n}\n')
        .replace(/,\s*\./g, ',\n\.')
     }
+
+    // 格式化HTML代码
+    function formatHtmlCode(code) {
+      // 处理空代码的情况
+      if (!code || code.trim() === '') {
+        return '<div class="line-numbers"><span>1</span></div><div class="code-content">&nbsp;</div>';
+      }
+
+      // 1. 首先处理 HTML 实体（注意处理顺序，防止交叉影响）
+      const decodedCode = code
+        .replace(/&amp;/g, '&')    // 必须首先处理 &amp; 防止影响其他实体
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&nbsp;/g, ' ');
+
+      // 2. 格式化代码（处理换行和缩进）
+      let formattedCode = decodedCode
+        .replace(/>\s+</g, '>\n<')  // 标签之间的换行
+        .replace(/(<[^>]+>)(?!\n)/g, '$1\n')  // 确保每个标签后都有换行
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0)
+        .join('\n');
+
+      // 3. 分割成行并生成行号
+      const lines = formattedCode.split('\n');
+      const maxLineNoWidth = String(lines.length).length;
+      const lineNumbers = lines
+        .map((_, index) => `<span>${String(index + 1).padStart(maxLineNoWidth, ' ')}</span>`)
+        .join('\n');
+
+      // 4. 处理代码内容（转义和语法高亮）
+      const codeContent = lines
+        .map(line => {
+          // 首先转义特殊字符
+          const escapedLine = line
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+
+          // 然后按顺序进行语法高亮处理
+          return escapedLine
+            // 处理开始和结束标签
+            .replace(
+              /(&lt;\/?)([\w-]+)(&gt;)/g, 
+              '<span class="punctuation">$1</span><span class="keyword">$2</span><span class="punctuation">$3</span>'
+            )
+            // 处理属性和值（注意处理引号内的特殊字符）
+            .replace(
+              /\s([\w-]+)=(&quot;|&#39;)(.*?)(\2)/g,
+              ' <span class="property">$1</span><span class="punctuation">=</span><span class="punctuation">$2</span><span class="value">$3</span><span class="punctuation">$4</span>'
+            )
+            // 处理自闭合标签
+            .replace(
+              /(&lt;)([\w-]+)([^&]*?)(\/?&gt;)/g,
+              '<span class="punctuation">$1</span><span class="keyword">$2</span>$3<span class="punctuation">$4</span>'
+            );
+        })
+        .join('\n');
+
+      // 5. 返回最终的格式化结果
+      return `<div class="line-numbers">${lineNumbers}</div><div class="code-content">${codeContent}</div>`;
+    }
+
+    // 格式化CSS代码
+    function formatCssCode(code) {
+      const lines = code.split('\n');
+      const lineNumbers = lines
+        .map((_, index) => `<span>${index + 1}</span>`)
+        .join('\n');
+      
+      const codeContent = lines
+        .map(line =>
+          line.replace(/([a-zA-Z-]+):/g, '<span class="property">$1</span><span class="punctuation">:</span>')
+              .replace(/: ([^;}\n]+)/g, ': <span class="value">$1</span>')
+              .replace(/([{}])/g, '<span class="punctuation">$1</span>')
+        )
+        .join('\n');
+
+      return `<div class="line-numbers">${lineNumbers}</div><div class="code-content">${codeContent}</div>`;
+    }
+
+    // 添加复制功能
+    document.querySelectorAll('.copy-button').forEach(button => {
+      button.addEventListener('click', async () => {
+        const codeBlock = button.closest('.code');
+        const codeContent = codeBlock.querySelector('.code-content').textContent;
+        
+        try {
+          await navigator.clipboard.writeText(codeContent.trim());
+          button.textContent = '已复制';
+          button.classList.add('copied');
+          
+          setTimeout(() => {
+            button.textContent = '复制';
+            button.classList.remove('copied');
+          }, 2000);
+        } catch (err) {
+          console.error('复制失败:', err);
+          button.textContent = '复制失败';
+          
+          setTimeout(() => {
+            button.textContent = '复制';
+          }, 2000);
+        }
+      });
+    });
   </script>
 </body>
 </html>

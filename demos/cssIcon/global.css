@@ -1,72 +1,369 @@
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  font-size: 14px;
-  color: #333;
+/* 全局重置和基础样式 */
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2c3e50;
+  --background-color: #f8f9fa;
+  --text-color: #2c3e50;
+  --border-color: #e9ecef;
+  --hover-color: #2980b9;
+  --transition-time: 0.3s;
+  --code-background: #f1f4f9;
+  --code-keyword: #c678dd;
+  --code-property: #e06c75;
+  --code-value: #98c379;
+  --code-punctuation: #7f8c98;
+  --modal-backdrop: rgba(0, 0, 0, 0.5);
 }
 
-.layout {
-  padding: 16px;
-  display: flex;
-  align-items: start;
-  height: 100vh;
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
-.layout main {
-  flex: 1;
-}
-.layout aside {
-  margin-left: 8px;
-  padding: 16px 12px;
-  width: 360px;
-  background-color: #f2f2f2;
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-color);
+  background-color: var(--background-color);
 }
 
+/* 布局样式 */
+.layout {
+  padding: 20px;
+  display: flex;
+  gap: 24px;
+  min-height: 100vh;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+.layout main {
+  flex: 1;
+  min-width: 0;
+}
+
+.layout aside {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 20px;
+  height: calc(100vh - 40px);
+  padding: 0;
+  background: none;
+  box-shadow: none;
+}
+
+/* 图标容器样式 */
+.icon-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 16px;
+  padding: 16px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 图标项样式 */
 .icon-item {
-  margin-right: 8px;
-  margin-bottom: 8px;
-  width: 64px;
-  height: 64px;
-  color: #999;
-  border-style: dotted;
-  border-width: 1px;
-  display: inline-flex;
+  aspect-ratio: 1;
+  color: var(--text-color);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  display: flex;
   justify-content: center;
   align-items: center;
+  transition: all var(--transition-time) ease;
+  background-color: white;
 }
+
 .icon-item:hover {
   cursor: pointer;
-  border-style: solid;
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
 .icon-item.active {
-  color: #333;
-  border-color: #333;
-  border-style: solid;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+  background-color: rgba(52, 152, 219, 0.1);
+}
+
+/* aside区域卡片样式 */
+.info-card,
+.code-card {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 图标信息样式 */
+.info-card {
+  padding: 20px;
 }
 
 .icon-info {
   display: flex;
   align-items: center;
-}
-.icon-name {
-  margin: 8px;
-  font-size: 16px;
-  color: #666;
+  padding: 16px;
+  background-color: rgba(52, 152, 219, 0.1);
+  border-radius: 8px;
 }
 
+.icon-info .icon-item {
+  width: 80px;
+  height: 80px;
+}
+
+.icon-name {
+  margin-left: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--primary-color);
+}
+
+/* 代码区域容器 */
+.code-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 20px;
+}
+
+.code-container {
+  flex: 1;
+  overflow-y: auto;
+  margin: 0 -20px;
+  padding: 0 20px;
+}
+
+/* 代码展示区域样式 */
 .code {
-  margin-top: 12px;
+  margin-top: 20px;
+  background-color: var(--code-background);
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
 }
+
+.code:first-child {
+  margin-top: 0;
+}
+
 .code h4 {
-  margin: 4px 0;
+  margin: 0;
+  padding: 12px 16px;
+  font-size: 16px;
+  color: var(--secondary-color);
+  background-color: rgba(44, 62, 80, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1;
 }
+
 .code pre {
   margin: 0;
+  padding: 0;
+  font-family: "Fira Code", Consolas, Monaco, "Andale Mono", monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  background-color: white;
+  color: var(--secondary-color);
+  position: relative;
+  white-space: pre;
+  overflow-x: auto;
+  tab-size: 2;
+  display: flex;
+}
+
+.code pre .line-numbers {
+  user-select: none;
+  text-align: right;
+  color: var(--code-punctuation);
   padding: 8px;
-  max-height: 240px;
-  font-family: "Lucida Console", Consolas, Monaco;
-  line-height: 1.5;
-  background-color: #fefefe;
+  background-color: var(--code-background);
+  border-right: 1px solid var(--border-color);
+  position: sticky;
+  left: 0;
+  z-index: 1;
+}
+
+.code pre .code-content {
+  margin-right: 8px;
+  padding: 8px;
+  padding-right: 0;
+  overflow-x: auto;
+}
+
+/* 代码语法高亮 */
+.code pre .keyword {
+  color: var(--code-keyword);
+}
+
+.code pre .property {
+  color: var(--code-property);
+}
+
+.code pre .value {
+  color: var(--code-value);
+}
+
+.code pre .punctuation {
+  color: var(--code-punctuation);
+}
+
+.copy-button {
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--text-color);
+  background-color: white;
+  border: 1px solid var(--border-color);
   border-radius: 4px;
-  overflow: auto;
+  cursor: pointer;
+  transition: all var(--transition-time) ease;
+}
+
+.copy-button:hover {
+  background-color: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+}
+
+.copy-button.copied {
+  background-color: #2ecc71;
+  border-color: #2ecc71;
+  color: white;
+}
+
+/* 滚动条美化 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* 响应式设计 */
+@media screen and (max-width: 1024px) {
+  .layout {
+    padding: 16px;
+    gap: 16px;
+  }
+  
+  .layout aside {
+    width: 360px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .layout main {
+    margin: 0 -16px;
+  }
+  
+  .layout aside {
+    width: 100%;
+    position: static;
+    height: auto;
+  }
+
+  .code-card {
+    min-height: 400px;
+  }
+
+  /* 图标容器改为水平滚动 */
+  .icon-container {
+    display: grid;
+    grid-template-rows: repeat(2, 80px);
+    grid-auto-flow: column;
+    grid-auto-columns: 80px;
+    gap: 12px;
+    padding: 16px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+    border-radius: 0;
+  }
+
+  .icon-container::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+
+  /* 图标项在移动端的样式 */
+  .icon-item {
+    width: 80px;
+    height: 80px;
+  }
+
+  .icon-info .icon-item {
+    display: none;
+  }
+
+  .icon-name {
+    margin-left: 0;
+  }
+
+  /* 代码区域在移动端的样式 */
+  .code {
+    margin-top: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .layout {
+    padding: 12px;
+  }
+
+  .layout main {
+    margin: 0 -12px;
+  }
+  
+  .icon-container {
+    grid-template-rows: repeat(2, 70px);
+    grid-auto-columns: 70px;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .icon-item {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .code pre {
+    font-size: 12px;
+  }
+  
+  .icon-name {
+    font-size: 16px;
+  }
 }
