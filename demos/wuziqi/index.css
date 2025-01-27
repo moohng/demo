@@ -331,12 +331,6 @@ canvas.start {
     max-height: calc(100vh - 16px);
     gap: 6px;
   }
-  
-  /* canvas {
-    width: 100% !important;
-    height: auto !important;
-    max-height: calc(100vh - 140px) !important; /* 减去顶部和底部玩家信息的高度 */
-  } */
 
   .player {
     padding: 4px 12px;
