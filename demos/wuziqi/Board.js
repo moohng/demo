@@ -26,7 +26,7 @@ class Board {
     this.canvas = canvas;
 
     // 计算棋盘格子数量
-    const minGridCount = isMobile ? 23 : 15; // 移动端使用23路棋盘
+    const minGridCount = isMobile ? 18 : 20; // 移动端使用19路棋盘
     
     /**
      * 棋盘列数
@@ -92,6 +92,33 @@ class Board {
       const y = touch.clientY - rect.top;
       this.handleClick({ offsetX: x, offsetY: y });
     });
+
+    /**
+     * 出棋方变化的回调函数
+     * @type {((color: 'black' | 'white') => void) | null}
+     */
+    this.onPlayerChange = null;
+
+    /**
+     * 落子数量变化的回调函数
+     * @type {((color: 'black' | 'white', count: number) => void) | null}
+     */
+    this.onPieceCountChange = null;
+
+    /**
+     * 获胜的回调函数
+     * @type {((color: 'black' | 'white') => void) | null}
+     */
+    this.onWin = null;
+
+    /**
+     * 黑白双方的落子数量
+     * @type {{ black: number, white: number }}
+     */
+    this.pieceCounts = {
+      black: 0,
+      white: 0
+    };
   }
 
   /**
@@ -134,6 +161,12 @@ class Board {
       }
       return arr;
     })();
+
+    // 重置落子数量
+    this.pieceCounts = {
+      black: 0,
+      white: 0
+    };
   }
 
   /**
@@ -163,6 +196,27 @@ class Board {
    */
   start() {
     this.isStart = true;
+    
+    // 添加开局动画类
+    const boardContainer = this.canvas.instance?.parentElement;
+    const canvas = this.canvas.instance;
+    
+    if (boardContainer && canvas) {
+      // 先移除类以便重新触发动画
+      boardContainer.classList.remove('start');
+      canvas.classList.remove('start');
+      
+      // 使用 requestAnimationFrame 确保在下一帧添加类
+      requestAnimationFrame(() => {
+        boardContainer.classList.add('start');
+        canvas.classList.add('start');
+        
+        // 动画结束后移除类
+        setTimeout(() => {
+          boardContainer.classList.remove('start');
+        }, 1500); // 与 CSS 动画时长匹配
+      });
+    }
   }
 
   /**
@@ -172,7 +226,9 @@ class Board {
     this.canvas.clear();
     this.init();
     this.draw();
-    this.start();
+    this.start(); // 这里会触发开局动画
+    // 重置时触发出棋方变化事件
+    this.onPlayerChange?.('black');
   }
 
   /**
@@ -199,9 +255,15 @@ class Board {
       this.leftTop2rightBottom(x, y) ||
       this.leftBottom2rightTop(x, y);
     if (result) {
-      alert('恭喜，' + this.currentStep + '获胜！');
-
-      location.reload();
+      // 暂停游戏
+      this.isStart = false;
+      
+      // 延迟显示获胜提示
+      const winningColor = this.currentStep;
+      setTimeout(() => {
+        // 触发获胜事件
+        this.onWin?.(winningColor);
+      }, 500); // 500ms 延迟
     }
   }
 
@@ -330,8 +392,15 @@ class Board {
     // 棋盘二维数组标记
     this.cheeks[yWhere][xWhere] = this.nextStep;
 
+    // 更新落子数量
+    this.pieceCounts[this.nextStep]++;
+    this.onPieceCountChange?.(this.nextStep, this.pieceCounts[this.nextStep]);
+
     this.currentStep = this.nextStep;
     this.nextStep = this.nextStep === 'black' ? 'white' : 'black';
+
+    // 触发出棋方变化事件
+    this.onPlayerChange?.(this.nextStep);
 
     // 判断棋局结果
     this.calcResult(xWhere, yWhere);

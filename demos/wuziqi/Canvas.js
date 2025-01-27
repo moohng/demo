@@ -31,10 +31,16 @@ class Canvas {
     parent.appendChild(this.instance);
 
     if (!width || !height) {
-      // 移动端使用更大的尺寸
+      // 计算可用空间
       const isMobile = window.innerWidth <= 768;
-      const minScreenSize = Math.min(window.innerWidth, window.innerHeight);
-      const size = isMobile ? Math.min(minScreenSize * 0.9, 600) : Math.min(minScreenSize, 768);
+      const padding = isMobile ? 24 : 40; // 棋盘容器的内边距
+      const headerHeight = isMobile ? 56 : 76; // 顶部状态栏高度
+      const footerHeight = isMobile ? 48 : 60; // 底部按钮高度
+      const maxContentHeight = window.innerHeight - headerHeight - footerHeight - padding * 2;
+      const maxContentWidth = isMobile ? window.innerWidth - padding * 2 : Math.min(window.innerWidth - padding * 2, 768);
+      
+      // 取最小值确保为正方形
+      const size = Math.min(maxContentWidth, maxContentHeight);
       this.width = size;
       this.height = size;
     } else {

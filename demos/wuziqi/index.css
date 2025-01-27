@@ -1,10 +1,11 @@
 body {
   margin: 0;
-  height: 100vh;
+  min-height: 100vh;
   text-align: center;
   background: linear-gradient(135deg, #1a1a1a, #4a4a4a);
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  padding: 20px;
 }
 
 #chess {
@@ -17,43 +18,200 @@ body {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   padding: 20px;
   transition: all 0.3s ease;
+  max-width: calc(100vw - 40px);
+  max-height: calc(100vh - 40px);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 玩家信息 */
+.player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.player.active {
+  opacity: 1;
+  background-color: rgba(99, 102, 241, 0.15);
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+}
+
+.player-status {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.player .count {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  color: #4a4a4a;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.player .turn-indicator {
+  color: #4a4a4a;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.8;
+}
+
+.player.active .turn-indicator {
+  color: #6366f1;
+  opacity: 1;
+}
+
+.player-top {
+  transform-origin: bottom center;
+}
+
+.player-bottom {
+  transform-origin: top center;
+}
+
+.player .piece {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-right: 8px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.player .piece.black {
+  background: radial-gradient(circle at 30% 30%, #666 0%, #333 30%, #000 100%);
+  border: 1px solid #333;
+}
+
+.player .piece.white {
+  background: radial-gradient(circle at 30% 30%, #fff 0%, #eee 30%, #ddd 100%);
+  border: 1px solid #ccc;
+}
+
+.player .piece::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+}
+
+.player .text {
+  color: #4a4a4a;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* 棋盘容器 */
+.board-container {
+  position: relative;
+}
+
+/* 开局动画 */
+@keyframes boardStart {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2);
+    opacity: 0;
+  }
+}
+
+.board-container::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0) 70%);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.board-container.start::before {
+  animation: ripple 1.5s ease-out;
 }
 
 canvas {
   display: block;
   border-radius: 4px;
+  opacity: 0;
 }
 
-button {
-  width: 150px;
-  height: 44px;
-  text-align: center;
-  font-size: 16px;
-  font-weight: 500;
-  outline: none;
-  border: none;
-  border-radius: 44px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: #fff;
+canvas.start {
+  animation: boardStart 1.2s ease-out forwards;
 }
 
+/* 重置按钮 */
 .reset-btn {
-  margin: 16px 0 8px;
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -120%);
   width: 120px;
   height: 36px;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.1);
   border: 2px solid #4a4a4a;
   color: #4a4a4a;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .reset-btn:hover {
   background-color: #4a4a4a;
   color: #fff;
-  transform: translateY(-2px);
+  transform: translate(-50%, -120%) scale(1.05);
 }
 
-.cover {
+/* 获胜提示 */
+.win-modal {
   position: fixed;
   left: 0;
   top: 0;
@@ -61,42 +219,182 @@ button {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(8px);
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
-  transition: all 0.3s ease;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.start-btn {
+.win-modal.show {
+  display: flex;
+  opacity: 1;
+}
+
+.win-content {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.win-modal.show .win-content {
+  transform: translateY(0);
+}
+
+.win-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 24px;
+}
+
+.win-piece {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  margin: 0 8px;
+  vertical-align: middle;
+  box-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.win-piece.black {
+  background: radial-gradient(circle at 30% 30%, #666 0%, #333 30%, #000 100%);
+  border: 2px solid #333;
+}
+
+.win-piece.white {
+  background: radial-gradient(circle at 30% 30%, #fff 0%, #eee 30%, #ddd 100%);
+  border: 2px solid #ccc;
+}
+
+.win-piece::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+}
+
+.win-buttons {
+  margin-top: 24px;
+}
+
+.win-btn {
+  min-width: 120px;
+  margin: 0 8px;
+}
+
+.win-btn.primary {
   background: linear-gradient(135deg, #6366f1, #8b5cf6);
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
-.start-btn:hover {
+.win-btn.primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
 }
 
+.win-btn.secondary {
+  background-color: transparent;
+  border: 2px solid #6366f1;
+  color: #6366f1;
+}
+
+.win-btn.secondary:hover {
+  background-color: #6366f1;
+  color: white;
+  transform: translateY(-2px);
+}
+
 @media screen and (max-width: 768px) {
+  body {
+    padding: 8px;
+  }
+
   #chess {
     padding: 12px;
-    width: 90vw !important;
-    height: auto !important;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 16px);
+    gap: 6px;
   }
   
-  canvas {
+  /* canvas {
     width: 100% !important;
     height: auto !important;
+    max-height: calc(100vh - 140px) !important; /* 减去顶部和底部玩家信息的高度 */
+  } */
+
+  .player {
+    padding: 4px 12px;
   }
-  
-  button {
-    width: 120px;
-    height: 40px;
-    font-size: 14px;
+
+  .player .piece {
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
   }
-  
+
+  .player .text {
+    font-size: 12px;
+  }
+
+  .player .count {
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    font-size: 11px;
+  }
+
+  .player .turn-indicator {
+    font-size: 11px;
+  }
+
+  .player-status {
+    gap: 8px;
+  }
+
   .reset-btn {
-    width: 100px;
-    height: 32px;
+    width: 90px;
+    height: 28px;
+    font-size: 12px;
+    transform: translate(-50%, -105%);
+  }
+
+  .reset-btn:hover {
+    transform: translate(-50%, -105%) scale(1.05);
+  }
+
+  .win-content {
+    padding: 24px;
+    margin: 0 20px;
+  }
+
+  .win-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .win-piece {
+    width: 24px;
+    height: 24px;
+  }
+
+  .win-buttons {
+    margin-top: 20px;
+  }
+
+  .win-btn {
+    min-width: 100px;
+    margin: 0 6px;
   }
 }
