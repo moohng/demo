@@ -6,7 +6,7 @@
       :class="{ active: currentPath === item.path }"
       @click="$emit('select', item.path)"
     >
-      <div class="icon">{{ item.title.charAt(0) }}</div>
+      <div class="icon">{{ getIconText(item.title) }}</div>
       <div class="title">{{ item.title }}</div>
     </li>
   </ul>
@@ -27,6 +27,12 @@ defineProps<{
 defineEmits<{
   select: [path: string];
 }>();
+
+// 获取图标文字，如果是字母则大写
+const getIconText = (title: string) => {
+  const firstChar = title.charAt(0);
+  return /[a-zA-Z]/.test(firstChar) ? firstChar.toUpperCase() : firstChar;
+};
 </script>
 
 <style lang="scss" scoped>

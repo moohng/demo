@@ -30,10 +30,10 @@
   },
   "demos": [
     {
-      "title": "百度",
-      "description": "百度搜索",
-      "path": "https://www.baidu.com",
-      "author": "百度"
+      "title": "我的博客",
+      "description": "我的博客",
+      "path": "https://codingmo.com",
+      "author": "codingmo"
     }
   ]
 }

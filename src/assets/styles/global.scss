@@ -28,6 +28,37 @@
   --mobile-aside-width: 60vw;
 }
 
+/* 暗色主题变量 */
+:root[data-theme='dark'] {
+  @extend [data-theme='dark'];
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    /* 主题颜色 - 暗色 */
+    --primary-color: #409eff;
+    --primary-color-light: rgba(64, 158, 255, 0.1);
+
+    /* 文本颜色 - 暗色 */
+    --text-color: #e5eaf3;
+    --text-color-gray: #a3a6ad;
+    --text-color-light: #6c6e72;
+
+    /* 背景颜色 - 暗色 */
+    --bg-color: #141414;
+    --bg-color-gray: #1d1d1d;
+    --bg-color-hover: #2c2c2c;
+
+    /* 边框和滚动条 - 暗色 */
+    --border-color: #363637;
+    --scrollbar-color: #4c4d4f;
+
+    /* 导航列表相关颜色 - 暗色 */
+    --hover-color: #2c2c2c;
+    --active-color: rgba(64, 158, 255, 0.1);
+  }
+}
+
 body {
   margin: 0;
   padding: 0;
