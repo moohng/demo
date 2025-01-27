@@ -1,0 +1,70 @@
+# Demo 项目规则集
+# 版本: 1.0.0
+
+# 项目结构规则
+[structure]
+root = demos/                  # demo项目根目录
+required = index.html, package.json
+optional = README.md, src/, public/, assets/
+
+# 命名规则
+[naming]
+files = lowercase             # 文件名使用小写字母
+components = PascalCase       # 组件使用大驼峰
+variables = camelCase         # 变量使用小驼峰
+constants = UPPER_SNAKE_CASE  # 常量使用大写蛇形
+
+# 代码风格
+[style]
+indent = 2                    # 缩进空格数
+quotes = single               # 使用单引号
+lineEnding = LF              # 换行符类型
+
+# HTML 规则
+[html]
+doctype = html5
+lang = zh-CN
+charset = UTF-8
+viewport = width=device-width, initial-scale=1.0
+
+# CSS 规则
+[css]
+preprocessor = uno.css
+import = virtual:uno.css
+
+# JavaScript 规则
+[javascript]
+type = module
+extensions = .js, .ts, .jsx, .tsx
+
+# Package.json 必需字段
+[package]
+required = title, description, author
+
+# 构建工具
+[build]
+tool = vite
+type = multi-page-app
+
+# 开发流程
+[workflow]
+1. 在 demos/ 创建新项目目录
+2. 添加必需文件 (index.html, package.json)
+3. 编写项目代码
+4. 本地测试
+5. 提交代码
+
+# 推荐工具
+[tools]
+editor = Visual Studio Code
+extensions = ESLint, Prettier, TypeScript
+framework = Vite, UnoCSS
+
+# 最佳实践
+[practices]
+- 遵循 Vite 多页面应用规范
+- 使用模块化的代码组织
+- 编写清晰的文档
+- 保持代码风格一致
+- 添加必要的注释
+- 优化构建性能 

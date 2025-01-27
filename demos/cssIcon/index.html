@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CSS 图标</title>
+  <meta name="description" content="纯 CSS 实现的图标集合，支持代码展示和复制">
+  <meta name="keywords" content="css,icon,demo">
+  <title>CSS 图标展示</title>
   <link rel="stylesheet" href="global.css">
   <link data-name="icon" rel="stylesheet" href="./public/icon.css">
   <link data-name="icon" rel="stylesheet" href="/icon.css">
@@ -33,7 +35,7 @@
     </aside>
   </div>
 
-  <script mode="module">
+  <script type="module">
     // 自动解析css文件，获取图标class名
     const iconStyleSheet = [...document.styleSheets].find(styleSheet => styleSheet.ownerNode.dataset.name === 'icon');
     const iconClasses = [...(iconStyleSheet.cssRules || iconStyleSheet.rules)]
@@ -41,6 +43,7 @@
       .map(rule => rule.selectorText.slice(1).replace(/::.*/g, ''))
     const cssIcons = [...new Set(iconClasses)];
 
+    // 创建图标元素
     const iconFragment = document.createDocumentFragment();
     cssIcons.forEach((icon, index) => {
       const iconElement = document.createElement('i');
@@ -61,6 +64,7 @@
     let lastActiveIcon = iconContainer.children[0];
     updateSidebar(lastActiveIcon);
 
+    // 图标点击事件
     iconContainer.addEventListener('click', e => {
       const iconItem = e.target.closest('.icon-item');
       if (iconItem) {
@@ -75,6 +79,7 @@
       }
     });
 
+    // 更新侧边栏内容
     function updateSidebar(iconItem) {
       const cloneIcon = iconItem.cloneNode(true);
       const iconInfo = document.querySelector('.icon-info');
@@ -110,6 +115,7 @@
       commonCode.appendChild(commonPre);
     }
 
+    // 获取图标样式
     function getIconStyle(iconName) {
       const iconCssText = [];
       const rules = iconStyleSheet.cssRules || iconStyleSheet.rules;
@@ -122,6 +128,7 @@
       return cssFormat(iconCssText.join('\n'));
     }
 
+    // 格式化 CSS 代码
     function cssFormat(cssText) {
       return cssText
        .replace(/\{\s*/g, '{\n  ')
@@ -130,7 +137,7 @@
        .replace(/,\s*\./g, ',\n\.')
     }
 
-    // 格式化HTML代码
+    // 格式化 HTML 代码
     function formatHtmlCode(code) {
       // 处理空代码的情况
       if (!code || code.trim() === '') {
@@ -197,7 +204,7 @@
       return `<div class="line-numbers">${lineNumbers}</div><div class="code-content">${codeContent}</div>`;
     }
 
-    // 格式化CSS代码
+    // 格式化 CSS 代码
     function formatCssCode(code) {
       const lines = code.split('\n');
       const lineNumbers = lines
