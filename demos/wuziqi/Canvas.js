@@ -31,9 +31,12 @@ class Canvas {
     parent.appendChild(this.instance);
 
     if (!width || !height) {
-      const minValue = Math.min(window.innerWidth, window.innerHeight, 768);
-      this.width = minValue;
-      this.height = minValue;
+      // 移动端使用更大的尺寸
+      const isMobile = window.innerWidth <= 768;
+      const minScreenSize = Math.min(window.innerWidth, window.innerHeight);
+      const size = isMobile ? Math.min(minScreenSize * 0.9, 600) : Math.min(minScreenSize, 768);
+      this.width = size;
+      this.height = size;
     } else {
       this.width = width;
       this.height = height;
@@ -55,7 +58,7 @@ class Canvas {
    * 清空画布
    */
   clear() {
-    this.ctx.clearRect(0, 0, this.width, this.height);
+    this.ctx?.clearRect(0, 0, this.width, this.height);
   }
 }
 

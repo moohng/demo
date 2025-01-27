@@ -2,8 +2,9 @@ body {
   margin: 0;
   height: 100vh;
   text-align: center;
-  background: url(https://cdn.jsdelivr.net/gh/moohng/bucket@main/1629266026265-20180424190132_QkNzF.jpeg) center / cover no-repeat;
+  background: linear-gradient(135deg, #1a1a1a, #4a4a4a);
   box-sizing: border-box;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
 #chess {
@@ -11,11 +12,16 @@ body {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  background-color: #d2b48cef;
+  background-color: rgba(210, 180, 140, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  transition: all 0.3s ease;
 }
 
 canvas {
   display: block;
+  border-radius: 4px;
 }
 
 button {
@@ -23,9 +29,13 @@ button {
   height: 44px;
   text-align: center;
   font-size: 16px;
+  font-weight: 500;
   outline: none;
   border: none;
   border-radius: 44px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #fff;
 }
 
 .reset-btn {
@@ -33,7 +43,14 @@ button {
   width: 120px;
   height: 36px;
   background-color: transparent;
-  border: 1px solid #000;
+  border: 2px solid #4a4a4a;
+  color: #4a4a4a;
+}
+
+.reset-btn:hover {
+  background-color: #4a4a4a;
+  color: #fff;
+  transform: translateY(-2px);
 }
 
 .cover {
@@ -42,8 +59,44 @@ button {
   top: 0;
   right: 0;
   bottom: 0;
-  background-color: #00000080;
+  background-color: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.3s ease;
+}
+
+.start-btn {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.start-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+@media screen and (max-width: 768px) {
+  #chess {
+    padding: 12px;
+    width: 90vw !important;
+    height: auto !important;
+  }
+  
+  canvas {
+    width: 100% !important;
+    height: auto !important;
+  }
+  
+  button {
+    width: 120px;
+    height: 40px;
+    font-size: 14px;
+  }
+  
+  .reset-btn {
+    width: 100px;
+    height: 32px;
+  }
 }

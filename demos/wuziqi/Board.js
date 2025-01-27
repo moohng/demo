@@ -10,53 +10,66 @@ class Board {
    * @param {Canvas} canvas 画布
    * @param {number?} blankWidth 棋盘间隔宽度
    */
-  constructor(canvas, blankWidth = 28) {
+  constructor(canvas, blankWidth) {
     /**
      * 间隔宽度
      * @readonly
      */
-    this.blankWidth = blankWidth;
+    // 移动端使用更小的格子间距，以显示更多格子
+    const isMobile = window.innerWidth <= 768;
+    this.blankWidth = blankWidth || (isMobile ? 18 : 28);
+
     /**
      * 画布
      * @readonly
      */
     this.canvas = canvas;
 
+    // 计算棋盘格子数量
+    const minGridCount = isMobile ? 23 : 15; // 移动端使用23路棋盘
+    
     /**
      * 棋盘列数
      * @readonly
      */
-    this.columnCount = Math.floor(this.canvas.width / this.blankWidth);
+    this.columnCount = Math.max(minGridCount, Math.floor(this.canvas.width / this.blankWidth));
+    
     /**
      * 棋盘行数
      * @readonly
      */
-    this.rowCount = Math.floor(this.canvas.height / this.blankWidth);
+    this.rowCount = Math.max(minGridCount, Math.floor(this.canvas.height / this.blankWidth));
+
     /**
      * 宽度
      * @readonly
      */
     this.width = this.blankWidth * (this.columnCount - 1);
+    
     /**
      * 高度
      * @readonly
      */
     this.height = this.blankWidth * (this.rowCount - 1);
+    
     /**
      * 左边距
      * @readonly
      */
     this.left = (this.canvas.width - this.width) / 2;
+    
     /**
      * 上边距
      * @readonly
      */
     this.top = (this.canvas.height - this.height) / 2;
+    
     /**
      * 右边距
      * @readonly
      */
     this.right = this.left + this.width;
+    
     /**
      * 下边距
      * @readonly
@@ -67,37 +80,17 @@ class Board {
     this.init();
 
     // 监听点击事件
-    this.canvas.instance.addEventListener('click', ({ offsetX: x, offsetY: y }) => {
-      if (!this.isStart) return;
-
-      // 落子位置取整
-      let xWhere = Math.round((x - this.left) / this.blankWidth);
-      let yWhere = Math.round((y - this.top) / this.blankWidth);
-
-      // 落子位置边界处理
-      xWhere = xWhere < 0 ? 0 : xWhere > this.columnCount ? this.columnCount : xWhere;
-      yWhere = yWhere < 0 ? 0 : yWhere > this.rowCount ? this.rowCount : yWhere;
-      console.log(xWhere, yWhere);
-
-      // 判断是否可落子
-      if (!this.canDropdown(xWhere, yWhere)) {
-        alert('落子无效！');
-        return;
-      }
-
-      const piece = new Piece(this.nextStep);
-      piece.draw(this.canvas.ctx, xWhere * this.blankWidth + this.left, yWhere * this.blankWidth + this.top);
-
-      // 落子记录
-      this.pieces.push([xWhere, yWhere]);
-      // 棋盘二维数组标记
-      this.cheeks[yWhere][xWhere] = this.nextStep;
-
-      this.currentStep = this.nextStep;
-      this.nextStep = this.nextStep === 'black' ? 'white' : 'black';
-
-      // 判断棋局结果
-      this.calcResult(xWhere, yWhere);
+    this.canvas.instance?.addEventListener('click', this.handleClick.bind(this));
+    
+    // 添加触摸事件支持
+    this.canvas.instance?.addEventListener('touchstart', (e) => {
+      e.preventDefault(); // 阻止默认行为
+      const touch = e.touches[0];
+      const rect = this.canvas.instance?.getBoundingClientRect();
+      if (!rect) return;
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+      this.handleClick({ offsetX: x, offsetY: y });
     });
   }
 
@@ -290,6 +283,58 @@ class Board {
         return this.cheeks[endY - (j - startY)][i] === this.currentStep;
       }
     );
+  }
+
+  /**
+   * 处理点击事件
+   * @private
+   * @param {{ offsetX: number, offsetY: number }} param0
+   */
+  handleClick({ offsetX: x, offsetY: y }) {
+    if (!this.isStart) return;
+
+    // 获取画布的实际显示尺寸
+    const rect = this.canvas.instance.getBoundingClientRect();
+    const scaleX = this.canvas.width / rect.width;
+    const scaleY = this.canvas.height / rect.height;
+
+    // 计算实际坐标
+    const realX = x * scaleX;
+    const realY = y * scaleY;
+
+    // 计算落子位置
+    let xWhere = Math.round((realX - this.left) / this.blankWidth);
+    let yWhere = Math.round((realY - this.top) / this.blankWidth);
+
+    // 边界检查
+    if (xWhere < 0 || xWhere >= this.columnCount || yWhere < 0 || yWhere >= this.rowCount) {
+      console.log('超出边界', xWhere, yWhere);
+      return;
+    }
+
+    // 判断是否可落子
+    if (!this.canDropdown(xWhere, yWhere)) {
+      console.log('已有棋子', xWhere, yWhere);
+      return;
+    }
+
+    const piece = new Piece(this.nextStep);
+    piece.draw(
+      this.canvas.ctx,
+      xWhere * this.blankWidth + this.left,
+      yWhere * this.blankWidth + this.top
+    );
+
+    // 落子记录
+    this.pieces.push([xWhere, yWhere]);
+    // 棋盘二维数组标记
+    this.cheeks[yWhere][xWhere] = this.nextStep;
+
+    this.currentStep = this.nextStep;
+    this.nextStep = this.nextStep === 'black' ? 'white' : 'black';
+
+    // 判断棋局结果
+    this.calcResult(xWhere, yWhere);
   }
 }
 

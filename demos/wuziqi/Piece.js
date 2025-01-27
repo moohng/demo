@@ -19,11 +19,21 @@ class Piece {
    * @param {number} y
    * @param {number?} radius
    */
-  draw(ctx, x, y, radius = 12) {
+  draw(ctx, x, y, radius) {
+    // 根据设备类型设置棋子大小
+    const isMobile = window.innerWidth <= 768;
+    const defaultRadius = isMobile ? 8 : 12;
+    const pieceRadius = radius || defaultRadius;
+
     ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.arc(x, y, pieceRadius, 0, Math.PI * 2);
     ctx.fillStyle = this.color;
     ctx.fill();
+
+    // 添加棋子边框
+    ctx.strokeStyle = this.color === 'black' ? '#333' : '#ccc';
+    ctx.lineWidth = isMobile ? 1 : 2;
+    ctx.stroke();
     ctx.closePath();
   }
 }
