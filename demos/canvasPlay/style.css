@@ -1,14 +1,30 @@
 @import '@moohng/tui/lib/style/index.css';
 
+:root {
+  --primary-color: #00CCFF;
+  --text-color: #333;
+  --text-color-light: #666;
+  --bg-color: #fff;
+  --bg-color-gray: #f5f5f5;
+  --bg-color-translucent: rgba(255, 255, 255, 0.4);
+  --border-color: #ddd;
+  --shadow-color: rgba(0, 0, 0, 0.1);
+  --mask-color: rgba(44, 44, 44, 0.4);
+  --toolbar-height: 64px;
+  --sidebar-width: 44px;
+  --button-radius: 8px;
+}
+
 body {
   margin: 0;
   overflow: hidden;
-
-  --primaryColor: #00CCFF;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: var(--text-color);
 }
 
 canvas {
   position: absolute;
+  touch-action: none;
 }
 
 ul {
@@ -21,55 +37,76 @@ li {
 }
 
 /* 操作栏 */
-
 .toolbar {
   position: fixed;
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
+  gap: 12px;
+  padding: 12px;
+  background-color: var(--bg-color-translucent);
+  backdrop-filter: blur(8px);
+  border-radius: var(--button-radius);
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 .toolbar .button {
-  margin-left: 8px;
-  padding: 6px 8px;
-  color: var(--primaryColor);
-  border: 1px solid;
-  border-radius: 100px;
+  padding: 10px;
+  color: var(--primary-color);
+  background-color: var(--bg-color);
+  border: none;
+  border-radius: var(--button-radius);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.toolbar .button:hover {
+  background-color: var(--primary-color);
+  color: var(--bg-color);
 }
 
 .toolbar .button .iconfont {
-  font-size: 20px;
+  font-size: 24px;
+  line-height: 1;
 }
 
-/* 颜色选择 */
-
+/* 颜色和宽度选择器 */
 .color-bar,
 .width-bar {
-  padding: 8px 0;
   position: fixed;
-  top: 45%;
+  top: 50%;
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  background-color: #efefef;
-  border-radius: 100px;
+  gap: 8px;
+  padding: 12px 8px;
+  background-color: var(--bg-color-translucent);
+  backdrop-filter: blur(8px);
+  border-radius: var(--button-radius);
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 .color-bar {
-  right: 16px;
+  right: 20px;
 }
 
 .width-bar {
-  left: 16px;
+  left: 20px;
 }
 
 .color-bar .button,
 .width-bar .button {
   position: relative;
-  margin: 8px 0;
-  width: 44px;
+  width: var(--sidebar-width);
+  height: var(--sidebar-width);
   text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.color-bar .button:hover,
+.width-bar .button:hover {
+  transform: scale(1.1);
 }
 
 .button input[type="radio"],
@@ -77,107 +114,156 @@ li {
   display: block;
   margin: 0;
   width: 100%;
-  height: 22px;
+  height: 100%;
   opacity: 0;
+  cursor: pointer;
 }
 
 .button input[type="radio"] + .icon,
 .button input[type="color"] + .icon {
-  padding: 4px;
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 50%;
-  width: 14px;
-  height: 14px;
-  transform: translateX(-50%);
+  width: 28px;
+  height: 28px;
+  transform: translate(-50%, -50%);
   background-color: currentColor;
-  background-clip: content-box;
-  z-index: -1;
+  border-radius: var(--button-radius);
+  box-shadow: 0 2px 8px var(--shadow-color);
   pointer-events: none;
+  transition: all 0.2s ease;
 }
 
-.button input[type="radio"] + .icon {
-  border-radius: 16px;
-}
-
-.button input[type="radio"]:checked + .icon,
-.color-bar .button input[type="radio"]:checked + .icon {
-  box-shadow: 0 0 8px var(--primaryColor);
-}
-
-.color-bar .button input[type="radio"] + .icon {
-  box-shadow: 0 0 1px currentColor;
-}
-
-.width-bar .button input[type="radio"]::after {
-  width: inherit;
-  height: inherit;
+.button input[type="radio"]:checked + .icon {
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 0 0 2px var(--bg-color), 0 0 0 4px var(--primary-color);
 }
 
 .line {
-  margin: 4px 8px;
-  border-bottom: 1px solid #ddd;
+  margin: 8px 0;
+  border: none;
+  height: 1px;
+  background-color: var(--border-color);
 }
 
 /* 预览控制 */
-
 .preview-cover {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transition: opacity 0.4s;
-  background-color: rgba(44, 44, 44, .4);
-  z-index: 0;
+  background-color: var(--mask-color);
+  backdrop-filter: blur(4px);
+  transition: all 0.3s ease;
+  z-index: 10;
 }
 
 .preview-cover .icon-play {
-  color: #fff;
-  font-size: 44px;
+  color: var(--bg-color);
+  font-size: 48px;
   cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.preview-cover .icon-play:hover {
+  transform: scale(1.1);
 }
 
 .preview-cover .bottom {
   position: absolute;
   bottom: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .preview-cover .bottom .btn {
-  display: block;
-  margin: 16px 0;
-  padding: 8px 16px;
-  color: #666;
+  padding: 12px 24px;
+  color: var(--text-color-light);
+  font-size: 16px;
   text-align: center;
-  background-color: #fff;
-  border-radius: 6px;
   text-decoration: none;
+  background-color: var(--bg-color);
+  border-radius: var(--button-radius);
+  box-shadow: 0 2px 8px var(--shadow-color);
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preview-cover .bottom .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--shadow-color);
 }
 
 .preview-cover .bottom .btn:first-child {
-  color: var(--primaryColor);
+  color: var(--primary-color);
 }
 
 /* 弹窗 */
-
 .tui-dialog input[name="code"] {
-  padding: 8px 12px;
-  border: 1px solid #999;
-  border-radius: 6px;
+  width: 100%;
+  padding: 12px;
+  color: var(--text-color);
+  font-size: 16px;
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--button-radius);
+  transition: all 0.2s ease;
 }
 
 .tui-dialog input[name="code"]:focus {
-  border-color: var(--primaryColor);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 204, 255, 0.1);
   outline: none;
 }
 
 .tui-dialog .btn {
-  color: #333;
+  color: var(--text-color);
   letter-spacing: 2px;
   text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.tui-dialog .btn:hover {
+  color: var(--primary-color);
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+  .toolbar {
+    bottom: 16px;
+    padding: 8px;
+  }
+  
+  .toolbar .button {
+    padding: 8px;
+  }
+  
+  .toolbar .button .iconfont {
+    font-size: 20px;
+  }
+  
+  .color-bar,
+  .width-bar {
+    padding: 8px 6px;
+  }
+  
+  .color-bar {
+    right: 12px;
+  }
+  
+  .width-bar {
+    left: 12px;
+  }
+  
+  .preview-cover .bottom {
+    bottom: 32px;
+  }
+  
+  .preview-cover .bottom .btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
 }
