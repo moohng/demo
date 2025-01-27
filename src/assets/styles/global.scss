@@ -1,15 +1,31 @@
 :root {
+  /* 主题颜色 */
   --primary-color: #007bff;
+  --primary-color-light: #e6f0ff;
 
+  /* 文本颜色 */
   --text-color: #333;
   --text-color-gray: #666;
   --text-color-light: #999;
 
+  /* 背景颜色 */
   --bg-color: #fff;
   --bg-color-gray: #f6f6f7;
   --bg-color-hover: #efefef;
 
+  /* 边框和滚动条 */
   --border-color: #e2e2e3;
+  --scrollbar-color: #ddd;
+  
+  /* 导航列表相关颜色 */
+  --hover-color: #f5f5f5;
+  --active-color: #e6f0ff;
+
+  /* 布局尺寸 */
+  --aside-width: 280px;
+  --header-height: 60px;
+  --footer-height: 50px;
+  --mobile-aside-width: 60vw;
 }
 
 body {
