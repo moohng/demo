@@ -31,7 +31,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 16px;
+  padding: 8px 12px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   opacity: 0.8;
@@ -51,12 +51,14 @@ body {
 }
 
 .player-status {
+  margin-left: 16px;
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
 .player .count {
+  margin-left: 4px;
   display: inline-block;
   width: 24px;
   height: 24px;
@@ -82,10 +84,12 @@ body {
 }
 
 .player-top {
+  align-self: flex-start;
   transform-origin: bottom center;
 }
 
 .player-bottom {
+  align-self: flex-end;
   transform-origin: top center;
 }
 
