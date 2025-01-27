@@ -3,6 +3,7 @@
     <li 
       v-for="item in items" 
       :key="item.path"
+      :data-path="item.path"
       :class="{ active: currentPath === item.path }"
       @click="$emit('select', item.path)"
     >

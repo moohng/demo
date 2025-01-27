@@ -36,17 +36,27 @@ const hideProgress = ref(false);
 const fold = ref(false);
 const progress = ref(0);
 
-// 从 URL 参数中获取路径
-const getPathFromUrl = () => {
-  const params = new URLSearchParams(window.location.search);
-  return params.get('path') || '/demos/home/';
+// 从 hash 中获取路径
+const getPathFromHash = () => {
+  const hash = window.location.hash.slice(1); // 去掉 # 号
+  return hash || '/demos/home/';
 };
 
-// 更新 URL 参数
-const updateUrlPath = (path: string) => {
-  const url = new URL(window.location.href);
-  url.searchParams.set('path', path);
-  window.history.pushState({}, '', url);
+// 更新导航和内容
+const updateNavigation = (path: string) => {
+  if (currentDemo.value === path) return;
+  currentDemo.value = path;
+  progress.value = 0;
+  hideProgress.value = false;
+  updateProgress();
+  
+  if (window.innerWidth <= 768) {
+    fold.value = true;
+  }
+};
+
+const handleNavigate = (path: string) => {
+  window.location.hash = path;
 };
 
 const updateProgress = () => {
@@ -62,26 +72,11 @@ const updateProgress = () => {
   }, 100);
 };
 
-const handleNavigate = (path: string) => {
-  if (currentDemo.value === path) return;
-  
-  currentDemo.value = path;
-  progress.value = 0;
-  hideProgress.value = false;
-  updateProgress();
-  
-  // 更新 URL 参数
-  updateUrlPath(path);
-  
-  if (window.innerWidth <= 768) {
-    fold.value = true;
-  }
-};
-
 onMounted(() => {
-  // 初始化时从 URL 读取路径
-  currentDemo.value = getPathFromUrl();
   updateProgress();
+  // 初始化时从 hash 读取路径
+  const initialPath = getPathFromHash();
+  updateNavigation(initialPath);
   
   const handleResize = () => {
     if (window.innerWidth <= 768) {
@@ -92,14 +87,17 @@ onMounted(() => {
   window.addEventListener('resize', handleResize);
   handleResize();
   
-  // 监听浏览器前进后退
-  window.addEventListener('popstate', () => {
-    currentDemo.value = getPathFromUrl();
-  });
+  const handleHashChange = () => {
+    const path = getPathFromHash();
+    console.log('hash变化', path);
+    updateNavigation(path);
+  };
+  // 监听 hash 变化
+  window.addEventListener('hashchange', handleHashChange);
   
   return () => {
     window.removeEventListener('resize', handleResize);
-    window.removeEventListener('popstate', () => {});
+    window.removeEventListener('hashchange', handleHashChange);
   };
 });
 </script>

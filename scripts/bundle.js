@@ -29,7 +29,7 @@ function getDemoList(dirs) {
       const { title, name, description, author } = JSON.parse(fs.readFileSync(packagePath, 'utf-8'));
       return {
         title: title || name || dir,
-        path: routePath,
+        path: routePath.replace(/\\/g, '/'),
         key: dir,
         indexPath,
         description,
@@ -38,7 +38,7 @@ function getDemoList(dirs) {
     }
     return {
       title: dir,
-      path: routePath,
+      path: routePath.replace(/\\/g, '/'),
       key: dir,
       indexPath,
     };
