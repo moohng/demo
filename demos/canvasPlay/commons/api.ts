@@ -2,12 +2,6 @@ import AV from 'leancloud-storage';
 import { Toast } from '@moohng/tui/lib/index';
 import { Path } from './Paint';
 
-AV.init({
-  appId: 'BudB3sBLsiDhxOTvIW08Z9Sc-MdYXbMMI',
-  appKey: 'uaPttOCSivplWKgypDFZvEmX',
-  serverURL: 'https://budb3sbl.api.lncldglobal.com',
-});
-
 interface PaintPath {
   path: Path[];
   code: string;
@@ -22,6 +16,7 @@ interface PaintPath {
  */
 export const addPath = (data: PaintPath) => {
   const hide = Toast.loading('');
+  // 创建 Path 类
   const PathObj = AV.Object.extend('Path');
   const pathObj = new PathObj();
   Object.keys(data).forEach((key: string) => {

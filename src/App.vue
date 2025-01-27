@@ -36,6 +36,19 @@ const hideProgress = ref(false);
 const fold = ref(false);
 const progress = ref(0);
 
+// 从 URL 参数中获取路径
+const getPathFromUrl = () => {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('path') || '/demos/home/';
+};
+
+// 更新 URL 参数
+const updateUrlPath = (path: string) => {
+  const url = new URL(window.location.href);
+  url.searchParams.set('path', path);
+  window.history.pushState({}, '', url);
+};
+
 const updateProgress = () => {
   const timer = setInterval(() => {
     if (progress.value < 100) {
@@ -57,12 +70,17 @@ const handleNavigate = (path: string) => {
   hideProgress.value = false;
   updateProgress();
   
+  // 更新 URL 参数
+  updateUrlPath(path);
+  
   if (window.innerWidth <= 768) {
     fold.value = true;
   }
 };
 
 onMounted(() => {
+  // 初始化时从 URL 读取路径
+  currentDemo.value = getPathFromUrl();
   updateProgress();
   
   const handleResize = () => {
@@ -74,8 +92,14 @@ onMounted(() => {
   window.addEventListener('resize', handleResize);
   handleResize();
   
+  // 监听浏览器前进后退
+  window.addEventListener('popstate', () => {
+    currentDemo.value = getPathFromUrl();
+  });
+  
   return () => {
     window.removeEventListener('resize', handleResize);
+    window.removeEventListener('popstate', () => {});
   };
 });
 </script>
