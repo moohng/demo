@@ -1,45 +1,54 @@
 <template>
-  <div class="layout" :class="{ fold }">
-    <div class="expand-btn" @click="fold = !fold">
-      <i class="i-ri:menu-unfold-line" />
-    </div>
-    <div class="mask" @click="fold = true"></div>
-    <Sidebar
-      v-model:fold="fold"
-      :demo-list="demoList"
-      :current-path="currentDemo"
-      @navigate="handleNavigate"
-    />
-    <main class="main">
-      <div v-show="!hideProgress" class="progress-wrapper">
-        <ProgressBar :progress="progress" />
+  <div class="layout" :class="{ fold, 'is-home': isHome }">
+    <template v-if="!isHome">
+      <div class="expand-btn" @click="fold = !fold">
+        <i class="i-ri:menu-unfold-line" />
       </div>
-      <iframe 
-        v-if="currentDemo" 
-        class="content-frame" 
-        :src="currentDemo" 
-        frameborder="0" 
-        @load="progress = 100"
-      ></iframe>
+      <div class="mask" @click="fold = true"></div>
+      <Sidebar
+        v-model:fold="fold"
+        :demo-list="demoList"
+        :current-path="currentDemo"
+        @navigate="handleNavigate"
+      />
+    </template>
+    <main class="main">
+      <template v-if="isHome">
+        <HomePage :demo-list="demoList" @navigate="handleNavigate" />
+      </template>
+      <template v-else>
+        <div v-show="!hideProgress" class="progress-wrapper">
+          <ProgressBar :progress="progress" />
+        </div>
+        <iframe 
+          v-if="currentDemo" 
+          class="content-frame" 
+          :src="currentDemo" 
+          frameborder="0" 
+          @load="progress = 100"
+        ></iframe>
+      </template>
     </main>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { ProgressBar } from './components/ProgressBar';
 import Sidebar from './components/Sidebar.vue';
+import HomePage from './components/HomePage.vue';
 
 const demoList = ref(__DEMO_LIST__ as unknown as any[]);
-const currentDemo = ref('/demos/home/');
+const currentDemo = ref('/');
 const hideProgress = ref(false);
 const fold = ref(false);
 const progress = ref(0);
+const isHome = computed(() => currentDemo.value === '/' || !demoList.value.find(demo => demo.path === currentDemo.value));
 
 // 从 hash 中获取路径
 const getPathFromHash = () => {
   const hash = window.location.hash.slice(1); // 去掉 # 号
-  return hash || '/demos/home/';
+  return hash || '/';
 };
 
 // 更新导航和内容
@@ -109,6 +118,10 @@ onMounted(() => {
   .main {
     margin-left: var(--aside-width);
     transition: margin-left 0.3s ease;
+  }
+
+  &.is-home .main {
+    margin-left: 0;
   }
 
   &.fold {

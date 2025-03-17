@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from 'vue';
-import { ThemeMode, getThemeMode, setThemeMode } from '../../utils/theme';
+import { ThemeMode, getThemeMode, setThemeMode } from '@/utils/theme';
 
 const currentMode = ref<ThemeMode>('system');
 
