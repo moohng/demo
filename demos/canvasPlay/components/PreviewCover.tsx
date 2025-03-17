@@ -46,7 +46,7 @@ const PreviewCover = () => {
 
   return _show ? (
     <div className="preview-cover" style={{ opacity }}>
-      <i className="iconfont icon-play" onClick={handlePlay}></i>
+      <i className="i-ri:play-fill" onClick={handlePlay}></i>
       <div className="bottom">
         <a className="btn" onClick={handleGoPlay}>我也要玩~</a>
         <a className="btn" onClick={handlePwd}>输入口令</a>

@@ -2,6 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import App from './App';
 import AV from 'leancloud-storage';
+import 'virtual:uno.css';
 
 // 初始化 LeanCloud
 AV.init({

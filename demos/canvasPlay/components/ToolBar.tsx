@@ -4,7 +4,6 @@ import * as dan from '@moohng/dan';
 import { StateContext } from '../state';
 import { download } from '../commons/util';
 import { TypeKeys } from '../state/types';
-// import wx from 'weixin-js-sdk';
 
 const colorList = ['#ffffff', '#000000', '#FF3333', '#0066FF', '#FFFF33', '#33CC66'];
 
@@ -103,11 +102,11 @@ const ToolBar = () => {
     <>
       {/* <!-- 操作区域 --> */}
       <ul className="toolbar">
-        <li className="button" onClick={handleRevoke}><i className="iconfont icon-revoke"></i></li>
-        <li className="button" onClick={handleClear}><i className="iconfont icon-clear"></i></li>
-        <li className="button" onClick={handlePreview}><i className="iconfont icon-preview"></i></li>
-        {state.env === 'h5' && <li className="button" onClick={handleDownload}><i className="iconfont icon-download"></i></li>}
-        <li className="button" onClick={handleShare}><i className="iconfont icon-share"></i></li>
+        <li className="button" onClick={handleRevoke}><i className="i-ri:arrow-go-back-line" /></li>
+        <li className="button" onClick={handleClear}><i className="i-ri:delete-bin-line" /></li>
+        <li className="button" onClick={handlePreview}><i className="i-ri:play-circle-line" /></li>
+        {state.env === 'h5' && <li className="button" onClick={handleDownload}><i className="i-ri:download-2-line" /></li>}
+        <li className="button" onClick={handleShare}><i className="i-ri:share-line" /></li>
       </ul>
 
       {/* <!-- 颜色选择 --> */}

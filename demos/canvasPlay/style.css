@@ -1,25 +1,32 @@
 @import '@moohng/tui/lib/style/index.css';
 
 :root {
-  --primary-color: #00CCFF;
-  --text-color: #333;
-  --text-color-light: #666;
-  --bg-color: #fff;
-  --bg-color-gray: #f5f5f5;
-  --bg-color-translucent: rgba(255, 255, 255, 0.4);
-  --border-color: #ddd;
-  --shadow-color: rgba(0, 0, 0, 0.1);
-  --mask-color: rgba(44, 44, 44, 0.4);
-  --toolbar-height: 64px;
-  --sidebar-width: 44px;
-  --button-radius: 8px;
+  --primary-color: #4A90E2;
+  --primary-light: #68A6E8;
+  --accent-color: #FF6B6B;
+  --text-color: #2C3E50;
+  --text-light: #95A5A6;
+  --bg-color: #FFFFFF;
+  --bg-light: #F8F9FA;
+  --bg-translucent: rgba(255, 255, 255, 0.95);
+  --border-color: #E5E5E5;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --toolbar-height: 72px;
+  --sidebar-width: 48px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
   margin: 0;
   overflow: hidden;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   color: var(--text-color);
+  background: var(--bg-light);
 }
 
 canvas {
@@ -36,34 +43,35 @@ li {
   list-style: none;
 }
 
-/* 操作栏 */
+/* 工具栏 */
 .toolbar {
   position: fixed;
-  bottom: 20px;
+  bottom: 24px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 12px;
-  padding: 12px;
-  background-color: var(--bg-color-translucent);
-  backdrop-filter: blur(8px);
-  border-radius: var(--button-radius);
-  box-shadow: 0 4px 12px var(--shadow-color);
+  gap: 16px;
+  padding: 16px;
+  background: var(--bg-translucent);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
 }
 
 .toolbar .button {
-  padding: 10px;
-  color: var(--primary-color);
-  background-color: var(--bg-color);
-  border: none;
-  border-radius: var(--button-radius);
+  padding: 12px;
+  color: var(--text-color);
+  background: var(--bg-color);
+  border: 2px solid transparent;
+  border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: var(--transition);
 }
 
 .toolbar .button:hover {
-  background-color: var(--primary-color);
-  color: var(--bg-color);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
 }
 
 .toolbar .button .iconfont {
@@ -71,7 +79,13 @@ li {
   line-height: 1;
 }
 
-/* 颜色和宽度选择器 */
+.toolbar .button i {
+  font-size: 24px;
+  line-height: 1;
+  display: block;
+}
+
+/* 侧边工具栏 */
 .color-bar,
 .width-bar {
   position: fixed;
@@ -79,34 +93,35 @@ li {
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 12px 8px;
-  background-color: var(--bg-color-translucent);
-  backdrop-filter: blur(8px);
-  border-radius: var(--button-radius);
-  box-shadow: 0 4px 12px var(--shadow-color);
+  gap: 12px;
+  padding: 16px;
+  background: var(--bg-translucent);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
 }
 
 .color-bar {
-  right: 20px;
+  right: 24px;
 }
 
 .width-bar {
-  left: 20px;
+  left: 24px;
 }
 
 .color-bar .button,
 .width-bar .button {
   position: relative;
   width: var(--sidebar-width);
-  height: var(--sidebar-width);
-  text-align: center;
-  transition: transform 0.2s ease;
+  height: var(--sidebar-width); 
+  border-radius: var(--radius-md);
+  transition: var(--transition);
 }
 
 .color-bar .button:hover,
 .width-bar .button:hover {
   transform: scale(1.1);
+  box-shadow: var(--shadow-md);
 }
 
 .button input[type="radio"],
@@ -154,42 +169,62 @@ li {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: var(--mask-color);
-  backdrop-filter: blur(4px);
-  transition: all 0.3s ease;
+  background: rgba(44, 62, 80, 0.85);
+  backdrop-filter: blur(10px);
+  transition: var(--transition);
   z-index: 10;
 }
 
 .preview-cover .icon-play {
+  font-size: 64px;
   color: var(--bg-color);
-  font-size: 48px;
+  text-shadow: var(--shadow-lg);
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: var(--transition);
 }
 
-.preview-cover .icon-play:hover {
+.preview-cover .ri-play-fill {
+  font-size: 64px;
+  color: var(--bg-color);
+  text-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.preview-cover .ri-play-fill:hover {
+  transform: scale(1.1);
+}
+
+.preview-cover .i-ri\:play-fill {
+  font-size: 64px;
+  color: var(--bg-color);
+  text-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.preview-cover .i-ri\:play-fill:hover {
   transform: scale(1.1);
 }
 
 .preview-cover .bottom {
   position: absolute;
-  bottom: 40px;
+  bottom: 48px;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  gap: 16px;
 }
 
 .preview-cover .bottom .btn {
-  padding: 12px 24px;
-  color: var(--text-color-light);
+  padding: 14px 28px;
+  color: var(--text-color);
   font-size: 16px;
-  text-align: center;
+  font-weight: 500;
   text-decoration: none;
-  background-color: var(--bg-color);
-  border-radius: var(--button-radius);
-  box-shadow: 0 2px 8px var(--shadow-color);
+  background: var(--bg-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  transition: var(--transition);
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .preview-cover .bottom .btn:hover {
@@ -213,6 +248,14 @@ li {
   transition: all 0.2s ease;
 }
 
+.tui-dialog {
+  z-index: 99;
+}
+
+.tui-dialog input[name="code"] {
+  box-sizing: border-box;
+}
+
 .tui-dialog input[name="code"]:focus {
   border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(0, 204, 255, 0.1);
@@ -234,20 +277,25 @@ li {
 @media (max-width: 768px) {
   .toolbar {
     bottom: 16px;
-    padding: 8px;
+    padding: 12px;
+    gap: 12px;
   }
   
   .toolbar .button {
-    padding: 8px;
+    padding: 10px;
   }
   
   .toolbar .button .iconfont {
     font-size: 20px;
   }
   
+  .toolbar .button i {
+    font-size: 20px;
+  }
+  
   .color-bar,
   .width-bar {
-    padding: 8px 6px;
+    padding: 12px;
   }
   
   .color-bar {
@@ -259,11 +307,16 @@ li {
   }
   
   .preview-cover .bottom {
-    bottom: 32px;
+    left: 16px;
+    right: 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
   }
   
   .preview-cover .bottom .btn {
-    padding: 10px 20px;
-    font-size: 14px;
+    padding: 12px 24px;
+    font-size: 15px;
+    text-align: center;
   }
 }
