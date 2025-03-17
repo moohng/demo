@@ -1,8 +1,8 @@
 {
   "name": "canvas-play",
   "version": "1.0.0",
-  "title": "绘图与回放",
-  "description": "一个canvas绘图与轨迹回放的示例",
+  "title": "一个画板",
+  "description": "支持轨迹回放与口令分享",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
