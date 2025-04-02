@@ -1,0 +1,10 @@
+{
+  "title": "简历生成器",
+  "description": "根据Markdown文档生成简历",
+  "dependencies": {
+    "highlight.js": "^11.11.1",
+    "html2pdf.js": "^0.10.3",
+    "marked": "^15.0.7",
+    "vue": "^3.2.47"
+  }
+}
