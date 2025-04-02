@@ -10,7 +10,7 @@
     <div class="preview-container w-1/2 p-4 overflow-auto">
       <div 
         class="resume-preview h-full p-6 bg-white rounded-lg shadow-md" 
-        v-html="compiledMarkdown"
+        v-html="compiledMarkdownWithTemplate"
       ></div>
     </div>
     <div class="controls fixed bottom-4 right-4 flex gap-2">
@@ -20,7 +20,6 @@
       >
         <option value="default">默认主题</option>
         <option value="modern">现代主题</option>
-        <option value="classic">经典主题</option>
       </select>
       <button 
         @click="exportToPDF" 
@@ -37,6 +36,7 @@
 <script>
 import { marked } from 'marked';
 import { html2pdf } from 'html2pdf.js';
+import templates from '../../static/templates.json';
 
 export default {
   data() {
@@ -47,7 +47,12 @@ export default {
   },
   computed: {
     compiledMarkdown() {
-      return marked(this.markdownText);
+      return marked.parse(this.markdownText);
+    },
+    compiledMarkdownWithTemplate() {
+      const template = templates[this.selectedTheme];
+      const html = template.html.replace(/\{\{\s*content\s*\}\}/, this.compiledMarkdown);
+      return `<style>${template.css}</style>${html}`;
     }
   },
   methods: {
