@@ -66,15 +66,9 @@ export default {
     exportToPDF() {
       html2pdf().from(this.$el.querySelector('.resume-preview')).save('resume.pdf');
     },
-    loadTemplate() {
-      fetch('./static/markdown-template.md')
-        .then(response => response.text())
-        .then(text => {
-          this.markdownText = text;
-        })
-        .catch(error => {
-          console.error('加载模板失败:', error);
-        });
+    async loadTemplate() {
+      const md = await import('../examples/markdown-template.md?raw').then(res => res.default)
+      this.markdownText = md;
     }
   }
 };
