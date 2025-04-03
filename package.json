@@ -11,7 +11,8 @@
   },
   "workspaces": [
     "demos/canvasPlay",
-    "demos/resume-builder"
+    "demos/resumeBuilder",
+    "demos/tsPlayground"
   ],
   "author": "",
   "license": "ISC",
