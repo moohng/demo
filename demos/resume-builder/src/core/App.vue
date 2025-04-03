@@ -1,15 +1,15 @@
 <template>
   <div class="resume-builder flex h-screen w-full bg-gray-50">
-    <div class="editor-container w-1/2 p-4 border-r border-gray-200">
+    <div class="editor-container p-4 w-1/2 border-r border-gray-200">
       <textarea 
         v-model="markdownText" 
         placeholder="在此输入Markdown格式的简历内容..."
-        class="w-full h-full p-4 border border-gray-300 rounded-lg font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+        class="w-full h-full box-border p-4 border border-gray-300 rounded-lg font-mono text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
       ></textarea>
     </div>
-    <div class="preview-container w-1/2 p-4 overflow-auto">
+    <div class="preview-container -ml-4 w-1/2 p-4 overflow-auto">
       <div 
-        class="resume-preview h-full p-6 bg-white rounded-lg shadow-md" 
+        class="resume-preview min-h-full p-6 bg-white rounded-lg shadow-md" 
         v-html="compiledMarkdownWithTemplate"
       ></div>
     </div>

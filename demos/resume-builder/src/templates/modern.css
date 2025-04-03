@@ -1,13 +1,81 @@
 .modern-resume {
-  font-family: 'Helvetica Neue';
+  font-family: 'Helvetica Neue', sans-serif;
   color: #444;
+  line-height: 1.8;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px;
+  background: #fff;
 }
 
 .modern-resume header {
   background: #f8f9fa;
   padding: 20px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .modern-resume section {
   margin: 30px 0;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.modern-resume ul {
+  padding-left: 20px;
+}
+
+.modern-resume li {
+  margin-bottom: 8px;
+}
+
+.modern-resume h1 {
+  color: #2c3e50;
+  font-weight: 300;
+  margin-bottom: 20px;
+  font-size: 2.2em;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 15px;
+}
+
+.modern-resume h2 {
+  color: #3498db;
+  font-weight: 400;
+  margin: 30px 0 15px 0;
+  font-size: 1.6em;
+  position: relative;
+  padding-left: 15px;
+}
+
+.modern-resume h2:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.3em;
+  height: 1em;
+  width: 5px;
+  background: #3498db;
+}
+
+.modern-resume a {
+  color: #3498db;
+  text-decoration: none;
+}
+
+.modern-resume a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .modern-resume {
+    padding: 15px;
+  }
+  .modern-resume h1 {
+    font-size: 1.8em;
+  }
+  .modern-resume h2 {
+    font-size: 1.4em;
+  }
 }
