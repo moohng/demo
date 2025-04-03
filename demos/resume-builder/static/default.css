@@ -1,0 +1,12 @@
+.resume-template {
+  font-family: Arial;
+  color: #333;
+}
+
+.resume-template h1 {
+  color: #2c3e50;
+}
+
+.section {
+  margin-bottom: 20px;
+}

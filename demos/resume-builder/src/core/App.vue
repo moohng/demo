@@ -36,13 +36,14 @@
 <script>
 import { marked } from 'marked';
 import { html2pdf } from 'html2pdf.js';
-import templates from '../../static/templates.json';
+import { getTemplates } from '../templates';
 
 export default {
   data() {
     return {
       markdownText: '',
-      selectedTheme: 'default'
+      selectedTheme: 'default',
+      templates: null,
     };
   },
   computed: {
@@ -50,10 +51,17 @@ export default {
       return marked.parse(this.markdownText);
     },
     compiledMarkdownWithTemplate() {
-      const template = templates[this.selectedTheme];
+      const template = this.templates?.[this.selectedTheme];
+      if (!template) {
+        return this.compiledMarkdown;
+      }
       const html = template.html.replace(/\{\{\s*content\s*\}\}/, this.compiledMarkdown);
       return `<style>${template.css}</style>${html}`;
     }
+  },
+  async created() {
+    this.templates = await getTemplates();
+    console.log('模板加载完成:', this.templates);
   },
   methods: {
     exportToPDF() {
