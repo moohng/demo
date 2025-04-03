@@ -1,4 +1,4 @@
-.resume-template {
+.default-resume {
   font-family: 'Arial', sans-serif;
   color: #333;
   line-height: 1.8;
@@ -8,7 +8,7 @@
   background: #fff;
 }
 
-.resume-template h1 {
+.default-resume h1 {
   color: #2c3e50;
   border-bottom: 2px solid #3498db;
   padding-bottom: 10px;
@@ -16,7 +16,7 @@
   font-size: 2.2em;
 }
 
-.resume-template h2 {
+.default-resume h2 {
   color: #2980b9;
   margin: 30px 0 15px 0;
   font-size: 1.6em;
@@ -24,7 +24,7 @@
   padding-left: 10px;
 }
 
-.resume-template h3 {
+.default-resume h3 {
   color: #444;
   margin: 20px 0 10px 0;
   font-size: 1.2em;
@@ -37,31 +37,31 @@
   border-radius: 4px;
 }
 
-.resume-template ul {
+.default-resume ul {
   padding-left: 20px;
 }
 
-.resume-template li {
+.default-resume li {
   margin-bottom: 8px;
 }
 
-.resume-template a {
+.default-resume a {
   color: #2980b9;
   text-decoration: none;
 }
 
-.resume-template a:hover {
+.default-resume a:hover {
   text-decoration: underline;
 }
 
 @media (max-width: 768px) {
-  .resume-template {
+  .default-resume {
     padding: 15px;
   }
-  .resume-template h1 {
+  .default-resume h1 {
     font-size: 1.8em;
   }
-  .resume-template h2 {
+  .default-resume h2 {
     font-size: 1.4em;
   }
 }

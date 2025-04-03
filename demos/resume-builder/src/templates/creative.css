@@ -1,0 +1,71 @@
+.creative-resume {
+  font-family: 'Montserrat', sans-serif;
+  color: #444;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 30px;
+  background: #fff;
+}
+
+.creative-resume header {
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  padding: 30px;
+  margin-bottom: 30px;
+  color: white;
+}
+
+.creative-resume section {
+  margin: 30px 0;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.creative-resume h1 {
+  color: #6e8efb;
+  font-weight: 700;
+  margin-bottom: 20px;
+  font-size: 2.2em;
+}
+
+.creative-resume h2 {
+  color: #a777e3;
+  font-weight: 600;
+  margin: 25px 0 15px 0;
+  font-size: 1.6em;
+  border-left: 4px solid #a777e3;
+  padding-left: 10px;
+}
+
+.creative-resume ul {
+  padding-left: 20px;
+  list-style-type: square;
+}
+
+.creative-resume li {
+  margin-bottom: 10px;
+}
+
+.creative-resume a {
+  color: #6e8efb;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.creative-resume a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .creative-resume {
+    padding: 15px;
+  }
+  .creative-resume h1 {
+    font-size: 1.8em;
+  }
+  .creative-resume h2 {
+    font-size: 1.4em;
+  }
+}

@@ -18,8 +18,7 @@
         v-model="selectedTheme" 
         class="px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500"
       >
-        <option value="default">默认主题</option>
-        <option value="modern">现代主题</option>
+        <option v-for="template in templates" :key="template.name" :value="template.name">{{ template.name }}</option>
       </select>
       <button 
         @click="exportToPDF" 
@@ -43,7 +42,7 @@ export default {
     return {
       markdownText: '',
       selectedTheme: 'default',
-      templates: null,
+      templates: [],
     };
   },
   computed: {
@@ -51,7 +50,7 @@ export default {
       return marked.parse(this.markdownText);
     },
     compiledMarkdownWithTemplate() {
-      const template = this.templates?.[this.selectedTheme];
+      const template = this.templates?.find(t => t.name === this.selectedTheme);
       if (!template) {
         return this.compiledMarkdown;
       }
@@ -60,8 +59,8 @@ export default {
     }
   },
   async created() {
-    this.templates = await getTemplates();
-    console.log('模板加载完成:', this.templates);
+    this.templates = await getTemplates(); // 确保在组件创建后加载模板
+    console.log('加载模板', this.templates);
   },
   methods: {
     exportToPDF() {

@@ -1,16 +1,18 @@
-const html = `<div class='resume-template'>{{ content }}</div>`
-
 export async function getTemplates() {
-  const defaultStyles = await import('./default.css?raw').then(res => res.default)
-  const modernStyles = await import('./modern.css?raw').then(res => res.default)
-  return {
-    default: {
-      html,
-      css: defaultStyles,
-    },
-    modern: {
-      html,
-      css: modernStyles,
-    },
+  const modules = import.meta.glob('./**/*.css', { query: '?raw', import: 'default' });
+  console.log('===== getTemplates =====', modules);
+  const templates = [];
+  for (const key in modules) {
+    if (Object.hasOwnProperty.call(modules, key)) {
+      const name = key.replace('./', '').replace('.css', '');
+      const cssContent = await modules[key]();
+      templates.push({ 
+        name, 
+        html: `<div class='${name}-resume'>{{ content }}</div>`, 
+        css: cssContent
+      });
+    }
   }
+  
+  return templates;
 }
