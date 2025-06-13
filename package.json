@@ -31,6 +31,12 @@
   },
   "demos": [
     {
+      "title": "前端知识库",
+      "description": "个人整理的大前端笔记",
+      "path": "https://ntoe.codingmo.com",
+      "author": "codingmo"
+    },
+    {
       "title": "我的博客",
       "description": "基于Hexo的个人博客",
       "path": "https://codingmo.com",
