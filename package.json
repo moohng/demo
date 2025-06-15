@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "node scripts/dev.js",
     "build": "node scripts/build.js",
+    "serve": "nodemon server/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "workspaces": [
@@ -20,7 +21,11 @@
     "@babel/core": "^7.14.6",
     "@babel/preset-env": "^7.14.7",
     "@iconify-json/ri": "^1.2.3",
+    "@koa/router": "^13.1.0",
     "@vitejs/plugin-vue": "^5.0.4",
+    "koa": "^3.0.0",
+    "koa-router": "^13.0.1",
+    "nodemon": "^3.1.10",
     "sass": "^1.80.3",
     "unocss": "^0.63.6",
     "vite": "^5.0.10"
