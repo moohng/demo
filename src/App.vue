@@ -22,6 +22,7 @@
         </div>
         <iframe 
           v-if="currentDemo" 
+          ref="iframe"
           class="content-frame" 
           :src="currentDemo" 
           frameborder="0" 
@@ -33,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch, nextTick } from 'vue';
 import { ProgressBar } from './components/ProgressBar';
 import Sidebar from './components/Sidebar.vue';
 import HomePage from './components/HomePage.vue';
@@ -43,7 +44,7 @@ const currentDemo = ref('/');
 const hideProgress = ref(false);
 const fold = ref(false);
 const progress = ref(0);
-const isHome = computed(() => currentDemo.value === '/' || !demoList.value.find(demo => demo.path === currentDemo.value));
+const isHome = computed(() => currentDemo.value === '/' || !demoList.value.some(demo => demo.path === currentDemo.value || (demo.path.startsWith('http') && currentDemo.value.includes(demo.path))));
 
 // 从 hash 中获取路径
 const getPathFromHash = () => {
@@ -109,6 +110,32 @@ onMounted(() => {
     window.removeEventListener('hashchange', handleHashChange);
   };
 });
+
+const iframe = ref<HTMLIFrameElement | null>(null);
+watch(isHome, async (val) => {
+  if (val) {
+    return;
+  }
+  await nextTick();
+  console.log('iframe ref:', iframe.value);
+
+  // window.postMessage('主动发送了一条不指定目标的消息', '*');
+
+  const handleMessage = (event: MessageEvent) => {
+    console.log('接收到iframe发来的message:', event.data);
+    alert('接收到iframe发来的消息: ' + JSON.stringify(event.data));
+    iframe.value?.contentWindow?.postMessage({
+      type: 'json',
+      data: {
+        message: '我已收到消息，回复给iframe',
+      },
+    }, currentDemo.value);
+  };
+  window.addEventListener('message', handleMessage);
+  return () => {
+    window.removeEventListener('message', handleMessage);
+  };
+}, { once: true });
 </script>
 
 <style lang="scss" scoped>
