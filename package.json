@@ -25,6 +25,7 @@
     "@vitejs/plugin-vue": "^5.0.4",
     "koa": "^3.0.0",
     "koa-router": "^13.0.1",
+    "koa-static": "^5.0.0",
     "nodemon": "^3.1.10",
     "sass": "^1.80.3",
     "unocss": "^0.63.6",
