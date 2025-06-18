@@ -11,6 +11,9 @@
   <link data-name="icon" rel="stylesheet" href="/icon.css">
 </head>
 <body>
+  <div class="top-bar">
+    <a href="https://note.codingmo.com/articles/css-icon" target="_blank">为了找一个close图标，最后手搓了一个图标管理页面</a>
+  </div>
   <div class="layout">
     <main>
       <div class="icon-container"></div>
@@ -156,7 +159,7 @@
       // 2. 格式化代码（处理换行和缩进）
       let formattedCode = decodedCode
         .replace(/>\s+</g, '>\n<')  // 标签之间的换行
-        .replace(/(<[^>]+>)(?!\n)/g, '$1\n')  // 确保每个标签后都有换行
+        .replace(/(<[^>]+>)(?![\n(</)])/g, '$1\n')  // 确保每个标签后都有换行
         .split('\n')
         .map(line => line.trim())
         .filter(line => line.length > 0)

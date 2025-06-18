@@ -30,6 +30,17 @@ body {
   background-color: var(--background-color);
 }
 
+.top-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 4px 16px;
+  background-color: var(--code-punctuation);
+  font-size: 14px;
+  z-index: 1000;
+}
+
 /* 布局样式 */
 .layout {
   padding: 20px;
