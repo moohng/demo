@@ -221,7 +221,7 @@ onMounted(() => {
 
 .demo-card {
   padding: 1.5rem;
-  background: var(--bg-color);
+  background: var(--bg-color-gray);
   border-radius: 8px;
   border: 1px solid var(--border-color);
   cursor: pointer;
