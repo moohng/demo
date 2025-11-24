@@ -1,0 +1,17 @@
+{
+  "name": "markdown-writer",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "marked": "^9.0.0",
+    "highlight.js": "^11.8.0"
+  },
+  "devDependencies": {
+    "vite": "^4.4.0"
+  }
+}
