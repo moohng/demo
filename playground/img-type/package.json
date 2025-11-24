@@ -1,0 +1,15 @@
+{
+  "name": "file-type",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "file-type": "latest"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
