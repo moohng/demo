@@ -21,7 +21,7 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, toggleCollap
   return (
     <aside 
       className={`sticky top-8 max-h-[calc(100vh-4rem)] z-40 bg-[#0f172a]/80 backdrop-blur-xl border border-glassBorder rounded-2xl transition-all duration-300 flex flex-col hidden md:flex ${
-        isCollapsed ? 'w-20' : 'w-64'
+        isCollapsed ? 'w-20' : 'w-44'
       }`}
     >
       <div className="p-3 flex justify-center shrink-0">

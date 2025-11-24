@@ -28,19 +28,14 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, onDelete, onEdit, editMode, l
     // 1. Critical: Stop propagation to prevent triggering the card's edit action
     e.preventDefault();
     e.stopPropagation();
-    
-    // 2. Secondary Confirmation
-    const isConfirmed = window.confirm(`${t.deleteConfirm} "${link.title}"?`);
-    
-    if (isConfirmed && onDelete) {
-        onDelete(link.id);
-    }
+
+    onDelete?.(link.id);
   };
 
   const handleEditClick = (e: React.MouseEvent) => {
     if (editMode && onEdit) {
-        e.preventDefault();
-        onEdit(link);
+      e.preventDefault();
+      onEdit(link);
     }
   };
 
@@ -48,17 +43,17 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, onDelete, onEdit, editMode, l
   const CardContent = () => (
     <>
       <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-gray-800/50 p-1.5 border border-gray-700 overflow-hidden flex items-center justify-center">
-          <img 
-            src={getFavicon(link.url)} 
-            alt="icon" 
-            className="w-full h-full object-contain"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = 'none';
-              (e.target as HTMLImageElement).parentElement!.style.backgroundColor = '#4f46e5';
-            }}
-          />
+        <img
+          src={getFavicon(link.url)}
+          alt="icon"
+          className="w-full h-full object-contain"
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = 'none';
+            (e.target as HTMLImageElement).parentElement!.style.backgroundColor = '#4f46e5';
+          }}
+        />
       </div>
-      
+
       <div className="flex flex-col overflow-hidden w-full">
         <h3 className={`font-semibold text-sm truncate transition-colors ${editMode ? 'text-blue-200' : 'text-gray-100 group-hover:text-primary'}`}>
           {link.title}
@@ -69,35 +64,34 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, onDelete, onEdit, editMode, l
       </div>
 
       <div className={`absolute top-4 right-4 transition-opacity ${editMode ? 'hidden' : 'opacity-0 group-hover:opacity-100'}`}>
-         <ExternalLink size={14} className="text-gray-500" />
+        <ExternalLink size={14} className="text-gray-500" />
       </div>
     </>
   );
 
   return (
-    <div 
-      className={`group relative flex flex-col p-4 rounded-xl border bg-glass backdrop-blur-md transition-all duration-300 ${
-        editMode 
-          ? 'border-dashed border-blue-500/40 bg-blue-500/5 hover:bg-blue-500/10 hover:border-blue-500/60 cursor-pointer' 
-          : 'border-glassBorder hover:bg-glassHover hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/20'
-      }`}
+    <div
+      className={`group relative flex flex-col p-4 rounded-xl border bg-glass backdrop-blur-md transition-all duration-300 ${editMode
+        ? 'border-dashed border-blue-500/40 bg-blue-500/5 hover:bg-blue-500/10 hover:border-blue-500/60 cursor-pointer'
+        : 'border-glassBorder hover:bg-glassHover hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/20'
+        }`}
       // In edit mode, the entire card triggers the edit modal
       onClick={editMode ? handleEditClick : undefined}
     >
       {editMode ? (
         // Edit Mode: Static div wrapper (pointer-events-none on children ensures click hits parent)
         <div className="flex-grow flex items-start gap-3 opacity-80 pointer-events-none">
-            <CardContent />
+          <CardContent />
         </div>
       ) : (
         // View Mode: Actual anchor tag for navigation
-        <a 
-            href={link.url} 
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-grow flex items-start gap-3 cursor-pointer"
+        <a
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex-grow flex items-start gap-3 cursor-pointer"
         >
-            <CardContent />
+          <CardContent />
         </a>
       )}
 
