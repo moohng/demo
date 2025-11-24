@@ -1,10 +1,11 @@
 import { join } from 'path';
 import fs from 'fs';
-import { build, createServer, mergeConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
+import { build, createServer, mergeConfig, loadEnv } from 'vite';
 import UnoCSS from 'unocss/vite';
-import presetUno from '@unocss/preset-uno';
+import presetWind from '@unocss/preset-wind3';
 import presetIcons from '@unocss/preset-icons';
+import react from '@vitejs/plugin-react';
+
 import rootPackage from '../package.json';
 
 const relativeRoot = (...args) => join(process.cwd(), ...args);
@@ -51,42 +52,49 @@ function getDemoList(dirs) {
   return [].concat(demos, outerDemos);
 }
 
-const commonConfig = {
-  plugins: [
-    UnoCSS({
-      presets: [
-        presetUno(),
-        presetIcons({
-          prefix: 'i-',
-          extraProperties: {
-            display: 'inline-block',
-            'vertical-align': 'middle',
-            'line-height': '1',
-          },
-        }),
-      ],
-    }),
-    vue(),
-  ],
-  resolve: {
-    alias: {
-      '@': relativeRoot('src'),
+const getCommonConfig = (mode) => {
+  const dirs = getDemoDirs();
+  const demoList = getDemoList(dirs);
+
+  const env = loadEnv(mode, '.', '');
+
+  return {
+    plugins: [
+      UnoCSS({
+        presets: [
+          presetWind(),
+          presetIcons({
+            prefix: 'i-',
+            extraProperties: {
+              display: 'inline-block',
+              'vertical-align': 'middle',
+              'line-height': '1',
+            },
+          }),
+        ],
+      }),
+      react(),
+    ],
+    define: {
+      __DEMO_LIST__: JSON.stringify(demoList),
+      'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
+      'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
     },
-  },
+    resolve: {
+      alias: {
+        '@': relativeRoot('src'),
+      },
+    },
+  };
 };
 
 async function runDev() {
-  const dirs = getDemoDirs();
-  const demoList = getDemoList(dirs);
   const server = await createServer({
     configFile: false,
-    ...commonConfig,
+    ...getCommonConfig('development'),
     server: {
       host: '0.0.0.0',
       port: 8824,
-    },
-    define: {
-      __DEMO_LIST__: JSON.stringify(demoList),
     },
   });
 
@@ -95,20 +103,15 @@ async function runDev() {
 }
 
 async function runBuild() {
-  const dirs = getDemoDirs();
-  const demoList = getDemoList(dirs);
   await build({
-    ...commonConfig,
-    define: {
-      __DEMO_LIST__: JSON.stringify(demoList),
-    },
+    ...getCommonConfig('production'),
   });
 
   await Promise.all(dirs.map(async (dir) => {
     const config = await import(relativeRoot('demos', dir, 'vite.config.js')).catch(() => ({ default: {} }));
     console.log('===== build demo', config);
     return build(mergeConfig({
-      ...commonConfig,
+      ...getCommonConfig('production'),
       root: relativeRoot('demos', dir),
       base: join('/demos', dir, '/'),
       build: {
