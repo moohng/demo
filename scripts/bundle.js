@@ -107,6 +107,7 @@ async function runBuild() {
     ...getCommonConfig('production'),
   });
 
+  const dirs = getDemoDirs();
   await Promise.all(dirs.map(async (dir) => {
     const config = await import(relativeRoot('demos', dir, 'vite.config.js')).catch(() => ({ default: {} }));
     console.log('===== build demo', config);
