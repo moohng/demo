@@ -8,6 +8,8 @@ import react from '@vitejs/plugin-react';
 
 import rootPackage from '../package.json';
 
+console.log("runtime", process.versions.bun);
+
 const relativeRoot = (...args) => join(process.cwd(), ...args);
 
 // 获取所有 demo 示例，忽略下划线开头的目录
