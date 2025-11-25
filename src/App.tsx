@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Bot, Plus, Github, Sparkles, Loader2, Upload, HelpCircle } from 'lucide-react';
 import Header from './components/Header';
 import CategorySection from './components/CategorySection';
+import Footer from './components/Footer';
 import GeminiChat from './components/GeminiChat';
 import Sidebar from './components/Sidebar';
 import { Toast } from './components/Toast';
@@ -693,6 +694,7 @@ function App() {
               ))}
             </div>
           )}
+          <Footer lang={lang} />
         </main>
       </div>
 

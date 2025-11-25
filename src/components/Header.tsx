@@ -127,7 +127,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, togg
       </div>
 
       {/* Sticky Search Bar - shows when scrolled */}
-      <div className={`fixed top-6 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${isScrolled ? 'translate-y-0 opacity-100' : '-translate-y-20 opacity-0 pointer-events-none'
+      <div className={`fixed top-8 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${isScrolled ? 'translate-y-0 opacity-100' : '-translate-y-20 opacity-0 pointer-events-none'
         }`}>
         <div className="bg-gray-900/95 backdrop-blur-xl border border-gray-700 rounded-2xl shadow-2xl px-4 py-3 w-[600px] max-w-[90vw]">
           <div className="relative group">
