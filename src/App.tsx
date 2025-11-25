@@ -5,6 +5,7 @@ import CategorySection from './components/CategorySection';
 import GeminiChat from './components/GeminiChat';
 import Sidebar from './components/Sidebar';
 import { Toast } from './components/Toast';
+import { SearchOverlay } from './components/SearchOverlay';
 import { ImportConfirmModal } from './components/modals/ImportConfirmModal';
 import { ManualImportModal } from './components/modals/ManualImportModal';
 import { HelpModal } from './components/modals/HelpModal';
@@ -14,6 +15,7 @@ import { INITIAL_DATA, TRANSLATIONS, CATEGORY_NAMES } from './constants';
 import { analyzeLinkInfo, recommendTools } from './services/geminiService';
 import { useNotification } from './hooks/useNotification';
 import { useImport } from './hooks/useImport';
+import { useSearchHistory } from './hooks/useSearchHistory';
 
 function App() {
   // Core State
@@ -25,6 +27,7 @@ function App() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [lang, setLang] = useState<Language>('cn');
   const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showSearchOverlay, setShowSearchOverlay] = useState(false);
 
   // AI States
   const [isAiSearch, setIsAiSearch] = useState(false);
@@ -42,6 +45,7 @@ function App() {
 
   // Custom Hooks
   const { notification, showNotification } = useNotification();
+  const { history: searchHistory, addToHistory, removeFromHistory } = useSearchHistory();
   const {
     isImporting,
     importProgress,
@@ -88,13 +92,12 @@ function App() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Keyboard shortcut
+  // Keyboard shortcut for search
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
-        const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
-        searchInput?.focus();
+        setShowSearchOverlay(true);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -301,6 +304,20 @@ function App() {
     <div className="min-h-screen bg-[#0f172a] text-gray-100 selection:bg-primary/30 selection:text-white flex flex-col relative">
 
       <Toast {...notification} />
+
+      <SearchOverlay
+        isOpen={showSearchOverlay}
+        onClose={() => setShowSearchOverlay(false)}
+        categories={categories}
+        recentLinks={searchHistory}
+        onAddToRecent={addToHistory}
+        onRemoveFromRecent={removeFromHistory}
+        lang={lang}
+        isAiSearch={isAiSearch}
+        aiRecommendations={aiRecommendations}
+        isAiSearching={isAiSearching}
+      />
+
       <ImportProgressOverlay {...importProgress} lang={lang} />
 
       <ImportConfirmModal
@@ -423,6 +440,7 @@ function App() {
         setEditMode={setEditMode}
         isAiSearch={isAiSearch}
         toggleAiSearch={toggleAiSearch}
+        onSearchClick={() => setShowSearchOverlay(true)}
       />
 
       <div className="flex flex-1 overflow-hidden">

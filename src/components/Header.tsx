@@ -12,9 +12,10 @@ interface HeaderProps {
   setEditMode: (mode: boolean) => void;
   isAiSearch: boolean;
   toggleAiSearch: () => void;
+  onSearchClick?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, toggleLang, editMode, setEditMode, isAiSearch, toggleAiSearch }) => {
+const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, toggleLang, editMode, setEditMode, isAiSearch, toggleAiSearch, onSearchClick }) => {
   const [greeting, setGreeting] = useState('');
   const [time, setTime] = useState('');
   const t = TRANSLATIONS[lang];
@@ -66,8 +67,9 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, togg
           type="text"
           placeholder={t.searchPlaceholder}
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-gray-900/60 border border-gray-700 hover:border-gray-600 focus:border-primary/50 text-white text-lg rounded-2xl py-4 pl-12 pr-4 shadow-xl focus:ring-4 focus:ring-primary/10 transition-all outline-none placeholder:text-gray-600"
+          readOnly
+          onClick={onSearchClick}
+          className="w-full bg-gray-900/60 border border-gray-700 hover:border-gray-600 focus:border-primary/50 text-white text-lg rounded-2xl py-4 pl-12 pr-4 shadow-xl focus:ring-4 focus:ring-primary/10 transition-all outline-none placeholder:text-gray-600 cursor-pointer"
         />
         <div className="absolute inset-y-0 right-4 flex items-center gap-2">
           <button
