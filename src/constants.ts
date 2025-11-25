@@ -166,6 +166,120 @@ export const TRANSLATIONS = {
 
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
+export const CATEGORY_THEMES: Record<CategoryType, { text: string; bg: string; border: string; hover: string }> = {
+  // Development
+  [CategoryType.FRAMEWORKS]: { 
+    text: 'text-cyan-400', 
+    bg: 'bg-cyan-400/10', 
+    border: 'border-cyan-400/20',
+    hover: 'group-hover:text-cyan-400'
+  },
+  [CategoryType.UI_LIBRARIES]: { 
+    text: 'text-sky-400', 
+    bg: 'bg-sky-400/10', 
+    border: 'border-sky-400/20',
+    hover: 'group-hover:text-sky-400'
+  },
+  [CategoryType.TOOLS]: { 
+    text: 'text-slate-400', 
+    bg: 'bg-slate-400/10', 
+    border: 'border-slate-400/20',
+    hover: 'group-hover:text-slate-400'
+  },
+  [CategoryType.BACKEND_SERVICES]: { 
+    text: 'text-indigo-400', 
+    bg: 'bg-indigo-400/10', 
+    border: 'border-indigo-400/20',
+    hover: 'group-hover:text-indigo-400'
+  },
+  [CategoryType.DOCUMENTATION]: { 
+    text: 'text-blue-400', 
+    bg: 'bg-blue-400/10', 
+    border: 'border-blue-400/20',
+    hover: 'group-hover:text-blue-400'
+  },
+  
+  // Learning
+  [CategoryType.LEARNING]: { 
+    text: 'text-emerald-400', 
+    bg: 'bg-emerald-400/10', 
+    border: 'border-emerald-400/20',
+    hover: 'group-hover:text-emerald-400'
+  },
+  [CategoryType.TUTORIALS]: { 
+    text: 'text-green-400', 
+    bg: 'bg-green-400/10', 
+    border: 'border-green-400/20',
+    hover: 'group-hover:text-green-400'
+  },
+  
+  // Design
+  [CategoryType.DESIGN]: { 
+    text: 'text-pink-400', 
+    bg: 'bg-pink-400/10', 
+    border: 'border-pink-400/20',
+    hover: 'group-hover:text-pink-400'
+  },
+  [CategoryType.ICONS_FONTS]: { 
+    text: 'text-purple-400', 
+    bg: 'bg-purple-400/10', 
+    border: 'border-purple-400/20',
+    hover: 'group-hover:text-purple-400'
+  },
+  [CategoryType.COLORS]: { 
+    text: 'text-rose-400', 
+    bg: 'bg-rose-400/10', 
+    border: 'border-rose-400/20',
+    hover: 'group-hover:text-rose-400'
+  },
+  
+  // Community
+  [CategoryType.COMMUNITY]: { 
+    text: 'text-orange-400', 
+    bg: 'bg-orange-400/10', 
+    border: 'border-orange-400/20',
+    hover: 'group-hover:text-orange-400'
+  },
+  [CategoryType.NEWS]: { 
+    text: 'text-amber-400', 
+    bg: 'bg-amber-400/10', 
+    border: 'border-amber-400/20',
+    hover: 'group-hover:text-amber-400'
+  },
+  [CategoryType.BLOGS]: { 
+    text: 'text-yellow-400', 
+    bg: 'bg-yellow-400/10', 
+    border: 'border-yellow-400/20',
+    hover: 'group-hover:text-yellow-400'
+  },
+  
+  // General
+  [CategoryType.PRODUCTIVITY]: { 
+    text: 'text-violet-400', 
+    bg: 'bg-violet-400/10', 
+    border: 'border-violet-400/20',
+    hover: 'group-hover:text-violet-400'
+  },
+  [CategoryType.ENTERTAINMENT]: { 
+    text: 'text-red-400', 
+    bg: 'bg-red-400/10', 
+    border: 'border-red-400/20',
+    hover: 'group-hover:text-red-400'
+  },
+  [CategoryType.SHOPPING]: { 
+    text: 'text-teal-400', 
+    bg: 'bg-teal-400/10', 
+    border: 'border-teal-400/20',
+    hover: 'group-hover:text-teal-400'
+  },
+  [CategoryType.FINANCE]: { 
+    text: 'text-emerald-500', 
+    bg: 'bg-emerald-500/10', 
+    border: 'border-emerald-500/20',
+    hover: 'group-hover:text-emerald-500'
+  },
+};
+
 export const INITIAL_DATA: Category[] = [
   {
     id: generateId(),

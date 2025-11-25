@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, FolderPlus } from 'lucide-react';
 import { CategoryType, Language } from '../../types';
-import { CATEGORY_ICONS, CATEGORY_NAMES } from '../../constants';
+import { CATEGORY_ICONS, CATEGORY_NAMES, CATEGORY_THEMES } from '../../constants';
 
 interface CategoryModalProps {
   isOpen: boolean;
@@ -44,6 +44,8 @@ export const CategoryModal: React.FC<CategoryModalProps> = React.memo(({
 
   if (!isOpen) return null;
 
+  const currentTheme = CATEGORY_THEMES[categoryType] || CATEGORY_THEMES[CategoryType.TOOLS];
+
   return (
     <div
       className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
@@ -61,7 +63,9 @@ export const CategoryModal: React.FC<CategoryModalProps> = React.memo(({
         </button>
 
         <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-          <FolderPlus size={24} className="text-primary" />
+          <div className={`p-2 rounded-lg ${currentTheme.bg}`}>
+            <FolderPlus size={24} className={currentTheme.text} />
+          </div>
           {editingCategory
             ? (lang === 'cn' ? '编辑分类' : 'Edit Category')
             : (lang === 'cn' ? '添加分类' : 'Add Category')
@@ -79,7 +83,9 @@ export const CategoryModal: React.FC<CategoryModalProps> = React.memo(({
               value={categoryName}
               onChange={(e) => setCategoryName(e.target.value)}
               placeholder={lang === 'cn' ? '输入分类名称' : 'Enter category name'}
-              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary/50 focus:border-primary/50 outline-none"
+              className={`w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-opacity-50 outline-none transition-all
+                ${currentTheme.text.replace('text-', 'focus:border-').replace('text-', 'focus:ring-')}
+              `}
               autoFocus
             />
           </div>
@@ -93,18 +99,21 @@ export const CategoryModal: React.FC<CategoryModalProps> = React.memo(({
               {Object.values(CategoryType).map((type) => {
                 const Icon = CATEGORY_ICONS[type];
                 const isSelected = categoryType === type;
+                const theme = CATEGORY_THEMES[type];
+
                 return (
                   <button
                     key={type}
                     onClick={() => setCategoryType(type)}
-                    className={`p-3 rounded-lg border transition-all flex flex-col items-center gap-1 ${isSelected
-                        ? 'bg-primary/20 border-primary text-primary'
-                        : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-600 hover:text-white'
+                    className={`p-3 rounded-lg border transition-all flex flex-col items-center gap-1 
+                      ${isSelected
+                        ? `${theme.bg} ${theme.border} ${theme.text}`
+                        : `bg-gray-800 border-gray-700 ${theme.text.replace('text-', 'text-').replace('400', '400/70')} hover:border-gray-600 hover:text-white hover:bg-gray-700`
                       }`}
                     title={CATEGORY_NAMES[lang][type]}
                   >
                     <Icon size={20} className="mx-auto" />
-                    <span className="text-[10px] truncate w-full text-center">{CATEGORY_NAMES[lang][type]}</span>
+                    <span className="text-[10px] truncate w-full text-center text-gray-400 group-hover:text-white">{CATEGORY_NAMES[lang][type]}</span>
                   </button>
                 );
               })}

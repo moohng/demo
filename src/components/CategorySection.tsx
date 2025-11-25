@@ -2,7 +2,7 @@ import React from 'react';
 import { Edit2, Trash2 } from 'lucide-react';
 import { Category, CategoryType, LinkItem, Language } from '../types';
 import LinkCard from './LinkCard';
-import { CATEGORY_ICONS, CATEGORY_NAMES } from '../constants';
+import { CATEGORY_ICONS, CATEGORY_NAMES, CATEGORY_THEMES } from '../constants';
 
 interface CategorySectionProps {
   category: Category;
@@ -25,6 +25,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
 }) => {
   const Icon = CATEGORY_ICONS[category.type] || CATEGORY_ICONS[CategoryType.TOOLS];
   const displayName = category.customName || CATEGORY_NAMES[lang][category.type];
+  const theme = CATEGORY_THEMES[category.type] || CATEGORY_THEMES[CategoryType.TOOLS];
 
   // Hide empty categories in non-edit mode
   if (!editMode && category.links.length === 0) {
@@ -34,8 +35,8 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   return (
     <div id={category.type} className="mb-12 scroll-mt-8">
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-          <Icon className="text-primary" size={22} />
+        <div className={`w-10 h-10 rounded-xl ${theme.bg} flex items-center justify-center flex-shrink-0`}>
+          <Icon className={theme.text} size={22} />
         </div>
         <h2 className="text-2xl font-bold text-white">{displayName}</h2>
 

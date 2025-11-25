@@ -1,7 +1,7 @@
 import React from 'react';
 import { ChevronLeft, ChevronRight, Hash, Plus } from 'lucide-react';
-import { Category, Language } from '../types';
-import { CATEGORY_ICONS, CATEGORY_NAMES } from '../constants';
+import { Category, CategoryType, Language } from '../types';
+import { CATEGORY_ICONS, CATEGORY_NAMES, CATEGORY_THEMES } from '../constants';
 
 interface SidebarProps {
   categories: Category[];
@@ -42,6 +42,7 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollaps
           .map((category) => {
             const Icon = CATEGORY_ICONS[category.type] || Hash;
             const displayName = category.customName || CATEGORY_NAMES[lang][category.type];
+            const theme = CATEGORY_THEMES[category.type] || CATEGORY_THEMES[CategoryType.TOOLS];
 
             return (
               <button
@@ -52,7 +53,7 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollaps
                   hover:bg-glassHover text-gray-400 hover:text-white
                 `}
               >
-                <div className={`flex-shrink-0 transition-colors duration-300 ${!isCollapsed ? 'text-primary' : 'group-hover:text-primary'}`}>
+                <div className={`flex-shrink-0 transition-colors duration-300 ${!isCollapsed ? theme.text : theme.hover}`}>
                   <Icon size={20} />
                 </div>
 
