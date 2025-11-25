@@ -19,13 +19,12 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, toggleCollap
   };
 
   return (
-    <aside 
-      className={`sticky top-8 max-h-[calc(100vh-4rem)] z-40 bg-[#0f172a]/80 backdrop-blur-xl border border-glassBorder rounded-2xl transition-all duration-300 flex flex-col hidden md:flex ${
-        isCollapsed ? 'w-20' : 'w-44'
-      }`}
+    <aside
+      className={`sticky top-8 max-h-[calc(100vh-4rem)] z-40 bg-[#0f172a]/80 backdrop-blur-xl border border-glassBorder rounded-2xl transition-all duration-300 flex flex-col hidden md:flex ${isCollapsed ? 'w-20' : 'w-44'
+        }`}
     >
       <div className="p-3 flex justify-center shrink-0">
-        <button 
+        <button
           onClick={toggleCollapse}
           className="p-2 rounded-lg bg-glass hover:bg-glassHover text-gray-400 hover:text-white transition-colors w-full flex justify-center"
           title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
@@ -39,7 +38,7 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, toggleCollap
         {categories.map((category) => {
           const Icon = CATEGORY_ICONS[category.type] || Hash;
           const displayName = CATEGORY_NAMES[lang][category.type];
-          
+
           return (
             <button
               key={category.id}
@@ -52,11 +51,10 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, toggleCollap
               <div className={`flex-shrink-0 transition-colors duration-300 ${!isCollapsed ? 'text-primary' : 'group-hover:text-primary'}`}>
                 <Icon size={20} />
               </div>
-              
-              <span 
-                className={`whitespace-nowrap font-medium text-sm transition-all duration-300 origin-left ${
-                  isCollapsed ? 'opacity-0 w-0 scale-0' : 'opacity-100 w-auto scale-100'
-                }`}
+
+              <span
+                className={`whitespace-nowrap font-medium text-sm transition-all duration-300 origin-left ${isCollapsed ? 'opacity-0 w-0 scale-0' : 'opacity-100 w-auto scale-100 animate-fade-in'
+                  }`}
               >
                 {displayName}
               </span>

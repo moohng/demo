@@ -4,13 +4,16 @@ import { getGeminiResponse } from '../services/geminiService';
 import { Message, Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 
+import { Category } from '../types';
+
 interface GeminiChatProps {
   isOpen: boolean;
   onClose: () => void;
   lang: Language;
+  categories: Category[];
 }
 
-const GeminiChat: React.FC<GeminiChatProps> = ({ isOpen, onClose, lang }) => {
+const GeminiChat: React.FC<GeminiChatProps> = ({ isOpen, onClose, lang, categories }) => {
   const t = TRANSLATIONS[lang];
   const [messages, setMessages] = useState<Message[]>([
     { role: 'model', text: t.aiWelcome, timestamp: Date.now() }
@@ -32,10 +35,10 @@ const GeminiChat: React.FC<GeminiChatProps> = ({ isOpen, onClose, lang }) => {
   // Reset/Update initial message when language changes if it's the only message
   useEffect(() => {
     if (prevLangRef.current !== lang) {
-       if (messages.length === 1 && messages[0].role === 'model') {
-         setMessages([{ role: 'model', text: TRANSLATIONS[lang].aiWelcome, timestamp: Date.now() }]);
-       }
-       prevLangRef.current = lang;
+      if (messages.length === 1 && messages[0].role === 'model') {
+        setMessages([{ role: 'model', text: TRANSLATIONS[lang].aiWelcome, timestamp: Date.now() }]);
+      }
+      prevLangRef.current = lang;
     }
   }, [lang, messages]);
 
@@ -53,7 +56,16 @@ const GeminiChat: React.FC<GeminiChatProps> = ({ isOpen, onClose, lang }) => {
     setIsLoading(true);
 
     try {
-      const responseText = await getGeminiResponse(userMsg.text, lang);
+      const context = JSON.stringify(categories.map(c => ({
+        category: c.type,
+        links: c.links.map(l => ({ title: l.title, desc: l.description, url: l.url }))
+      })));
+
+      const systemInstruction = lang === 'cn'
+        ? `你是一个智能助手。这是用户当前保存的导航链接数据：${context}。请根据这些数据回答用户的问题，或者提供通用的前端建议。`
+        : `You are a smart assistant. Here is the user's current navigation data: ${context}. Use this data to answer questions or provide general frontend advice.`;
+
+      const responseText = await getGeminiResponse(userMsg.text, lang, systemInstruction);
       setMessages(prev => [...prev, {
         role: 'model',
         text: responseText,
@@ -74,8 +86,8 @@ const GeminiChat: React.FC<GeminiChatProps> = ({ isOpen, onClose, lang }) => {
 
   return (
     <div className={`fixed z-50 transition-all duration-300 shadow-2xl border border-glassBorder bg-[#0f172a]/95 backdrop-blur-xl flex flex-col
-      ${isExpanded 
-        ? 'inset-4 rounded-2xl' 
+      ${isExpanded
+        ? 'inset-4 rounded-2xl'
         : 'bottom-6 right-6 w-96 h-[600px] rounded-2xl'
       }
     `}>
@@ -83,7 +95,7 @@ const GeminiChat: React.FC<GeminiChatProps> = ({ isOpen, onClose, lang }) => {
       <div className="flex items-center justify-between p-4 border-b border-gray-800 bg-gray-900/50 rounded-t-2xl">
         <div className="flex items-center gap-2">
           <div className="bg-gradient-to-tr from-primary to-secondary p-1.5 rounded-lg">
-             <Sparkles size={18} className="text-white" />
+            <Sparkles size={18} className="text-white" />
           </div>
           <div>
             <h3 className="font-bold text-white text-sm">{t.aiName}</h3>
@@ -91,13 +103,13 @@ const GeminiChat: React.FC<GeminiChatProps> = ({ isOpen, onClose, lang }) => {
           </div>
         </div>
         <div className="flex items-center gap-1">
-          <button 
+          <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="p-2 hover:bg-gray-800 rounded-lg text-gray-400 hover:text-white transition-colors"
           >
             {isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
           </button>
-          <button 
+          <button
             onClick={onClose}
             className="p-2 hover:bg-red-500/10 hover:text-red-400 rounded-lg text-gray-400 transition-colors"
           >
@@ -109,16 +121,15 @@ const GeminiChat: React.FC<GeminiChatProps> = ({ isOpen, onClose, lang }) => {
       {/* Messages */}
       <div className="flex-grow overflow-y-auto p-4 space-y-4">
         {messages.map((msg, idx) => (
-          <div 
-            key={idx} 
+          <div
+            key={idx}
             className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
-            <div 
-              className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                msg.role === 'user' 
-                  ? 'bg-primary text-white rounded-br-none' 
-                  : 'bg-gray-800 text-gray-100 rounded-bl-none border border-gray-700'
-              }`}
+            <div
+              className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${msg.role === 'user'
+                ? 'bg-primary text-white rounded-br-none'
+                : 'bg-gray-800 text-gray-100 rounded-bl-none border border-gray-700'
+                }`}
             >
               {/* Simple Markdown-like rendering could go here, for now just text with whitespace preservation */}
               <p className="whitespace-pre-wrap font-light">{msg.text}</p>
@@ -127,10 +138,10 @@ const GeminiChat: React.FC<GeminiChatProps> = ({ isOpen, onClose, lang }) => {
         ))}
         {isLoading && (
           <div className="flex justify-start">
-             <div className="bg-gray-800 rounded-2xl rounded-bl-none px-4 py-3 border border-gray-700 flex items-center gap-2">
-                <Loader2 size={16} className="animate-spin text-primary" />
-                <span className="text-xs text-gray-400">{t.aiThinking}</span>
-             </div>
+            <div className="bg-gray-800 rounded-2xl rounded-bl-none px-4 py-3 border border-gray-700 flex items-center gap-2">
+              <Loader2 size={16} className="animate-spin text-primary" />
+              <span className="text-xs text-gray-400">{t.aiThinking}</span>
+            </div>
           </div>
         )}
         <div ref={messagesEndRef} />
@@ -147,7 +158,7 @@ const GeminiChat: React.FC<GeminiChatProps> = ({ isOpen, onClose, lang }) => {
             placeholder={t.aiInputPlaceholder}
             className="w-full bg-gray-800/50 border border-gray-700 text-white rounded-xl py-3 pl-4 pr-12 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-transparent placeholder-gray-500 text-sm"
           />
-          <button 
+          <button
             onClick={handleSend}
             disabled={isLoading || !inputValue.trim()}
             className="absolute right-2 p-2 bg-primary hover:bg-primary/90 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
