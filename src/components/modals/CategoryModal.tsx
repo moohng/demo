@@ -89,7 +89,7 @@ export const CategoryModal: React.FC<CategoryModalProps> = React.memo(({
             <label className="block text-sm font-medium text-gray-400 mb-2">
               {lang === 'cn' ? '选择图标' : 'Select Icon'}
             </label>
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-5 gap-2 max-h-64 overflow-y-auto custom-scrollbar">
               {Object.values(CategoryType).map((type) => {
                 const Icon = CATEGORY_ICONS[type];
                 const isSelected = categoryType === type;
@@ -97,13 +97,14 @@ export const CategoryModal: React.FC<CategoryModalProps> = React.memo(({
                   <button
                     key={type}
                     onClick={() => setCategoryType(type)}
-                    className={`p-3 rounded-lg border transition-all ${isSelected
+                    className={`p-3 rounded-lg border transition-all flex flex-col items-center gap-1 ${isSelected
                         ? 'bg-primary/20 border-primary text-primary'
                         : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-600 hover:text-white'
                       }`}
                     title={CATEGORY_NAMES[lang][type]}
                   >
                     <Icon size={20} className="mx-auto" />
+                    <span className="text-[10px] truncate w-full text-center">{CATEGORY_NAMES[lang][type]}</span>
                   </button>
                 );
               })}

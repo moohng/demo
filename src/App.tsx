@@ -31,6 +31,7 @@ function App() {
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+  const [isQuickAddCategory, setIsQuickAddCategory] = useState(false);
 
   // AI States
   const [isAiSearch, setIsAiSearch] = useState(false);
@@ -165,19 +166,83 @@ function App() {
     if (!newLinkUrl) return;
     setIsAutoFilling(true);
     try {
-      const info = await analyzeLinkInfo(newLinkUrl, newLinkTitle, lang);
-      if (info.category) {
-        const foundType = Object.values(CategoryType).find(t => t.toLowerCase() === info.category.toLowerCase());
-        if (foundType) setNewLinkCategory(foundType);
+      // Prepare existing categories for AI
+      const existingCategories = categories.map(c => ({
+        name: c.customName || CATEGORY_NAMES[lang][c.type],
+        type: c.type
+      }));
+
+      const info = await analyzeLinkInfo(newLinkUrl, newLinkTitle, lang, existingCategories);
+
+      // If AI inferred a complete URL from keyword, update the URL field
+      if (info.url && info.url !== newLinkUrl) {
+        setNewLinkUrl(info.url);
       }
+
+      // Handle AI suggesting a new category
+      if (info.isNewCategory && info.suggestedIcon) {
+        // Find the CategoryType that matches the suggested icon
+        const iconType = Object.values(CategoryType).find(
+          type => type.toLowerCase() === info.suggestedIcon?.toLowerCase() ||
+            CATEGORY_NAMES[lang][type].toLowerCase() === info.suggestedIcon?.toLowerCase()
+        );
+
+        if (iconType) {
+          // Check if category with this type already exists
+          const existingCat = categories.find(c => c.type === iconType && c.customName === info.category);
+
+          if (!existingCat) {
+            // Auto-create new category
+            const newCategory: Category = {
+              id: Math.random().toString(36).substr(2, 9),
+              type: iconType,
+              customName: info.category,
+              links: []
+            };
+            setCategories(prev => [...prev, newCategory]);
+            showNotification(
+              lang === 'cn' ? `已创建新分类: ${info.category}` : `Created new category: ${info.category}`,
+              'success'
+            );
+          }
+
+          // Update the selected category
+          setNewLinkCategory(iconType);
+        }
+      } else {
+        // Try to match existing category
+        // First, try to find by CategoryType enum value or translated name
+        let foundType = Object.values(CategoryType).find(t =>
+          t.toLowerCase() === info.category.toLowerCase() ||
+          CATEGORY_NAMES['en'][t].toLowerCase() === info.category.toLowerCase() ||
+          CATEGORY_NAMES['cn'][t].toLowerCase() === info.category.toLowerCase()
+        );
+
+        // If not found, try to match against existing category custom names
+        if (!foundType) {
+          const matchingCategory = categories.find(c =>
+            c.customName?.toLowerCase() === info.category.toLowerCase()
+          );
+          if (matchingCategory) {
+            foundType = matchingCategory.type;
+          }
+        }
+
+        if (foundType) {
+          setNewLinkCategory(foundType);
+        } else {
+          console.log('Category not matched:', info.category);
+        }
+      }
+
       if (info.description) setNewLinkDesc(info.description);
-      if (info.title && !newLinkTitle) setNewLinkTitle(info.title);
+      if (info.title) setNewLinkTitle(info.title);
     } catch (e) {
       console.error("Auto-fill failed", e);
     } finally {
       setIsAutoFilling(false);
     }
-  }, [newLinkUrl, newLinkTitle, lang]);
+  }, [newLinkUrl, newLinkTitle, lang, showNotification, categories]);
 
   const handleSaveLink = useCallback(() => {
     if (!newLinkTitle || !newLinkUrl) return;
@@ -205,10 +270,19 @@ function App() {
         }
       }
 
-      // Add to target category
+      // Add to target category (only the first match to avoid duplicates)
       const targetCat = newCategories.find(c => c.type === newLinkCategory);
       if (targetCat) {
-        targetCat.links = [...targetCat.links, linkData];
+        // Check if link already exists (for edit mode)
+        const linkExists = targetCat.links.some(l => l.id === linkData.id);
+        if (!linkExists) {
+          targetCat.links = [...targetCat.links, linkData];
+        } else {
+          // Update existing link
+          targetCat.links = targetCat.links.map(l =>
+            l.id === linkData.id ? linkData : l
+          );
+        }
       }
 
       return newCategories;
@@ -264,6 +338,13 @@ function App() {
         links: []
       };
       setCategories(prev => [...prev, newCategory]);
+
+      // If quick add from link modal, auto-select the new category
+      if (isQuickAddCategory) {
+        setNewLinkCategory(type);
+        setIsQuickAddCategory(false);
+      }
+
       showNotification(
         lang === 'cn' ? '分类已添加' : 'Category added',
         'success'
@@ -271,10 +352,17 @@ function App() {
     }
     setEditingCategoryId(null);
     setShowCategoryModal(false);
-  }, [editingCategoryId, lang, showNotification]);
+  }, [editingCategoryId, lang, showNotification, isQuickAddCategory]);
 
   const handleAddCategory = useCallback(() => {
     setEditingCategoryId(null);
+    setIsQuickAddCategory(false);
+    setShowCategoryModal(true);
+  }, []);
+
+  const handleQuickAddCategory = useCallback(() => {
+    setEditingCategoryId(null);
+    setIsQuickAddCategory(true);
     setShowCategoryModal(true);
   }, []);
 
@@ -464,15 +552,26 @@ function App() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? '分类' : 'Category'}</label>
-                <select
-                  value={newLinkCategory}
-                  onChange={(e) => setNewLinkCategory(e.target.value as CategoryType)}
-                  className="w-full bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none cursor-pointer"
-                >
-                  {Object.values(CategoryType).map(type => (
-                    <option key={type} value={type}>{CATEGORY_NAMES[lang][type]}</option>
-                  ))}
-                </select>
+                <div className="flex gap-2">
+                  <select
+                    value={newLinkCategory}
+                    onChange={(e) => setNewLinkCategory(e.target.value as CategoryType)}
+                    className="flex-1 bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none cursor-pointer"
+                  >
+                    {categories.map(category => (
+                      <option key={category.id} value={category.type}>
+                        {category.customName || CATEGORY_NAMES[lang][category.type]}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={handleQuickAddCategory}
+                    className="p-2 rounded-lg bg-primary/20 hover:bg-primary/30 border border-primary/50 text-primary transition-colors flex-shrink-0"
+                    title={lang === 'cn' ? '添加新分类' : 'Add New Category'}
+                  >
+                    <Plus size={20} />
+                  </button>
+                </div>
               </div>
             </div>
 

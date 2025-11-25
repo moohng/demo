@@ -7,40 +7,103 @@ import {
   Palette, 
   Type, 
   Server, 
-  Users 
+  Users,
+  FileText,
+  GraduationCap,
+  Droplet,
+  Newspaper,
+  PenTool,
+  Zap,
+  Gamepad2,
+  ShoppingCart,
+  DollarSign
 } from 'lucide-react';
 
 export const CATEGORY_ICONS: Record<CategoryType, any> = {
+  // Development
   [CategoryType.FRAMEWORKS]: Code2,
   [CategoryType.UI_LIBRARIES]: Layout,
   [CategoryType.TOOLS]: Wrench,
+  [CategoryType.BACKEND_SERVICES]: Server,
+  [CategoryType.DOCUMENTATION]: FileText,
+  
+  // Learning
   [CategoryType.LEARNING]: BookOpen,
+  [CategoryType.TUTORIALS]: GraduationCap,
+  
+  // Design
   [CategoryType.DESIGN]: Palette,
   [CategoryType.ICONS_FONTS]: Type,
-  [CategoryType.BACKEND_SERVICES]: Server,
+  [CategoryType.COLORS]: Droplet,
+  
+  // Community
   [CategoryType.COMMUNITY]: Users,
+  [CategoryType.NEWS]: Newspaper,
+  [CategoryType.BLOGS]: PenTool,
+  
+  // General
+  [CategoryType.PRODUCTIVITY]: Zap,
+  [CategoryType.ENTERTAINMENT]: Gamepad2,
+  [CategoryType.SHOPPING]: ShoppingCart,
+  [CategoryType.FINANCE]: DollarSign,
 };
 
 export const CATEGORY_NAMES: Record<Language, Record<CategoryType, string>> = {
   en: {
+    // Development
     [CategoryType.FRAMEWORKS]: 'Frameworks',
     [CategoryType.UI_LIBRARIES]: 'UI Libraries',
     [CategoryType.TOOLS]: 'Tools',
+    [CategoryType.BACKEND_SERVICES]: 'Backend & DevOps',
+    [CategoryType.DOCUMENTATION]: 'Documentation',
+    
+    // Learning
     [CategoryType.LEARNING]: 'Learning',
+    [CategoryType.TUTORIALS]: 'Tutorials',
+    
+    // Design
     [CategoryType.DESIGN]: 'Design',
     [CategoryType.ICONS_FONTS]: 'Icons & Fonts',
-    [CategoryType.BACKEND_SERVICES]: 'Backend & DevOps',
+    [CategoryType.COLORS]: 'Colors',
+    
+    // Community
     [CategoryType.COMMUNITY]: 'Community',
+    [CategoryType.NEWS]: 'News',
+    [CategoryType.BLOGS]: 'Blogs',
+    
+    // General
+    [CategoryType.PRODUCTIVITY]: 'Productivity',
+    [CategoryType.ENTERTAINMENT]: 'Entertainment',
+    [CategoryType.SHOPPING]: 'Shopping',
+    [CategoryType.FINANCE]: 'Finance',
   },
   cn: {
+    // Development
     [CategoryType.FRAMEWORKS]: '前端框架',
     [CategoryType.UI_LIBRARIES]: 'UI 组件库',
     [CategoryType.TOOLS]: '开发工具',
+    [CategoryType.BACKEND_SERVICES]: '后端与运维',
+    [CategoryType.DOCUMENTATION]: '文档',
+    
+    // Learning
     [CategoryType.LEARNING]: '学习资源',
+    [CategoryType.TUTORIALS]: '教程',
+    
+    // Design
     [CategoryType.DESIGN]: '设计资源',
     [CategoryType.ICONS_FONTS]: '图标与字体',
-    [CategoryType.BACKEND_SERVICES]: '后端与运维',
+    [CategoryType.COLORS]: '配色',
+    
+    // Community
     [CategoryType.COMMUNITY]: '社区',
+    [CategoryType.NEWS]: '新闻',
+    [CategoryType.BLOGS]: '博客',
+    
+    // General
+    [CategoryType.PRODUCTIVITY]: '效率工具',
+    [CategoryType.ENTERTAINMENT]: '娱乐',
+    [CategoryType.SHOPPING]: '购物',
+    [CategoryType.FINANCE]: '金融',
   }
 };
 

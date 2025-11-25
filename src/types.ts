@@ -3,14 +3,32 @@ import { LucideIcon } from 'lucide-react';
 export type Language = 'en' | 'cn';
 
 export enum CategoryType {
+  // Development
   FRAMEWORKS = 'Frameworks',
   UI_LIBRARIES = 'UI Libraries',
   TOOLS = 'Tools',
+  BACKEND_SERVICES = 'Backend & DevOps',
+  DOCUMENTATION = 'Documentation',
+  
+  // Learning
   LEARNING = 'Learning',
+  TUTORIALS = 'Tutorials',
+  
+  // Design
   DESIGN = 'Design',
   ICONS_FONTS = 'Icons & Fonts',
-  BACKEND_SERVICES = 'Backend & DevOps',
-  COMMUNITY = 'Community'
+  COLORS = 'Colors',
+  
+  // Community
+  COMMUNITY = 'Community',
+  NEWS = 'News',
+  BLOGS = 'Blogs',
+  
+  // General
+  PRODUCTIVITY = 'Productivity',
+  ENTERTAINMENT = 'Entertainment',
+  SHOPPING = 'Shopping',
+  FINANCE = 'Finance'
 }
 
 export interface LinkItem {

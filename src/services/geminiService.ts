@@ -37,21 +37,58 @@ export const getGeminiResponse = async (prompt: string, lang: Language, systemIn
   }
 };
 
-export const analyzeLinkInfo = async (url: string, title: string, lang: Language): Promise<{ title?: string, category: string, description: string }> => {
+export const analyzeLinkInfo = async (
+  url: string, 
+  title: string, 
+  lang: Language,
+  existingCategories: Array<{ name: string, type: string }>
+): Promise<{ title?: string, url?: string, category: string, description: string, isNewCategory?: boolean, suggestedIcon?: string }> => {
   if (!ai) return { category: 'Tools', description: '' };
 
-  const prompt = `
-    Analyze this website link:
-    URL: ${url}
-    ${title ? `Title: ${title}` : 'Title: (Unknown, please infer from URL)'}
+  const availableCategories = existingCategories.map(c => c.name);
+  const availableIcons = [
+    'Frameworks', 'UI Libraries', 'Tools', 'Backend & DevOps', 'Documentation',
+    'Learning', 'Tutorials', 'Design', 'Icons & Fonts', 'Colors',
+    'Community', 'News', 'Blogs', 'Productivity', 'Entertainment', 'Shopping', 'Finance'
+  ];
 
-    Based on this, suggest:
-    1. A short Title (if not provided).
-    2. A Category (one of: Tools, Learning, Community, Frameworks, Design, Deployment).
-    3. A short Description (max 10 words).
+  const prompt = `
+    Analyze this input from a user who wants to add a bookmark:
+    Input: ${url}
+    ${title ? `Additional context: ${title}` : ''}
+
+    The input might be:
+    1. A complete URL (e.g., "https://gmail.com")
+    2. A partial URL (e.g., "gmail.com")
+    3. A keyword or service name (e.g., "谷歌邮箱", "Google Mail", "GitHub")
+    4. A product or tool name (e.g., "React", "Tailwind CSS")
+
+    Your task:
+    1. Infer the COMPLETE and CORRECT URL for the service/website
+    2. Provide an accurate Title
+    3. Write a short Description (max 10 words)
+    4. Choose a Category from available categories, or suggest a NEW category if none fit
+    5. If suggesting a NEW category, also suggest an appropriate icon type
+
+    Available categories (user's existing categories): ${availableCategories.length > 0 ? availableCategories.join(', ') : 'None yet'}
+    Available icon types (for new categories): ${availableIcons.join(', ')}
+
+    Examples:
+    - Input: "谷歌邮箱" → URL: "https://mail.google.com", Title: "Gmail", Category: "Productivity"
+    - Input: "github" → URL: "https://github.com", Title: "GitHub", Category: "Tools"
+    - Input: "react" → URL: "https://react.dev", Title: "React", Category: "Frameworks"
+    - Input: "tailwind" → URL: "https://tailwindcss.com", Title: "Tailwind CSS", Category: "UI Libraries"
     
-    Return ONLY a JSON object: { "title": "...", "category": "...", "description": "..." }
-    Language: ${lang === 'cn' ? 'Chinese' : 'English'}
+    Return ONLY a JSON object: 
+    { 
+      "url": "https://...",
+      "title": "...", 
+      "category": "...", 
+      "description": "...",
+      "isNewCategory": true/false,
+      "suggestedIcon": "..." (only if isNewCategory is true)
+    }
+    Language for description: ${lang === 'cn' ? 'Chinese' : 'English'}
   `;
 
   try {
