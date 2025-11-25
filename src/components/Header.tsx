@@ -4,16 +4,17 @@ import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 
 interface HeaderProps {
-  onSearch: (query: string) => void;
-  toggleEditMode: () => void;
-  editMode: boolean;
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
   lang: Language;
   toggleLang: () => void;
+  editMode: boolean;
+  setEditMode: (mode: boolean) => void;
   isAiSearch: boolean;
   toggleAiSearch: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onSearch, toggleEditMode, editMode, lang, toggleLang, isAiSearch, toggleAiSearch }) => {
+const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, toggleLang, editMode, setEditMode, isAiSearch, toggleAiSearch }) => {
   const [greeting, setGreeting] = useState('');
   const [time, setTime] = useState('');
   const t = TRANSLATIONS[lang];
@@ -64,7 +65,8 @@ const Header: React.FC<HeaderProps> = ({ onSearch, toggleEditMode, editMode, lan
         <input
           type="text"
           placeholder={t.searchPlaceholder}
-          onChange={(e) => onSearch(e.target.value)}
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full bg-gray-900/60 border border-gray-700 hover:border-gray-600 focus:border-primary/50 text-white text-lg rounded-2xl py-4 pl-12 pr-4 shadow-xl focus:ring-4 focus:ring-primary/10 transition-all outline-none placeholder:text-gray-600"
         />
         <div className="absolute inset-y-0 right-4 flex items-center gap-2">
@@ -99,7 +101,7 @@ const Header: React.FC<HeaderProps> = ({ onSearch, toggleEditMode, editMode, lan
 
         {/* Edit Mode Toggle */}
         <button
-          onClick={toggleEditMode}
+          onClick={() => setEditMode(!editMode)}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${editMode
             ? 'bg-red-500/10 text-red-400 border-red-500/50'
             : 'bg-glass text-gray-400 border-glassBorder hover:text-white hover:bg-glassHover'

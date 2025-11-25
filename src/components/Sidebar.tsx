@@ -6,11 +6,11 @@ import { CATEGORY_ICONS, CATEGORY_NAMES } from '../constants';
 interface SidebarProps {
   categories: Category[];
   isCollapsed: boolean;
-  toggleCollapse: () => void;
+  setIsCollapsed: (collapsed: boolean) => void;
   lang: Language;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, toggleCollapse, lang }) => {
+const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollapsed, lang }) => {
   const scrollToCategory = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -20,12 +20,12 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, toggleCollap
 
   return (
     <aside
-      className={`sticky top-8 max-h-[calc(100vh-4rem)] z-40 bg-[#0f172a]/80 backdrop-blur-xl border border-glassBorder rounded-2xl transition-all duration-300 flex flex-col hidden md:flex ${isCollapsed ? 'w-20' : 'w-44'
+      className={`fixed left-0 top-0 h-screen z-40 bg-[#0f172a]/80 backdrop-blur-xl border-r border-glassBorder transition-all duration-300 flex flex-col hidden md:flex ${isCollapsed ? 'w-20' : 'w-64'
         }`}
     >
       <div className="p-3 flex justify-center shrink-0">
         <button
-          onClick={toggleCollapse}
+          onClick={() => setIsCollapsed(!isCollapsed)}
           className="p-2 rounded-lg bg-glass hover:bg-glassHover text-gray-400 hover:text-white transition-colors w-full flex justify-center"
           title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
