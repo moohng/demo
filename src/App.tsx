@@ -5,6 +5,7 @@ import CategorySection from './components/CategorySection';
 import Footer from './components/Footer';
 import GeminiChat from './components/GeminiChat';
 import Sidebar from './components/Sidebar';
+import WallpaperPanel from './components/WallpaperPanel';
 import { Toast } from './components/Toast';
 import { SearchOverlay } from './components/SearchOverlay';
 import { ImportConfirmModal } from './components/modals/ImportConfirmModal';
@@ -40,6 +41,13 @@ function App() {
     message: string;
     onConfirm: () => void;
   } | null>(null);
+
+  // Wallpaper State
+  const [wallpaper, setWallpaper] = useState<string>(() => {
+    const saved = localStorage.getItem('wallpaper');
+    return saved || '';
+  });
+  const [showWallpaperPanel, setShowWallpaperPanel] = useState(false);
 
   // AI States
   const [isAiSearch, setIsAiSearch] = useState(false);
@@ -115,6 +123,11 @@ function App() {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
+
+  // Save wallpaper to localStorage
+  useEffect(() => {
+    localStorage.setItem('wallpaper', wallpaper);
+  }, [wallpaper]);
 
   // AI Search Effect
   useEffect(() => {
@@ -359,6 +372,26 @@ function App() {
     }
   }, [categories, lang, showNotification]);
 
+  // Wallpaper Handler
+  const handleWallpaperChange = useCallback((newWallpaper: string) => {
+    setWallpaper(newWallpaper);
+  }, []);
+
+  // Edit Mode Toggle Handler
+  const handleEditModeToggle = useCallback(() => {
+    const newEditMode = !editMode;
+    setEditMode(newEditMode);
+
+    if (newEditMode) {
+      // Entering edit mode - expand sidebar and show wallpaper panel
+      setIsSidebarCollapsed(false);
+      setShowWallpaperPanel(true);
+    } else {
+      // Exiting edit mode - hide wallpaper panel
+      setShowWallpaperPanel(false);
+    }
+  }, [editMode]);
+
   const handleSaveCategory = useCallback((name: string, type: CategoryType) => {
     if (editingCategoryId) {
       // Edit existing category
@@ -495,291 +528,323 @@ function App() {
   }, [categories, searchQuery, isAiSearch]);
 
   return (
-    <div className="min-h-screen bg-[#0f172a] text-gray-100 selection:bg-primary/30 selection:text-white flex flex-col relative">
-
-      <Toast {...notification} />
-
-      <SearchOverlay
-        isOpen={showSearchOverlay}
-        onClose={() => setShowSearchOverlay(false)}
-        categories={categories}
-        recentLinks={searchHistory}
-        onAddToRecent={addToHistory}
-        onRemoveFromRecent={removeFromHistory}
-        lang={lang}
-        isAiSearch={isAiSearch}
-        aiRecommendations={aiRecommendations}
-        isAiSearching={isAiSearching}
-      />
-
-      <ImportProgressOverlay {...importProgress} lang={lang} />
-
-      <ImportConfirmModal
-        isOpen={showImportConfirmModal}
-        bookmarkCount={pendingImportLinks.length}
-        lang={lang}
-        onClose={() => setShowImportConfirmModal(false)}
-        onAIImport={processAIImportHandler}
-        onManualImport={startManualImport}
-      />
-
-      <ManualImportModal
-        isOpen={showManualImportModal}
-        candidates={manualImportCandidates}
-        lang={lang}
-        onClose={() => setShowManualImportModal(false)}
-        onToggleCandidate={toggleCandidate}
-        onUpdateCategory={updateCandidateCategory}
-        onToggleAll={toggleAllCandidates}
-        onImport={finishBulkImport}
-      />
-
-      <HelpModal
-        isOpen={showHelpModal}
-        lang={lang}
-        onClose={() => setShowHelpModal(false)}
-      />
-
-      {/* Add Link Modal - TODO: Extract to component */}
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in" onClick={() => setShowAddModal(false)}>
-          <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full shadow-2xl relative animate-fade-in-up" onClick={e => e.stopPropagation()}>
-            <h3 className="text-xl font-bold text-white mb-4">
-              {editingLinkId ? (lang === 'cn' ? '编辑链接' : 'Edit Link') : (lang === 'cn' ? '添加链接' : 'Add Link')}
-            </h3>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? 'URL' : 'URL'}</label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={newLinkUrl}
-                    onChange={(e) => setNewLinkUrl(e.target.value)}
-                    className="flex-1 bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-                    placeholder="https://example.com"
-                  />
-                  <button
-                    onClick={handleAutoFill}
-                    disabled={!newLinkUrl || isAutoFilling}
-                    className="px-3 py-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                    title={lang === 'cn' ? 'AI 自动填充' : 'AI Auto-fill'}
-                  >
-                    {isAutoFilling ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? '标题' : 'Title'}</label>
-                <input
-                  type="text"
-                  value={newLinkTitle}
-                  onChange={(e) => setNewLinkTitle(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-                  placeholder={lang === 'cn' ? '输入标题' : 'Enter title'}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? '描述' : 'Description'}</label>
-                <textarea
-                  value={newLinkDesc}
-                  onChange={(e) => setNewLinkDesc(e.target.value)}
-                  className="w-full bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none resize-none"
-                  rows={3}
-                  placeholder={lang === 'cn' ? '输入描述' : 'Enter description'}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? '分类' : 'Category'}</label>
-                <div className="flex gap-2">
-                  <select
-                    value={newLinkCategory}
-                    onChange={(e) => setNewLinkCategory(e.target.value as CategoryType)}
-                    className="flex-1 bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none cursor-pointer"
-                  >
-                    {categories.map(category => (
-                      <option key={category.id} value={category.type}>
-                        {category.customName || CATEGORY_NAMES[lang][category.type]}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    onClick={handleQuickAddCategory}
-                    className="p-2 rounded-lg bg-primary/20 hover:bg-primary/30 border border-primary/50 text-primary transition-colors flex-shrink-0"
-                    title={lang === 'cn' ? '添加新分类' : 'Add New Category'}
-                  >
-                    <Plus size={20} />
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex gap-3 mt-6">
-              <button
-                onClick={() => setShowAddModal(false)}
-                className="flex-1 py-2 px-4 rounded-lg border border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
-              >
-                {lang === 'cn' ? '取消' : 'Cancel'}
-              </button>
-              <button
-                onClick={handleSaveLink}
-                disabled={!newLinkTitle || !newLinkUrl}
-                className="flex-1 py-2 px-4 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {lang === 'cn' ? '保存' : 'Save'}
-              </button>
-            </div>
-          </div>
-        </div>
+    <div className="min-h-screen bg-background text-white relative overflow-hidden">
+      {/* Wallpaper Background */}
+      {wallpaper && (
+        <>
+          <div
+            className="fixed inset-0 z-0"
+            style={{
+              background: wallpaper.startsWith('data:') || wallpaper.startsWith('http')
+                ? `url(${wallpaper})`
+                : wallpaper,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          />
+          {/* Dark overlay for readability */}
+          <div className="fixed inset-0 z-0 bg-black/40 backdrop-blur-sm" />
+        </>
       )}
 
-      <Header
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        lang={lang}
-        toggleLang={toggleLang}
-        editMode={editMode}
-        setEditMode={setEditMode}
-        isAiSearch={isAiSearch}
-        toggleAiSearch={toggleAiSearch}
-        onSearchClick={() => setShowSearchOverlay(true)}
-      />
+      {/* Main Content */}
+      <div className="relative z-10">
+        <Toast {...notification} />
 
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar
+        <SearchOverlay
+          isOpen={showSearchOverlay}
+          onClose={() => setShowSearchOverlay(false)}
           categories={categories}
-          isCollapsed={isSidebarCollapsed}
-          setIsCollapsed={setIsSidebarCollapsed}
+          recentLinks={searchHistory}
+          onAddToRecent={addToHistory}
+          onRemoveFromRecent={removeFromHistory}
+          lang={lang}
+          isAiSearch={isAiSearch}
+          aiRecommendations={aiRecommendations}
+          isAiSearching={isAiSearching}
+        />
+
+        <ImportProgressOverlay {...importProgress} lang={lang} />
+
+        <ImportConfirmModal
+          isOpen={showImportConfirmModal}
+          bookmarkCount={pendingImportLinks.length}
+          lang={lang}
+          onClose={() => setShowImportConfirmModal(false)}
+          onAIImport={processAIImportHandler}
+          onManualImport={startManualImport}
+        />
+
+        <ManualImportModal
+          isOpen={showManualImportModal}
+          candidates={manualImportCandidates}
+          lang={lang}
+          onClose={() => setShowManualImportModal(false)}
+          onToggleCandidate={toggleCandidate}
+          onUpdateCategory={updateCandidateCategory}
+          onToggleAll={toggleAllCandidates}
+          onImport={finishBulkImport}
+        />
+
+        <HelpModal
+          isOpen={showHelpModal}
+          lang={lang}
+          onClose={() => setShowHelpModal(false)}
+        />
+
+        {/* Add Link Modal - TODO: Extract to component */}
+        {showAddModal && (
+          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in" onClick={() => setShowAddModal(false)}>
+            <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full shadow-2xl relative animate-fade-in-up" onClick={e => e.stopPropagation()}>
+              <h3 className="text-xl font-bold text-white mb-4">
+                {editingLinkId ? (lang === 'cn' ? '编辑链接' : 'Edit Link') : (lang === 'cn' ? '添加链接' : 'Add Link')}
+              </h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? 'URL' : 'URL'}</label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newLinkUrl}
+                      onChange={(e) => setNewLinkUrl(e.target.value)}
+                      className="flex-1 bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                      placeholder="https://example.com"
+                    />
+                    <button
+                      onClick={handleAutoFill}
+                      disabled={!newLinkUrl || isAutoFilling}
+                      className="px-3 py-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      title={lang === 'cn' ? 'AI 自动填充' : 'AI Auto-fill'}
+                    >
+                      {isAutoFilling ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? '标题' : 'Title'}</label>
+                  <input
+                    type="text"
+                    value={newLinkTitle}
+                    onChange={(e) => setNewLinkTitle(e.target.value)}
+                    className="w-full bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none"
+                    placeholder={lang === 'cn' ? '输入标题' : 'Enter title'}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? '描述' : 'Description'}</label>
+                  <textarea
+                    value={newLinkDesc}
+                    onChange={(e) => setNewLinkDesc(e.target.value)}
+                    className="w-full bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none resize-none"
+                    rows={3}
+                    placeholder={lang === 'cn' ? '输入描述' : 'Enter description'}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? '分类' : 'Category'}</label>
+                  <div className="flex gap-2">
+                    <select
+                      value={newLinkCategory}
+                      onChange={(e) => setNewLinkCategory(e.target.value as CategoryType)}
+                      className="flex-1 bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none cursor-pointer"
+                    >
+                      {categories.map(category => (
+                        <option key={category.id} value={category.type}>
+                          {category.customName || CATEGORY_NAMES[lang][category.type]}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      onClick={handleQuickAddCategory}
+                      className="p-2 rounded-lg bg-primary/20 hover:bg-primary/30 border border-primary/50 text-primary transition-colors flex-shrink-0"
+                      title={lang === 'cn' ? '添加新分类' : 'Add New Category'}
+                    >
+                      <Plus size={20} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <button
+                  onClick={() => setShowAddModal(false)}
+                  className="flex-1 py-2 px-4 rounded-lg border border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+                >
+                  {lang === 'cn' ? '取消' : 'Cancel'}
+                </button>
+                <button
+                  onClick={handleSaveLink}
+                  disabled={!newLinkTitle || !newLinkUrl}
+                  className="flex-1 py-2 px-4 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {lang === 'cn' ? '保存' : 'Save'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        <Header
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          lang={lang}
+          toggleLang={toggleLang}
           editMode={editMode}
-          onAddCategory={handleAddCategory}
+          setEditMode={handleEditModeToggle}
+          isAiSearch={isAiSearch}
+          toggleAiSearch={toggleAiSearch}
+          onSearchClick={() => setShowSearchOverlay(true)}
+          showWallpaperPanel={showWallpaperPanel}
+        />
+
+        <div className="flex flex-1 overflow-hidden">
+          <Sidebar
+            categories={categories}
+            isCollapsed={isSidebarCollapsed}
+            setIsCollapsed={setIsSidebarCollapsed}
+            editMode={editMode}
+            onAddCategory={handleAddCategory}
+            lang={lang}
+          />
+
+          <main className={`flex-1 overflow-y-auto p-8 transition-all duration-300 ${isSidebarCollapsed ? 'md:pl-24' : 'md:pl-52'}`}>
+            {isAiSearch && searchQuery ? (
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 mb-6">
+                  <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <Sparkles className="text-primary" />
+                    {lang === 'cn' ? 'AI 推荐' : 'AI Recommendations'}
+                  </h2>
+                  {isAiSearching ? (
+                    <div className="flex items-center gap-3 text-gray-400">
+                      <Loader2 className="animate-spin" size={20} />
+                      {lang === 'cn' ? '正在分析...' : 'Analyzing...'}
+                    </div>
+                  ) : (
+                    <div className="prose prose-invert max-w-none">
+                      <p className="text-gray-300 whitespace-pre-wrap">{aiRecommendations || (lang === 'cn' ? '输入搜索词以获取 AI 推荐' : 'Enter a search term to get AI recommendations')}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="space-y-12">
+                {filteredCategories.map(category => (
+                  <CategorySection
+                    key={category.id}
+                    category={category}
+                    onEdit={openEditModal}
+                    onDelete={handleDeleteLink}
+                    onEditCategory={handleEditCategory}
+                    onDeleteCategory={handleDeleteCategory}
+                    editMode={editMode}
+                    lang={lang}
+                  />
+                ))}
+              </div>
+            )}
+            <Footer lang={lang} />
+          </main>
+        </div>
+
+        <WallpaperPanel
+          isOpen={showWallpaperPanel}
+          onClose={() => setShowWallpaperPanel(false)}
+          currentWallpaper={wallpaper}
+          onWallpaperChange={handleWallpaperChange}
           lang={lang}
         />
 
-        <main className={`flex-1 overflow-y-auto p-8 transition-all duration-300 ${isSidebarCollapsed ? 'md:pl-24' : 'md:pl-52'}`}>
-          {isAiSearch && searchQuery ? (
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 mb-6">
-                <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                  <Sparkles className="text-primary" />
-                  {lang === 'cn' ? 'AI 推荐' : 'AI Recommendations'}
-                </h2>
-                {isAiSearching ? (
-                  <div className="flex items-center gap-3 text-gray-400">
-                    <Loader2 className="animate-spin" size={20} />
-                    {lang === 'cn' ? '正在分析...' : 'Analyzing...'}
-                  </div>
-                ) : (
-                  <div className="prose prose-invert max-w-none">
-                    <p className="text-gray-300 whitespace-pre-wrap">{aiRecommendations || (lang === 'cn' ? '输入搜索词以获取 AI 推荐' : 'Enter a search term to get AI recommendations')}</p>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-12">
-              {filteredCategories.map(category => (
-                <CategorySection
-                  key={category.id}
-                  category={category}
-                  onEdit={openEditModal}
-                  onDelete={handleDeleteLink}
-                  onEditCategory={handleEditCategory}
-                  onDeleteCategory={handleDeleteCategory}
-                  editMode={editMode}
-                  lang={lang}
-                />
-              ))}
+        <div className={`fixed bottom-16 flex flex-col gap-4 z-50 transition-all duration-300 ${showWallpaperPanel ? 'right-[22rem]' : 'right-6'}`}>
+          {editMode && (
+            <div className="flex flex-col gap-2 items-center">
+              <button
+                onClick={() => setShowHelpModal(true)}
+                className="w-8 h-8 bg-gray-800/80 hover:bg-gray-700 text-gray-400 hover:text-white rounded-full flex items-center justify-center transition-colors border border-gray-700 mb-1"
+                title={lang === 'cn' ? "如何导出书签？" : "How to export bookmarks?"}
+              >
+                <HelpCircle size={16} />
+              </button>
+
+              <input
+                type="file"
+                id="import-bookmarks"
+                className="hidden"
+                accept=".html"
+                onChange={handleImportBookmarks}
+              />
+              <label
+                htmlFor="import-bookmarks"
+                className={`w - 14 h - 14 bg - gray - 800 hover: bg - gray - 700 text - white rounded - full shadow - lg shadow - black / 50 flex items - center justify - center transition - transform hover: scale - 105 border border - gray - 700 cursor - pointer ${isImporting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                title={lang === 'cn' ? "导入书签" : "Import Bookmarks"}
+              >
+                {isImporting ? <Loader2 size={24} className="animate-spin" /> : <Upload size={24} />}
+              </label>
             </div>
           )}
-          <Footer lang={lang} />
-        </main>
-      </div>
 
-      <div className="fixed bottom-16 right-6 flex flex-col gap-4 z-50">
-        {editMode && (
-          <div className="flex flex-col gap-2 items-center">
+          {editMode && (
             <button
-              onClick={() => setShowHelpModal(true)}
-              className="w-8 h-8 bg-gray-800/80 hover:bg-gray-700 text-gray-400 hover:text-white rounded-full flex items-center justify-center transition-colors border border-gray-700 mb-1"
-              title={lang === 'cn' ? "如何导出书签？" : "How to export bookmarks?"}
+              onClick={openAddModal}
+              className="w-14 h-14 bg-primary hover:bg-primary-hover text-white rounded-full shadow-lg shadow-primary/20 flex items-center justify-center transition-transform hover:scale-105"
+              title={lang === 'cn' ? "添加链接" : "Add Link"}
             >
-              <HelpCircle size={16} />
+              <Plus size={24} />
             </button>
+          )}
 
-            <input
-              type="file"
-              id="import-bookmarks"
-              className="hidden"
-              accept=".html"
-              onChange={handleImportBookmarks}
-            />
-            <label
-              htmlFor="import-bookmarks"
-              className={`w-14 h-14 bg-gray-800 hover:bg-gray-700 text-white rounded-full shadow-lg shadow-black/50 flex items-center justify-center transition-transform hover:scale-105 border border-gray-700 cursor-pointer ${isImporting ? 'opacity-50 cursor-not-allowed' : ''}`}
-              title={lang === 'cn' ? "导入书签" : "Import Bookmarks"}
+          {!editMode && (
+            <button
+              onClick={() => setIsChatOpen(!isChatOpen)}
+              className="w-14 h-14 bg-primary hover:bg-primary-hover text-white rounded-full shadow-lg shadow-black/50 flex items-center justify-center transition-all transform hover:scale-110 border-2 border-gray-700 cursor-pointer"
+              title={lang === 'cn' ? 'AI 助手' : 'AI Assistant'}
             >
-              {isImporting ? <Loader2 size={24} className="animate-spin" /> : <Upload size={24} />}
-            </label>
-          </div>
-        )}
+              <Bot size={24} />
+            </button>
+          )}
+        </div>
 
-        {editMode && (
-          <button
-            onClick={openAddModal}
-            className="w-14 h-14 bg-primary hover:bg-primary-hover text-white rounded-full shadow-lg shadow-primary/20 flex items-center justify-center transition-transform hover:scale-105"
-            title={lang === 'cn' ? "添加链接" : "Add Link"}
-          >
-            <Plus size={24} />
-          </button>
-        )}
+        <HelpModal
+          isOpen={showHelpModal}
+          onClose={() => setShowHelpModal(false)}
+          lang={lang}
+        />
 
-        <button
-          onClick={() => setIsChatOpen(!isChatOpen)}
-          className="w-14 h-14 bg-gray-800 hover:bg-gray-700 text-white rounded-full shadow-lg shadow-black/50 flex items-center justify-center transition-transform hover:scale-105 border border-gray-700"
-          title={lang === 'cn' ? "AI 助手" : "AI Assistant"}
-        >
-          <Bot size={24} />
-        </button>
+        <CategoryModal
+          isOpen={showCategoryModal}
+          onClose={() => {
+            setShowCategoryModal(false);
+            setEditingCategoryId(null);
+          }}
+          onSave={handleSaveCategory}
+          editingCategory={editingCategoryId ? (() => {
+            const cat = categories.find(c => c.id === editingCategoryId);
+            return cat ? { name: cat.customName || CATEGORY_NAMES[lang][cat.type], type: cat.type } : undefined;
+          })() : undefined}
+          lang={lang}
+        />
+
+        <ConfirmModal
+          isOpen={showConfirmModal}
+          onClose={() => setShowConfirmModal(false)}
+          onConfirm={confirmModalData?.onConfirm || (() => { })}
+          title={confirmModalData?.title || ''}
+          message={confirmModalData?.message || ''}
+          lang={lang}
+        />
+
+        <GeminiChat
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+          lang={lang}
+          categories={categories}
+        />
       </div>
-
-      <HelpModal
-        isOpen={showHelpModal}
-        onClose={() => setShowHelpModal(false)}
-        lang={lang}
-      />
-
-      <CategoryModal
-        isOpen={showCategoryModal}
-        onClose={() => {
-          setShowCategoryModal(false);
-          setEditingCategoryId(null);
-        }}
-        onSave={handleSaveCategory}
-        editingCategory={editingCategoryId ? (() => {
-          const cat = categories.find(c => c.id === editingCategoryId);
-          return cat ? { name: cat.customName || CATEGORY_NAMES[lang][cat.type], type: cat.type } : undefined;
-        })() : undefined}
-        lang={lang}
-      />
-
-      <ConfirmModal
-        isOpen={showConfirmModal}
-        onClose={() => setShowConfirmModal(false)}
-        onConfirm={confirmModalData?.onConfirm || (() => { })}
-        title={confirmModalData?.title || ''}
-        message={confirmModalData?.message || ''}
-        lang={lang}
-      />
-
-      <GeminiChat
-        isOpen={isChatOpen}
-        onClose={() => setIsChatOpen(false)}
-        lang={lang}
-        categories={categories}
-      />
     </div>
   );
 }

@@ -13,9 +13,10 @@ interface HeaderProps {
   isAiSearch: boolean;
   toggleAiSearch: () => void;
   onSearchClick?: () => void;
+  showWallpaperPanel?: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, toggleLang, editMode, setEditMode, isAiSearch, toggleAiSearch, onSearchClick }) => {
+const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, toggleLang, editMode, setEditMode, isAiSearch, toggleAiSearch, onSearchClick, showWallpaperPanel = false }) => {
   const [greeting, setGreeting] = useState('');
   const [time, setTime] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
@@ -103,7 +104,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, togg
         </div>
 
         {/* Controls */}
-        <div className="fixed top-6 right-6 flex gap-3 z-50">
+        <div className={`fixed top-6 flex gap-3 z-50 transition-all duration-300 ${showWallpaperPanel ? 'right-[22rem]' : 'right-6'}`}>
           <button
             onClick={toggleLang}
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors border bg-glass text-gray-400 border-glassBorder hover:text-white hover:bg-glassHover"

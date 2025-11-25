@@ -107,6 +107,45 @@ export const CATEGORY_NAMES: Record<Language, Record<CategoryType, string>> = {
   }
 };
 
+export const PRESET_WALLPAPERS = [
+  {
+    id: 'gradient-1',
+    name: 'Purple Gradient',
+    url: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    type: 'gradient'
+  },
+  {
+    id: 'gradient-2',
+    name: 'Ocean Blue',
+    url: 'linear-gradient(135deg, #0093E9 0%, #80D0C7 100%)',
+    type: 'gradient'
+  },
+  {
+    id: 'gradient-3',
+    name: 'Sunset',
+    url: 'linear-gradient(135deg, #FA8BFF 0%, #2BD2FF 52%, #2BFF88 90%)',
+    type: 'gradient'
+  },
+  {
+    id: 'gradient-4',
+    name: 'Dark Night',
+    url: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)',
+    type: 'gradient'
+  },
+  {
+    id: 'gradient-5',
+    name: 'Forest',
+    url: 'linear-gradient(135deg, #134E5E 0%, #71B280 100%)',
+    type: 'gradient'
+  },
+  {
+    id: 'none',
+    name: 'None',
+    url: '',
+    type: 'none'
+  }
+];
+
 export const TRANSLATIONS = {
   en: {
     greetingMorning: "Good Morning",
@@ -134,6 +173,11 @@ export const TRANSLATIONS = {
     aiThinking: "Thinking...",
     aiInputPlaceholder: "Ask about React hooks, CSS grid...",
     aiError: "I'm having trouble connecting right now. Please check your network or API key.",
+    wallpaperSettings: "Wallpaper Settings",
+    presetWallpapers: "Preset Wallpapers",
+    customWallpaper: "Custom Wallpaper",
+    uploadImage: "Upload Image",
+    resetWallpaper: "Reset to Default",
   },
   cn: {
     greetingMorning: "早上好",
@@ -161,6 +205,11 @@ export const TRANSLATIONS = {
     aiThinking: "思考中...",
     aiInputPlaceholder: "询问关于 React Hooks, CSS Grid...",
     aiError: "连接出现问题，请检查网络或 API Key。",
+    wallpaperSettings: "壁纸设置",
+    presetWallpapers: "预设壁纸",
+    customWallpaper: "自定义壁纸",
+    uploadImage: "上传图片",
+    resetWallpaper: "重置为默认",
   }
 };
 
