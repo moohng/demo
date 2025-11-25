@@ -427,6 +427,22 @@ function App() {
     }
   }, [editMode]);
 
+  // Handle Link Visit - Track visit frequency
+  const handleLinkVisit = useCallback((linkId: string) => {
+    setCategories(prev => prev.map(category => ({
+      ...category,
+      links: category.links.map(link =>
+        link.id === linkId
+          ? {
+            ...link,
+            visitCount: (link.visitCount || 0) + 1,
+            lastVisited: Date.now()
+          }
+          : link
+      )
+    })));
+  }, []);
+
   const handleSaveCategory = useCallback((name: string, type: CategoryType) => {
     if (editingCategoryId) {
       // Edit existing category
@@ -777,6 +793,7 @@ function App() {
                     onDelete={handleDeleteLink}
                     onEditCategory={handleEditCategory}
                     onDeleteCategory={handleDeleteCategory}
+                    onVisit={handleLinkVisit}
                     editMode={editMode}
                     lang={lang}
                   />

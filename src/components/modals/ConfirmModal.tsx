@@ -32,12 +32,16 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = React.memo(({
 
   return (
     <div
-      className="fixed inset-0 z-[110] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in"
       onClick={onClose}
     >
+      {/* Backdrop with blur */}
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
+      {/* Modal */}
       <div
-        className="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full shadow-2xl relative animate-fade-in-up"
-        onClick={e => e.stopPropagation()}
+        className="relative bg-[#0f172a] rounded-2xl shadow-2xl border border-glassBorder max-w-md w-full animate-scale-in"
+        onClick={(e) => e.stopPropagation()}
       >
         <button
           onClick={onClose}

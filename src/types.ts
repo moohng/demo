@@ -37,6 +37,8 @@ export interface LinkItem {
   url: string;
   description: string;
   iconName?: string; // Storing string name to map to icon component
+  visitCount?: number; // Track how many times the link was visited
+  lastVisited?: number; // Timestamp of last visit
 }
 
 export interface Category {

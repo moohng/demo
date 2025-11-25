@@ -7,11 +7,12 @@ interface LinkCardProps {
   link: LinkItem;
   onDelete?: (id: string) => void;
   onEdit?: (link: LinkItem) => void;
+  onVisit?: (linkId: string) => void;
   editMode: boolean;
   lang: Language;
 }
 
-const LinkCard: React.FC<LinkCardProps> = ({ link, onDelete, onEdit, editMode, lang }) => {
+const LinkCard: React.FC<LinkCardProps> = ({ link, onDelete, onEdit, onVisit, editMode, lang }) => {
   const t = TRANSLATIONS[lang];
 
   // Extract domain for favicon
@@ -36,6 +37,12 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, onDelete, onEdit, editMode, l
     if (editMode && onEdit) {
       e.preventDefault();
       onEdit(link);
+    }
+  };
+
+  const handleLinkClick = () => {
+    if (!editMode && onVisit) {
+      onVisit(link.id);
     }
   };
 
@@ -90,6 +97,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, onDelete, onEdit, editMode, l
           target="_blank"
           rel="noopener noreferrer"
           className="flex-grow flex items-start gap-3 cursor-pointer"
+          onClick={handleLinkClick}
         >
           <CardContent />
         </a>
