@@ -88,7 +88,7 @@ const GeminiChat: React.FC<GeminiChatProps> = ({ isOpen, onClose, lang, categori
     <div className={`fixed z-50 transition-all duration-300 shadow-2xl border border-glassBorder bg-[#0f172a]/95 backdrop-blur-xl flex flex-col
       ${isExpanded
         ? 'inset-4 rounded-2xl'
-        : 'bottom-6 right-6 w-96 h-[600px] rounded-2xl'
+        : 'bottom-14 right-6 w-96 h-[600px] rounded-2xl'
       }
     `}>
       {/* Header */}

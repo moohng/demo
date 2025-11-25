@@ -451,7 +451,7 @@ function App() {
           lang={lang}
         />
 
-        <main className={`flex-1 overflow-y-auto p-8 transition-all duration-300 ${isSidebarCollapsed ? 'md:pl-24' : 'md:pl-72'}`}>
+        <main className={`flex-1 overflow-y-auto p-8 transition-all duration-300 ${isSidebarCollapsed ? 'md:pl-24' : 'md:pl-52'}`}>
           {isAiSearch && searchQuery ? (
             <div className="max-w-4xl mx-auto">
               <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 mb-6">
@@ -488,7 +488,7 @@ function App() {
         </main>
       </div>
 
-      <div className="fixed bottom-6 right-6 flex flex-col gap-4 z-50">
+      <div className="fixed bottom-16 right-6 flex flex-col gap-4 z-50">
         {editMode && (
           <div className="flex flex-col gap-2 items-center">
             <button
@@ -533,16 +533,6 @@ function App() {
         >
           <Bot size={24} />
         </button>
-
-        <a
-          href="https://github.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="w-14 h-14 bg-gray-800 hover:bg-gray-700 text-white rounded-full shadow-lg shadow-black/50 flex items-center justify-center transition-transform hover:scale-105 border border-gray-700"
-          title="GitHub"
-        >
-          <Github size={24} />
-        </a>
       </div>
 
       <GeminiChat
