@@ -23,13 +23,30 @@ import { useSearchHistory } from './hooks/useSearchHistory';
 
 function App() {
   // Core State
-  const [categories, setCategories] = useState<Category[]>(INITIAL_DATA);
+  const [categories, setCategories] = useState<Category[]>(() => {
+    const savedData = localStorage.getItem('devspace_data');
+    if (savedData) {
+      try {
+        return JSON.parse(savedData);
+      } catch (e) {
+        console.error("Failed to load data", e);
+        return INITIAL_DATA;
+      }
+    }
+    return INITIAL_DATA;
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
-  const [lang, setLang] = useState<Language>('cn');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    const saved = localStorage.getItem('sidebarCollapsed');
+    return saved ? JSON.parse(saved) : false;
+  });
+  const [lang, setLang] = useState<Language>(() => {
+    const saved = localStorage.getItem('language');
+    return (saved as Language) || 'cn';
+  });
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -50,7 +67,10 @@ function App() {
   const [showWallpaperPanel, setShowWallpaperPanel] = useState(false);
 
   // AI States
-  const [isAiSearch, setIsAiSearch] = useState(false);
+  const [isAiSearch, setIsAiSearch] = useState(() => {
+    const saved = localStorage.getItem('isAiSearch');
+    return saved ? JSON.parse(saved) : false;
+  });
   const [aiRecommendations, setAiRecommendations] = useState('');
   const [isAiSearching, setIsAiSearching] = useState(false);
   const [isAutoFilling, setIsAutoFilling] = useState(false);
@@ -128,6 +148,21 @@ function App() {
   useEffect(() => {
     localStorage.setItem('wallpaper', wallpaper);
   }, [wallpaper]);
+
+  // Save language preference
+  useEffect(() => {
+    localStorage.setItem('language', lang);
+  }, [lang]);
+
+  // Save sidebar state
+  useEffect(() => {
+    localStorage.setItem('sidebarCollapsed', JSON.stringify(isSidebarCollapsed));
+  }, [isSidebarCollapsed]);
+
+  // Save AI search preference
+  useEffect(() => {
+    localStorage.setItem('isAiSearch', JSON.stringify(isAiSearch));
+  }, [isAiSearch]);
 
   // AI Search Effect
   useEffect(() => {
