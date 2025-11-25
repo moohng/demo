@@ -10,6 +10,7 @@ import { ImportConfirmModal } from './components/modals/ImportConfirmModal';
 import { ManualImportModal } from './components/modals/ManualImportModal';
 import { HelpModal } from './components/modals/HelpModal';
 import { CategoryModal } from './components/modals/CategoryModal';
+import { ConfirmModal } from './components/modals/ConfirmModal';
 import { ImportProgressOverlay } from './components/overlays/ImportProgressOverlay';
 import { Category, CategoryType, LinkItem, Language } from './types';
 import { INITIAL_DATA, TRANSLATIONS, CATEGORY_NAMES } from './constants';
@@ -32,6 +33,12 @@ function App() {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
   const [isQuickAddCategory, setIsQuickAddCategory] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmModalData, setConfirmModalData] = useState<{
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  } | null>(null);
 
   // AI States
   const [isAiSearch, setIsAiSearch] = useState(false);
@@ -244,14 +251,8 @@ function App() {
     }
   }, [newLinkUrl, newLinkTitle, lang, showNotification, categories]);
 
-  const handleSaveLink = useCallback(() => {
-    if (!newLinkTitle || !newLinkUrl) return;
-
-    let formattedUrl = newLinkUrl;
-    if (!/^https?:\/\//i.test(formattedUrl)) {
-      formattedUrl = 'https://' + formattedUrl;
-    }
-
+  // Helper function to save link (extracted to avoid duplication)
+  const saveLinkWithOverwrite = useCallback((formattedUrl: string, duplicateLink: LinkItem | null) => {
     const linkData: LinkItem = {
       id: editingLinkId || Math.random().toString(36).substr(2, 9),
       title: newLinkTitle,
@@ -261,6 +262,13 @@ function App() {
 
     setCategories(prev => {
       const newCategories = [...prev];
+
+      // If there's a duplicate, remove it first
+      if (duplicateLink) {
+        newCategories.forEach(cat => {
+          cat.links = cat.links.filter(l => l.id !== duplicateLink.id);
+        });
+      }
 
       if (editingLinkId && originalCategoryId) {
         // Remove from original category
@@ -289,7 +297,40 @@ function App() {
     });
 
     setShowAddModal(false);
-  }, [newLinkTitle, newLinkUrl, newLinkDesc, newLinkCategory, editingLinkId, originalCategoryId]);
+  }, [newLinkTitle, newLinkDesc, newLinkCategory, editingLinkId, originalCategoryId]);
+
+  const handleSaveLink = useCallback(() => {
+    if (!newLinkTitle || !newLinkUrl) return;
+
+    let formattedUrl = newLinkUrl;
+    if (!/^https?:\/\//i.test(formattedUrl)) {
+      formattedUrl = 'https://' + formattedUrl;
+    }
+
+    // Check for duplicate URL (skip if editing the same link)
+    const duplicateLink = categories.flatMap(c => c.links).find(
+      link => link.url.toLowerCase() === formattedUrl.toLowerCase() && link.id !== editingLinkId
+    );
+
+    if (duplicateLink) {
+      // Show custom confirmation modal
+      setConfirmModalData({
+        title: lang === 'cn' ? 'URL 已存在' : 'URL Already Exists',
+        message: lang === 'cn'
+          ? `URL "${formattedUrl}" 已存在于书签中（${duplicateLink.title}）。确认保存将覆盖现有链接。`
+          : `URL "${formattedUrl}" already exists in your bookmarks (${duplicateLink.title}). Confirming will overwrite the existing link.`,
+        onConfirm: () => {
+          saveLinkWithOverwrite(formattedUrl, duplicateLink);
+        }
+      });
+      setShowConfirmModal(true);
+      return;
+    }
+
+    // No duplicate, proceed normally
+    saveLinkWithOverwrite(formattedUrl, null);
+  }, [newLinkTitle, newLinkUrl, newLinkDesc, newLinkCategory, editingLinkId, originalCategoryId, categories, lang, setConfirmModalData, setShowConfirmModal, saveLinkWithOverwrite]);
+
 
   // Category Management Functions
   const handleEditCategory = useCallback((categoryId: string) => {
@@ -721,6 +762,16 @@ function App() {
         })() : undefined}
         lang={lang}
       />
+
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onClose={() => setShowConfirmModal(false)}
+        onConfirm={confirmModalData?.onConfirm || (() => { })}
+        title={confirmModalData?.title || ''}
+        message={confirmModalData?.message || ''}
+        lang={lang}
+      />
+
       <GeminiChat
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}
