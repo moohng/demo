@@ -9,6 +9,7 @@ import { SearchOverlay } from './components/SearchOverlay';
 import { ImportConfirmModal } from './components/modals/ImportConfirmModal';
 import { ManualImportModal } from './components/modals/ManualImportModal';
 import { HelpModal } from './components/modals/HelpModal';
+import { CategoryModal } from './components/modals/CategoryModal';
 import { ImportProgressOverlay } from './components/overlays/ImportProgressOverlay';
 import { Category, CategoryType, LinkItem, Language } from './types';
 import { INITIAL_DATA, TRANSLATIONS, CATEGORY_NAMES } from './constants';
@@ -28,6 +29,8 @@ function App() {
   const [lang, setLang] = useState<Language>('cn');
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
 
   // AI States
   const [isAiSearch, setIsAiSearch] = useState(false);
@@ -213,6 +216,67 @@ function App() {
 
     setShowAddModal(false);
   }, [newLinkTitle, newLinkUrl, newLinkDesc, newLinkCategory, editingLinkId, originalCategoryId]);
+
+  // Category Management Functions
+  const handleEditCategory = useCallback((categoryId: string) => {
+    setEditingCategoryId(categoryId);
+    setShowCategoryModal(true);
+  }, []);
+
+  const handleDeleteCategory = useCallback((categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId);
+    if (!category) return;
+
+    const linkCount = category.links.length;
+    const confirmMessage = linkCount > 0
+      ? (lang === 'cn'
+        ? `此分类下有 ${linkCount} 个链接，删除分类将同时删除所有链接。确定要删除吗？`
+        : `This category has ${linkCount} links. Deleting it will also delete all links. Are you sure?`)
+      : (lang === 'cn' ? '确定要删除此分类吗？' : 'Are you sure you want to delete this category?');
+
+    if (window.confirm(confirmMessage)) {
+      setCategories(prev => prev.filter(c => c.id !== categoryId));
+      showNotification(
+        lang === 'cn' ? '分类已删除' : 'Category deleted',
+        'success'
+      );
+    }
+  }, [categories, lang, showNotification]);
+
+  const handleSaveCategory = useCallback((name: string, type: CategoryType) => {
+    if (editingCategoryId) {
+      // Edit existing category
+      setCategories(prev => prev.map(cat =>
+        cat.id === editingCategoryId
+          ? { ...cat, customName: name, type }
+          : cat
+      ));
+      showNotification(
+        lang === 'cn' ? '分类已更新' : 'Category updated',
+        'success'
+      );
+    } else {
+      // Add new category
+      const newCategory: Category = {
+        id: Math.random().toString(36).substr(2, 9),
+        type,
+        customName: name,
+        links: []
+      };
+      setCategories(prev => [...prev, newCategory]);
+      showNotification(
+        lang === 'cn' ? '分类已添加' : 'Category added',
+        'success'
+      );
+    }
+    setEditingCategoryId(null);
+    setShowCategoryModal(false);
+  }, [editingCategoryId, lang, showNotification]);
+
+  const handleAddCategory = useCallback(() => {
+    setEditingCategoryId(null);
+    setShowCategoryModal(true);
+  }, []);
 
   const handleImportBookmarks = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -448,6 +512,8 @@ function App() {
           categories={categories}
           isCollapsed={isSidebarCollapsed}
           setIsCollapsed={setIsSidebarCollapsed}
+          editMode={editMode}
+          onAddCategory={handleAddCategory}
           lang={lang}
         />
 
@@ -479,6 +545,8 @@ function App() {
                   category={category}
                   onEdit={openEditModal}
                   onDelete={handleDeleteLink}
+                  onEditCategory={handleEditCategory}
+                  onDeleteCategory={handleDeleteCategory}
                   editMode={editMode}
                   lang={lang}
                 />
@@ -535,6 +603,25 @@ function App() {
         </button>
       </div>
 
+      <HelpModal
+        isOpen={showHelpModal}
+        onClose={() => setShowHelpModal(false)}
+        lang={lang}
+      />
+
+      <CategoryModal
+        isOpen={showCategoryModal}
+        onClose={() => {
+          setShowCategoryModal(false);
+          setEditingCategoryId(null);
+        }}
+        onSave={handleSaveCategory}
+        editingCategory={editingCategoryId ? (() => {
+          const cat = categories.find(c => c.id === editingCategoryId);
+          return cat ? { name: cat.customName || CATEGORY_NAMES[lang][cat.type], type: cat.type } : undefined;
+        })() : undefined}
+        lang={lang}
+      />
       <GeminiChat
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}

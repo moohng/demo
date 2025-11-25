@@ -103,7 +103,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, togg
         </div>
 
         {/* Controls */}
-        <div className="fixed top-6 right-6 flex gap-3">
+        <div className="fixed top-6 right-6 flex gap-3 z-50">
           <button
             onClick={toggleLang}
             className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors border bg-glass text-gray-400 border-glassBorder hover:text-white hover:bg-glassHover"
@@ -116,7 +116,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, togg
           <button
             onClick={() => setEditMode(!editMode)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors border ${editMode
-              ? 'bg-green-500/10 text-green-400 border-green-500/50'
+              ? 'bg-glass bg-green-500/10 text-green-400 border-green-500/50 border-glassBorder hover:text-green-400 hover:bg-green-500/20'
               : 'bg-glass text-gray-400 border-glassBorder hover:text-white hover:bg-glassHover'
               }`}
           >

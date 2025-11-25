@@ -1,0 +1,135 @@
+import React, { useState, useEffect } from 'react';
+import { X, FolderPlus } from 'lucide-react';
+import { CategoryType, Language } from '../../types';
+import { CATEGORY_ICONS, CATEGORY_NAMES } from '../../constants';
+
+interface CategoryModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSave: (name: string, type: CategoryType) => void;
+  editingCategory?: {
+    name: string;
+    type: CategoryType;
+  };
+  lang: Language;
+}
+
+export const CategoryModal: React.FC<CategoryModalProps> = React.memo(({
+  isOpen,
+  onClose,
+  onSave,
+  editingCategory,
+  lang
+}) => {
+  const [categoryName, setCategoryName] = useState('');
+  const [categoryType, setCategoryType] = useState<CategoryType>(CategoryType.TOOLS);
+
+  useEffect(() => {
+    if (isOpen) {
+      if (editingCategory) {
+        setCategoryName(editingCategory.name);
+        setCategoryType(editingCategory.type);
+      } else {
+        setCategoryName('');
+        setCategoryType(CategoryType.TOOLS);
+      }
+    }
+  }, [isOpen, editingCategory]);
+
+  const handleSave = () => {
+    if (!categoryName.trim()) return;
+    onSave(categoryName.trim(), categoryType);
+    onClose();
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
+      onClick={onClose}
+    >
+      <div
+        className="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full shadow-2xl relative"
+        onClick={e => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
+        >
+          <X size={20} />
+        </button>
+
+        <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+          <FolderPlus size={24} className="text-primary" />
+          {editingCategory
+            ? (lang === 'cn' ? '编辑分类' : 'Edit Category')
+            : (lang === 'cn' ? '添加分类' : 'Add Category')
+          }
+        </h3>
+
+        <div className="space-y-4">
+          {/* Category Name */}
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">
+              {lang === 'cn' ? '分类名称' : 'Category Name'}
+            </label>
+            <input
+              type="text"
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
+              placeholder={lang === 'cn' ? '输入分类名称' : 'Enter category name'}
+              className="w-full bg-gray-800 border border-gray-700 text-white rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary/50 focus:border-primary/50 outline-none"
+              autoFocus
+            />
+          </div>
+
+          {/* Category Type (Icon) */}
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-2">
+              {lang === 'cn' ? '选择图标' : 'Select Icon'}
+            </label>
+            <div className="grid grid-cols-4 gap-2">
+              {Object.values(CategoryType).map((type) => {
+                const Icon = CATEGORY_ICONS[type];
+                const isSelected = categoryType === type;
+                return (
+                  <button
+                    key={type}
+                    onClick={() => setCategoryType(type)}
+                    className={`p-3 rounded-lg border transition-all ${isSelected
+                        ? 'bg-primary/20 border-primary text-primary'
+                        : 'bg-gray-800 border-gray-700 text-gray-400 hover:border-gray-600 hover:text-white'
+                      }`}
+                    title={CATEGORY_NAMES[lang][type]}
+                  >
+                    <Icon size={20} className="mx-auto" />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex gap-3 mt-6">
+          <button
+            onClick={onClose}
+            className="flex-1 py-2 px-4 rounded-lg border border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+          >
+            {lang === 'cn' ? '取消' : 'Cancel'}
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={!categoryName.trim()}
+            className="flex-1 py-2 px-4 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {lang === 'cn' ? '保存' : 'Save'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+CategoryModal.displayName = 'CategoryModal';

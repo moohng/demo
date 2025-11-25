@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronLeft, ChevronRight, Hash } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Hash, Plus } from 'lucide-react';
 import { Category, Language } from '../types';
 import { CATEGORY_ICONS, CATEGORY_NAMES } from '../constants';
 
@@ -7,10 +7,12 @@ interface SidebarProps {
   categories: Category[];
   isCollapsed: boolean;
   setIsCollapsed: (collapsed: boolean) => void;
+  editMode: boolean;
+  onAddCategory: () => void;
   lang: Language;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollapsed, lang }) => {
+const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollapsed, editMode, onAddCategory, lang }) => {
   const scrollToCategory = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
@@ -35,41 +37,54 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollaps
 
       {/* Navigation Links */}
       <nav className="flex-1 overflow-y-auto overflow-x-hidden py-3 px-3 space-y-2 custom-scrollbar">
-        {categories.map((category) => {
-          const Icon = CATEGORY_ICONS[category.type] || Hash;
-          const displayName = CATEGORY_NAMES[lang][category.type];
+        {categories
+          .filter(category => editMode || category.links.length > 0)
+          .map((category) => {
+            const Icon = CATEGORY_ICONS[category.type] || Hash;
+            const displayName = category.customName || CATEGORY_NAMES[lang][category.type];
 
-          return (
-            <button
-              key={category.id}
-              onClick={() => scrollToCategory(category.type)}
-              className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 group relative
-                ${isCollapsed ? 'justify-center' : 'justify-start gap-4'}
-                hover:bg-glassHover text-gray-400 hover:text-white
-              `}
-            >
-              <div className={`flex-shrink-0 transition-colors duration-300 ${!isCollapsed ? 'text-primary' : 'group-hover:text-primary'}`}>
-                <Icon size={20} />
-              </div>
-
-              <span
-                className={`whitespace-nowrap font-medium text-sm transition-all duration-300 origin-left ${isCollapsed ? 'opacity-0 w-0 scale-0' : 'opacity-100 w-auto scale-100 animate-fade-in'
-                  }`}
+            return (
+              <button
+                key={category.id}
+                onClick={() => scrollToCategory(category.type)}
+                className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 group relative
+                  ${isCollapsed ? 'justify-center' : 'justify-start gap-4'}
+                  hover:bg-glassHover text-gray-400 hover:text-white
+                `}
               >
-                {displayName}
-              </span>
-
-              {/* Tooltip for collapsed mode */}
-              {isCollapsed && (
-                <div className="absolute left-full ml-4 px-3 py-1.5 bg-gray-800 text-white text-xs font-medium rounded-lg border border-gray-700 opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-xl translate-x-2 group-hover:translate-x-0 transition-all duration-200">
-                  {displayName}
-                  {/* Little triangle arrow */}
-                  <div className="absolute top-1/2 -left-1 -mt-1 border-4 border-transparent border-r-gray-800" />
+                <div className={`flex-shrink-0 transition-colors duration-300 ${!isCollapsed ? 'text-primary' : 'group-hover:text-primary'}`}>
+                  <Icon size={20} />
                 </div>
-              )}
-            </button>
-          );
-        })}
+
+                <span
+                  className={`whitespace-nowrap font-medium text-sm transition-all duration-300 origin-left ${isCollapsed ? 'opacity-0 w-0 scale-0' : 'opacity-100 w-auto scale-100 animate-fade-in'
+                    }`}
+                >
+                  {displayName}
+                </span>
+
+                {/* Tooltip for collapsed mode */}
+                {isCollapsed && (
+                  <div className="absolute left-full ml-4 px-3 py-1.5 bg-gray-800 text-white text-xs font-medium rounded-lg border border-gray-700 opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-xl translate-x-2 group-hover:translate-x-0 transition-all duration-200">
+                    {displayName}
+                    {/* Little triangle arrow */}
+                    <div className="absolute top-1/2 -left-1 -mt-1 border-4 border-transparent border-r-gray-800" />
+                  </div>
+                )}
+              </button>
+            );
+          })}
+
+        {/* Add Category Button - only in edit mode */}
+        {editMode && !isCollapsed && (
+          <button
+            onClick={onAddCategory}
+            className="w-full flex items-center p-3 rounded-xl transition-all duration-200 border-2 border-dashed border-gray-700 hover:border-primary/50 text-gray-500 hover:text-primary gap-3"
+          >
+            <Plus size={20} />
+            <span className="font-medium text-sm">{lang === 'cn' ? '添加分类' : 'Add Category'}</span>
+          </button>
+        )}
       </nav>
 
       {/* GitHub Link at Bottom */}

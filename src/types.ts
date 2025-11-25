@@ -24,6 +24,7 @@ export interface LinkItem {
 export interface Category {
   id: string;
   type: CategoryType;
+  customName?: string; // Optional custom name, overrides default type name
   links: LinkItem[];
 }
 
