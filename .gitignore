@@ -4,6 +4,8 @@ node_modules/
 *.exe
 *.class
 
+.venv
+
 dist/
 dist-ssr
 *.local
