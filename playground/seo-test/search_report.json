@@ -1,0 +1,1331 @@
+{
+  "generated_at": "2025-12-04T23:53:29.516224",
+  "metadata": {
+    "last_updated": "2025-12-04T23:32:11.731110",
+    "total_tests": 72,
+    "success": 72,
+    "failed": 0,
+    "captcha": 0,
+    "pending": 0
+  },
+  "statistics": {
+    "total_tests": 72,
+    "successful_tests": 72,
+    "failed_tests": 0,
+    "captcha_tests": 0,
+    "evaluated_tests": 72,
+    "success_rate": 100.0
+  },
+  "rankings": [
+    {
+      "engine": "Google",
+      "avg_total": 9.733333333333333,
+      "avg_accuracy": 9.625,
+      "avg_ad": 10.0,
+      "avg_quality": 9.583333333333334,
+      "avg_ux": 9.708333333333334,
+      "count": 12
+    },
+    {
+      "engine": "Brave",
+      "avg_total": 9.445833333333333,
+      "avg_accuracy": 9.083333333333334,
+      "avg_ad": 10.0,
+      "avg_quality": 9.375,
+      "avg_ux": 9.375,
+      "count": 12
+    },
+    {
+      "engine": "Bing",
+      "avg_total": 9.366666666666667,
+      "avg_accuracy": 9.25,
+      "avg_ad": 9.625,
+      "avg_quality": 9.125,
+      "avg_ux": 9.416666666666666,
+      "count": 12
+    },
+    {
+      "engine": "夸克",
+      "avg_total": 8.845833333333333,
+      "avg_accuracy": 8.583333333333334,
+      "avg_ad": 9.416666666666666,
+      "avg_quality": 8.5,
+      "avg_ux": 8.833333333333334,
+      "count": 12
+    },
+    {
+      "engine": "百度",
+      "avg_total": 7.377083333333334,
+      "avg_accuracy": 8.291666666666666,
+      "avg_ad": 6.708333333333333,
+      "avg_quality": 7.208333333333333,
+      "avg_ux": 7.291666666666667,
+      "count": 12
+    },
+    {
+      "engine": "搜狗",
+      "avg_total": 5.904166666666666,
+      "avg_accuracy": 7.5,
+      "avg_ad": 4.916666666666667,
+      "avg_quality": 5.5,
+      "avg_ux": 5.666666666666667,
+      "count": 12
+    }
+  ],
+  "details": [
+    {
+      "engine": "百度",
+      "results": [
+        {
+          "engine": "百度",
+          "keyword": "vscode 扩展 esbuild external 错误",
+          "status": "success",
+          "screenshot_path": "search_screenshots/百度_vscode 扩展 esbuild external 错误.png",
+          "timestamp": "2025-12-04T21:25:33.944213",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 8.5,
+            "ad_score": 7.5,
+            "quality_score": 8.5,
+            "ux_score": 8.0,
+            "total_score": 8.1,
+            "comment": "百度在此技术关键词下表现出色，前排结果精准度高，直接命中核心问题，且多数来自权威技术社区，时间戳清晰，对开发者非常有用。页面布局清晰，无第三方广告干扰。主要不足是顶部的“百度AI+”功能占据了首屏部分空间，右侧“百度热搜”与查询无关，略有分散用户注意力。整体而言，是一款高效且实用的搜索结果页。"
+          },
+          "evaluated_at": "2025-12-04T23:25:38.562629"
+        },
+        {
+          "engine": "百度",
+          "keyword": "RTCPeerConnection 文件传输慢原因",
+          "status": "success",
+          "screenshot_path": "search_screenshots/百度_RTCPeerConnection 文件传输慢原因.png",
+          "timestamp": "2025-12-04T21:25:41.405496",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 8,
+            "ux_score": 9,
+            "total_score": 9,
+            "comment": "该搜索引擎在此技术关键词下的表现非常出色。百度AI+直接提供了高质量的即时答案，且无广告干扰，极大地提升了用户获取信息的效率。自然搜索结果也高度相关，权威性较好。主要的不足在于右侧的热搜榜与技术查询无关，略显冗余，但整体体验极佳。"
+          },
+          "evaluated_at": "2025-12-04T23:25:52.756776"
+        },
+        {
+          "engine": "百度",
+          "keyword": "http2 和 http3 有什么区别",
+          "status": "success",
+          "screenshot_path": "search_screenshots/百度_http2 和 http3 有什么区别.png",
+          "timestamp": "2025-12-04T21:25:47.785360",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 8.5,
+            "ad_score": 10.0,
+            "quality_score": 7.5,
+            "ux_score": 8.5,
+            "total_score": 8.6,
+            "comment": "百度AI+提供了准确的核心答案，有机结果权威相关。AI总结清晰高效是优点，但右侧热搜内容完全无关，分散用户注意力，影响整体体验。"
+          },
+          "evaluated_at": "2025-12-04T23:26:10.074685"
+        },
+        {
+          "engine": "百度",
+          "keyword": "Git 交互式 rebase 教程",
+          "status": "success",
+          "screenshot_path": "search_screenshots/百度_Git 交互式 rebase 教程.png",
+          "timestamp": "2025-12-04T21:25:54.333966",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 8.5,
+            "ux_score": 9,
+            "total_score": 9.125,
+            "comment": "该搜索结果页表现优秀。百度AI+总结精准，提供了大量权威的文本和视频教程，与关键词强相关。页面无广告，布局清晰，视觉体验良好。唯一的缺点是右侧热搜内容与查询无关，略微分散注意力。"
+          },
+          "evaluated_at": "2025-12-04T23:26:27.489300"
+        },
+        {
+          "engine": "百度",
+          "keyword": "Docker 网络 bridge 与 host 区别",
+          "status": "success",
+          "screenshot_path": "search_screenshots/百度_Docker 网络 bridge 与 host 区别.png",
+          "timestamp": "2025-12-04T21:26:00.747859",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9.25,
+            "comment": "百度在此关键词下表现优秀。AI+提供了精准的直接答案，大大提升效率。搜索结果高度相关，无广告干扰，页面清晰。主要优点是AI+智能聚合信息，缺点是权威性来源有待提高，多为技术社区内容。"
+          },
+          "evaluated_at": "2025-12-04T23:26:41.516868"
+        },
+        {
+          "engine": "百度",
+          "keyword": "IPv6 地址结构",
+          "status": "success",
+          "screenshot_path": "search_screenshots/百度_IPv6 地址结构.png",
+          "timestamp": "2025-12-04T21:26:08.036246",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 7,
+            "ux_score": 8,
+            "total_score": 8.5,
+            "comment": "此次搜索表现优异。结果精准、权威且无广告。顶部的“百度AI+”总结直接满足了用户的查询意图，体验流畅。主要不足是右侧的热搜榜与技术类搜索无关，造成了信息干扰。"
+          },
+          "evaluated_at": "2025-12-04T22:45:08.297438"
+        },
+        {
+          "engine": "百度",
+          "keyword": "最便宜的机票",
+          "status": "success",
+          "screenshot_path": "search_screenshots/百度_最便宜的机票.png",
+          "timestamp": "2025-12-04T21:26:15.026969",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 4,
+            "quality_score": 8,
+            "ux_score": 7,
+            "total_score": 7.0,
+            "comment": "结果精准度高，AI首条答复是亮点，organic结果权威且相关。主要不足是广告数量偏多且穿插在结果中，对用户体验造成一定干扰。页面布局清晰，整体信息获取效率尚可。"
+          },
+          "evaluated_at": "2025-12-04T22:45:31.725451"
+        },
+        {
+          "engine": "百度",
+          "keyword": "个人贷款利率",
+          "status": "success",
+          "screenshot_path": "search_screenshots/百度_个人贷款利率.png",
+          "timestamp": "2025-12-04T21:26:21.777038",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 7,
+            "quality_score": 8,
+            "ux_score": 9,
+            "total_score": 8.25,
+            "comment": "该搜索结果在“个人贷款利率”关键词下表现出色，结果高度相关且信息全面，涵盖了计算器、官方政策、银行对比及视频等多种形式。部分结果来源权威性较高。主要不足在于百度AI助手及自营产品在页面顶部占据较多空间，一定程度上挤占了纯粹的自然搜索结果。整体信息密度偏高，可能对部分用户造成轻微的信息过载感。"
+          },
+          "evaluated_at": "2025-12-04T23:26:59.854111"
+        },
+        {
+          "engine": "百度",
+          "keyword": "汽车保险报价",
+          "status": "success",
+          "screenshot_path": "search_screenshots/百度_汽车保险报价.png",
+          "timestamp": "2025-12-04T21:26:29.036409",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 8,
+            "ad_score": 3,
+            "quality_score": 6,
+            "ux_score": 6,
+            "total_score": 5.75,
+            "comment": "百度在该关键词下提供了高度相关的AI总结和权威结果，但在广告控制上表现不佳。页面顶部及信息流中广告占比过高且重复，挤占了大量内容空间，削弱了用户获取纯净信息的效率。无关的“百度热搜”也干扰了用户体验。核心内容精准，但整体商业化严重，有待改善。"
+          },
+          "evaluated_at": "2025-12-04T23:27:17.760536"
+        },
+        {
+          "engine": "百度",
+          "keyword": "AI 工具免费版",
+          "status": "success",
+          "screenshot_path": "search_screenshots/百度_AI 工具免费版.png",
+          "timestamp": "2025-12-04T21:26:36.134265",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 7.5,
+            "ad_score": 3.0,
+            "quality_score": 5.0,
+            "ux_score": 6.0,
+            "total_score": 5.4,
+            "comment": "百度在此关键词下提供了大量相关AI工具及信息，尤其顶部聚合内容实用性强。但页面广告泛滥且标识不明显，严重干扰了用户获取优质有机内容的体验，导致信息识别困难。"
+          },
+          "evaluated_at": "2025-12-04T23:27:41.964202"
+        },
+        {
+          "engine": "百度",
+          "keyword": "减肥方法有效",
+          "status": "success",
+          "screenshot_path": "search_screenshots/百度_减肥方法有效.png",
+          "timestamp": "2025-12-04T21:26:43.014632",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 7,
+            "ad_score": 3,
+            "quality_score": 5,
+            "ux_score": 4,
+            "total_score": 4.75,
+            "comment": "结果相关性较好，提供了AI总结、医生文章等多样化内容。但页面顶部广告泛滥，严重损害用户体验。整体布局杂乱，信息密度过高，商业化气息浓厚，用户需要费力筛选才能找到有用信息。"
+          },
+          "evaluated_at": "2025-12-04T22:46:10.860554"
+        },
+        {
+          "engine": "百度",
+          "keyword": "微信电脑版下载",
+          "status": "success",
+          "screenshot_path": "search_screenshots/百度_微信电脑版下载.png",
+          "timestamp": "2025-12-04T21:26:51.675802",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 6,
+            "ad_score": 3,
+            "quality_score": 6,
+            "ux_score": 4,
+            "total_score": 4.8,
+            "comment": "搜索结果虽然包含了官方下载链接，但其位置严重靠后，被大量顶部广告和第三方下载站淹没。广告占比过高，且许多结果标题（如“2025版”）存在误导性，用户需仔细甄别才能找到可信来源，整体体验不佳。"
+          },
+          "evaluated_at": "2025-12-04T22:46:35.419865"
+        }
+      ]
+    },
+    {
+      "engine": "搜狗",
+      "results": [
+        {
+          "engine": "搜狗",
+          "keyword": "vscode 扩展 esbuild external 错误",
+          "status": "success",
+          "screenshot_path": "search_screenshots/搜狗_vscode 扩展 esbuild external 错误.png",
+          "timestamp": "2025-12-04T21:27:01.626479",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 6,
+            "ad_score": 4,
+            "quality_score": 4,
+            "ux_score": 5,
+            "total_score": 4.75,
+            "comment": "针对该技术类关键词，搜狗在首位提供了AI整合答案，精准度尚可。但页面整体表现不佳：结果中混入了硕大且完全无关的游戏广告，严重影响浏览；右侧“全网热搜”分散用户注意力；自然结果中存在重复链接和相关性不高的内容。广告和无关元素的干扰，大幅降低了页面质量和用户体验。"
+          },
+          "evaluated_at": "2025-12-04T22:47:01.923426"
+        },
+        {
+          "engine": "搜狗",
+          "keyword": "RTCPeerConnection 文件传输慢原因",
+          "status": "success",
+          "screenshot_path": "search_screenshots/搜狗_RTCPeerConnection 文件传输慢原因.png",
+          "timestamp": "2025-12-04T21:27:11.453737",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 3,
+            "ad_score": 9,
+            "quality_score": 6,
+            "ux_score": 5,
+            "total_score": 5.75,
+            "comment": "搜狗对该技术类关键词的理解能力较差，大部分搜索结果仅匹配了“文件传输慢”，忽略了核心技术词“RTCPeerConnection”，导致精准度极低。优点是广告少，页面布局清晰。但右侧无关热搜榜和无效的AI问答框对用户造成了一定干扰，整体解决问题的效率不高。"
+          },
+          "evaluated_at": "2025-12-04T22:47:30.520377"
+        },
+        {
+          "engine": "搜狗",
+          "keyword": "http2 和 http3 有什么区别",
+          "status": "success",
+          "screenshot_path": "search_screenshots/搜狗_http2 和 http3 有什么区别.png",
+          "timestamp": "2025-12-04T21:27:18.982032",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 9,
+            "quality_score": 7,
+            "ux_score": 8,
+            "total_score": 8.25,
+            "comment": "对于技术类问题，搜狗给出的结果精准度高，来源权威（如B站、阿里云、腾讯云等），且几乎无广告干扰。页面布局清晰，并集成了AI问答功能。不足之处在于右侧“全网热搜”模块与搜索意图无关，略有干扰。"
+          },
+          "evaluated_at": "2025-12-04T22:48:03.316464"
+        },
+        {
+          "engine": "搜狗",
+          "keyword": "Git 交互式 rebase 教程",
+          "status": "success",
+          "screenshot_path": "search_screenshots/搜狗_Git 交互式 rebase 教程.png",
+          "timestamp": "2025-12-04T21:27:26.624535",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 5,
+            "quality_score": 6,
+            "ux_score": 7,
+            "total_score": 6.75,
+            "comment": "搜索结果精准度非常高，首条AI总结直接满足了用户需求，后续结果也均来自权威技术社区。主要不足在于页面广告和无关信息过多，特别是右侧的“全网热搜榜”与技术搜索场景格格不入，严重分散用户注意力，损害了整体的页面质量和用户体验。"
+          },
+          "evaluated_at": "2025-12-04T22:48:25.175321"
+        },
+        {
+          "engine": "搜狗",
+          "keyword": "Docker 网络 bridge 与 host 区别",
+          "status": "success",
+          "screenshot_path": "search_screenshots/搜狗_Docker 网络 bridge 与 host 区别.png",
+          "timestamp": "2025-12-04T21:27:34.229683",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 5,
+            "quality_score": 6,
+            "ux_score": 6,
+            "total_score": 6.5,
+            "comment": "对于该技术类关键词，搜狗返回的自然搜索结果精准度非常高，内容多来自权威的技术社区和博客，可信度强。主要缺点在于页面右侧的“全网热搜榜”模块，其内容与搜索意图完全无关，且包含广告，严重干扰了用户获取信息的专注度，大幅拉低了广告占比、页面质量和用户体验的得分。"
+          },
+          "evaluated_at": "2025-12-04T22:48:50.298146"
+        },
+        {
+          "engine": "搜狗",
+          "keyword": "IPv6 地址结构",
+          "status": "success",
+          "screenshot_path": "search_screenshots/搜狗_IPv6 地址结构.png",
+          "timestamp": "2025-12-04T21:27:42.080411",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 6,
+            "quality_score": 6,
+            "ux_score": 6,
+            "total_score": 6.75,
+            "comment": "结果精准度高，顶部AI总结直接回答了问题，非常高效。但页面存在过多AI产品推广，且右侧“全网热搜榜”与技术查询完全无关，严重干扰用户视线，拉低了整体体验。"
+          },
+          "evaluated_at": "2025-12-04T22:49:18.655754"
+        },
+        {
+          "engine": "搜狗",
+          "keyword": "最便宜的机票",
+          "status": "success",
+          "screenshot_path": "search_screenshots/搜狗_最便宜的机票.png",
+          "timestamp": "2025-12-04T21:27:50.893008",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 6,
+            "ad_score": 6,
+            "quality_score": 5,
+            "ux_score": 6,
+            "total_score": 5.75,
+            "comment": "优点是集成了强大的机票直搜工具，能直接满足用户需求。缺点是页面混杂了大量无关推荐和热搜榜，严重干扰核心信息的查找，信息排布混乱，导致整体体验不佳。"
+          },
+          "evaluated_at": "2025-12-04T22:49:56.135072"
+        },
+        {
+          "engine": "搜狗",
+          "keyword": "个人贷款利率",
+          "status": "success",
+          "screenshot_path": "search_screenshots/搜狗_个人贷款利率.png",
+          "timestamp": "2025-12-04T21:27:58.679728",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 6,
+            "quality_score": 6,
+            "ux_score": 8,
+            "total_score": 7.25,
+            "comment": "搜狗对该关键词的搜索表现优秀。结果精准度高，首条智能卡片直接给出LPR基准利率，体验极佳。多数结果来自银行等权威来源。主要不足是右侧的“全网热搜”模块内容无关且含广告，严重干扰视线，拉低了页面整体质量。"
+          },
+          "evaluated_at": "2025-12-04T22:50:27.774130"
+        },
+        {
+          "engine": "搜狗",
+          "keyword": "汽车保险报价",
+          "status": "success",
+          "screenshot_path": "search_screenshots/搜狗_汽车保险报价.png",
+          "timestamp": "2025-12-04T21:28:06.612831",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 8,
+            "ad_score": 2,
+            "quality_score": 5,
+            "ux_score": 4,
+            "total_score": 4.75,
+            "comment": "搜索结果相关性尚可，权威站点较多。但首屏广告过多，严重挤压了自然结果的展示空间，影响查找效率。右侧无关热搜榜分散用户注意力，整体体验不佳。"
+          },
+          "evaluated_at": "2025-12-04T22:50:58.726848"
+        },
+        {
+          "engine": "搜狗",
+          "keyword": "AI 工具免费版",
+          "status": "success",
+          "screenshot_path": "search_screenshots/搜狗_AI 工具免费版.png",
+          "timestamp": "2025-12-04T21:28:14.427729",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 2,
+            "quality_score": 6,
+            "ux_score": 4,
+            "total_score": 5.3,
+            "comment": "结果精准度高，内容相关性强。但顶部广告泛滥，严重影响用户体验。右侧热搜榜与搜索意图无关，造成信息干扰，整体广告感过重。"
+          },
+          "evaluated_at": "2025-12-04T22:51:26.600236"
+        },
+        {
+          "engine": "搜狗",
+          "keyword": "减肥方法有效",
+          "status": "success",
+          "screenshot_path": "search_screenshots/搜狗_减肥方法有效.png",
+          "timestamp": "2025-12-04T21:28:22.711744",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 7,
+            "ad_score": 2,
+            "quality_score": 4,
+            "ux_score": 4,
+            "total_score": 4.25,
+            "comment": "虽然有机结果精准度尚可，且提供了AI摘要和百科等权威内容，但首屏完全被商业广告和导流服务占据，严重影响信息获取效率。页面右侧无关的热搜榜单也造成了干扰，整体用户体验不佳。"
+          },
+          "evaluated_at": "2025-12-04T22:52:00.854749"
+        },
+        {
+          "engine": "搜狗",
+          "keyword": "微信电脑版下载",
+          "status": "success",
+          "screenshot_path": "search_screenshots/搜狗_微信电脑版下载.png",
+          "timestamp": "2025-12-04T21:28:30.691117",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 6,
+            "ad_score": 3,
+            "quality_score": 5,
+            "ux_score": 5,
+            "total_score": 4.8,
+            "comment": "结果相关性尚可，但官方下载链接被大量广告和第三方下载站淹没，排名靠后，权威性不足。页面顶部广告过多，严重影响用户第一时间获取安全信息。右侧“全网热搜”模块与用户搜索意图无关，属于干扰信息，整体体验不佳。"
+          },
+          "evaluated_at": "2025-12-04T22:52:26.365360"
+        }
+      ]
+    },
+    {
+      "engine": "夸克",
+      "results": [
+        {
+          "engine": "夸克",
+          "keyword": "vscode 扩展 esbuild external 错误",
+          "status": "success",
+          "screenshot_path": "search_screenshots/夸克_vscode 扩展 esbuild external 错误.png",
+          "timestamp": "2025-12-04T21:28:40.091400",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 4,
+            "ad_score": 3,
+            "quality_score": 2,
+            "ux_score": 2,
+            "total_score": 2.75,
+            "comment": "夸克对技术长尾关键词的理解能力不足，仅前两条结果精准，其余内容严重偏离。页面虽无传统第三方广告，但巨大的登录/下载弹窗属于干扰性极强的自身推广，严重破坏了页面质量和用户体验，导致整体可用性差。"
+          },
+          "evaluated_at": "2025-12-04T22:52:53.493290"
+        },
+        {
+          "engine": "夸克",
+          "keyword": "RTCPeerConnection 文件传输慢原因",
+          "status": "success",
+          "screenshot_path": "search_screenshots/夸克_RTCPeerConnection 文件传输慢原因.png",
+          "timestamp": "2025-12-04T21:28:46.675837",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 7,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 8.8,
+            "comment": "夸克在此技术类关键词下表现良好。优点是页面完全无广告，布局清爽，顶部的AI总结直观高效。不足之处在于，部分自然结果与关键词相关性不强，内容质量参差不齐，影响了整体精准度。"
+          },
+          "evaluated_at": "2025-12-04T22:53:16.834921"
+        },
+        {
+          "engine": "夸克",
+          "keyword": "http2 和 http3 有什么区别",
+          "status": "success",
+          "screenshot_path": "search_screenshots/夸克_http2 和 http3 有什么区别.png",
+          "timestamp": "2025-12-04T21:28:53.168354",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 10,
+            "total_score": 9.75,
+            "comment": "针对技术类查询，夸克表现极佳。首屏通过AI整合生成了精准摘要和对比表格，直达问题核心，免去用户额外点击。页面完全无广告，布局清晰现代，关键信息突出，整体体验高效流畅。搜索结果来源均为相关技术社区，权威性和相关性强。"
+          },
+          "evaluated_at": "2025-12-04T22:53:42.413112"
+        },
+        {
+          "engine": "夸克",
+          "keyword": "Git 交互式 rebase 教程",
+          "status": "success",
+          "screenshot_path": "search_screenshots/夸克_Git 交互式 rebase 教程.png",
+          "timestamp": "2025-12-04T21:28:59.598437",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 10,
+            "total_score": 9.75,
+            "comment": "针对技术类查询表现堪称典范。AI即时解答精准，所有自然结果均强相关且权威。页面完全无广告，布局清爽，体验优秀。主要不足是结果来源集中于CSDN，略显单一。"
+          },
+          "evaluated_at": "2025-12-04T22:54:12.798930"
+        },
+        {
+          "engine": "夸克",
+          "keyword": "Docker 网络 bridge 与 host 区别",
+          "status": "success",
+          "screenshot_path": "search_screenshots/夸克_Docker 网络 bridge 与 host 区别.png",
+          "timestamp": "2025-12-04T21:29:06.432413",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 10,
+            "total_score": 9.75,
+            "comment": "夸克针对该技术查询表现出色。结果高度精准，完全无广告。首屏AI解答和关键词高亮功能极大提升了用户体验。页面简洁清晰，是高质量的搜索结果页。"
+          },
+          "evaluated_at": "2025-12-04T22:54:40.433110"
+        },
+        {
+          "engine": "夸克",
+          "keyword": "IPv6 地址结构",
+          "status": "success",
+          "screenshot_path": "search_screenshots/夸克_IPv6 地址结构.png",
+          "timestamp": "2025-12-04T21:29:13.408012",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 10,
+            "total_score": 9.75,
+            "comment": "夸克在该技术类关键词下表现极其出色。首屏AI摘要精准、权威地解答了核心问题。整个页面无任何广告，布局清晰现代，信息来源可靠（百科、华为、CSDN等），用户体验极佳，是教科书级别的搜索结果页。"
+          },
+          "evaluated_at": "2025-12-04T22:55:06.154872"
+        },
+        {
+          "engine": "夸克",
+          "keyword": "最便宜的机票",
+          "status": "success",
+          "screenshot_path": "search_screenshots/夸克_最便宜的机票.png",
+          "timestamp": "2025-12-04T21:29:20.333609",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 7,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 8.8,
+            "comment": "夸克本次搜索表现优秀。页面完全无广告，布局简洁现代，用户体验极佳。顶部的AI摘要是一大亮点。美中不足的是，搜索结果中有较多百家号内容，权威性有待加强。"
+          },
+          "evaluated_at": "2025-12-04T22:55:32.216116"
+        },
+        {
+          "engine": "夸克",
+          "keyword": "个人贷款利率",
+          "status": "success",
+          "screenshot_path": "search_screenshots/夸克_个人贷款利率.png",
+          "timestamp": "2025-12-04T21:29:28.257736",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9.25,
+            "comment": "夸克在此关键词下表现出色。结果精准，来源权威（新华网、各大银行官网），完全无广告。页面布局清晰，首屏以智能摘要形式直出答案，信息组织有序，关键利率数据突出，整体用户体验极佳。"
+          },
+          "evaluated_at": "2025-12-04T22:56:03.540373"
+        },
+        {
+          "engine": "夸克",
+          "keyword": "汽车保险报价",
+          "status": "success",
+          "screenshot_path": "search_screenshots/夸克_汽车保险报价.png",
+          "timestamp": "2025-12-04T21:29:34.787025",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 10,
+            "ux_score": 9,
+            "total_score": 9.5,
+            "comment": "夸克在此关键词下表现卓越。优点是首条AI生成摘要直击要点，结果权威且无广告，页面布局清晰、极简，用户体验极佳。不足之处不明显，整体搜索质量非常高。"
+          },
+          "evaluated_at": "2025-12-04T22:56:23.102796"
+        },
+        {
+          "engine": "夸克",
+          "keyword": "AI 工具免费版",
+          "status": "success",
+          "screenshot_path": "search_screenshots/夸克_AI 工具免费版.png",
+          "timestamp": "2025-12-04T21:29:40.935164",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9.3,
+            "comment": "夸克在此关键词下的表现非常出色。结果高度相关，均为工具集合或导航站。页面完全无广告，布局极致简洁，阅读体验极佳。整体质量很高，是教科书级的干净搜索结果页。"
+          },
+          "evaluated_at": "2025-12-04T22:56:48.702574"
+        },
+        {
+          "engine": "夸克",
+          "keyword": "减肥方法有效",
+          "status": "success",
+          "screenshot_path": "search_screenshots/夸克_减肥方法有效.png",
+          "timestamp": "2025-12-04T21:29:48.007682",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 10,
+            "total_score": 9.5,
+            "comment": "夸克在此关键词下表现极佳。顶部AI总结精准高效，直接回答用户问题。页面完全无广告，布局清晰，关键信息突出，整体体验优秀。美中不足是部分自然结果的来源权威性稍弱。"
+          },
+          "evaluated_at": "2025-12-04T22:57:14.820815"
+        },
+        {
+          "engine": "夸克",
+          "keyword": "微信电脑版下载",
+          "status": "success",
+          "screenshot_path": "search_screenshots/夸克_微信电脑版下载.png",
+          "timestamp": "2025-12-04T21:56:17.398172",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9.25,
+            "comment": "夸克在此关键词下表现极佳。优点是完全无广告、页面干净，并且将官方下载链接精准置顶，并用“官网”标签清晰标识。主要不足是官方链接之后的结果充斥着大量第三方下载站，对部分用户可能造成干扰。"
+          },
+          "evaluated_at": "2025-12-04T22:57:38.161466"
+        }
+      ]
+    },
+    {
+      "engine": "Google",
+      "results": [
+        {
+          "engine": "Google",
+          "keyword": "vscode 扩展 esbuild external 错误",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Google_vscode 扩展 esbuild external 错误.png",
+          "timestamp": "2025-12-04T22:07:02.288640",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 10,
+            "ux_score": 10,
+            "total_score": 9.8,
+            "comment": "针对这一高度技术性的开发者查询，Google表现卓越。搜索结果精准度极高，首条结果即来自权威的GitHub issue，直接命中了用户的核心问题。页面完全无广告，布局清晰，信息密度合理，用户体验极佳。唯一的微小不足是“相关问题”模块的相关性稍弱，但整体瑕不掩瑜。"
+          },
+          "evaluated_at": "2025-12-04T22:57:59.662784"
+        },
+        {
+          "engine": "Google",
+          "keyword": "RTCPeerConnection 文件传输慢原因",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Google_RTCPeerConnection 文件传输慢原因.png",
+          "timestamp": "2025-12-04T22:07:27.348183",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 10,
+            "total_score": 9.75,
+            "comment": "针对此技术查询表现卓越。AI概览精准回答核心问题，结果均来自权威技术博客和文档，且页面完全无广告。信息结构清晰，用户体验极佳，是理想的搜索结果。"
+          },
+          "evaluated_at": "2025-12-04T22:58:25.572454"
+        },
+        {
+          "engine": "Google",
+          "keyword": "http2 和 http3 有什么区别",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Google_http2 和 http3 有什么区别.png",
+          "timestamp": "2025-12-04T22:07:38.487901",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 10,
+            "quality_score": 10,
+            "ux_score": 10,
+            "total_score": 10.0,
+            "comment": "谷歌在此技术类关键词下表现堪称完美。置顶的AI概览直接、精准地回答了核心问题。所有自然搜索结果均高度相关且来源权威（如开发者社区、技术博客等），无任何无关内容。页面完全没有广告，布局清晰，信息呈现直观，用户体验极佳。"
+          },
+          "evaluated_at": "2025-12-04T22:58:43.899923"
+        },
+        {
+          "engine": "Google",
+          "keyword": "Git 交互式 rebase 教程",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Google_Git 交互式 rebase 教程.png",
+          "timestamp": "2025-12-04T22:07:48.509968",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 10,
+            "quality_score": 10,
+            "ux_score": 10,
+            "total_score": 10.0,
+            "comment": "针对该技术类关键词，Google的表现堪称完美。搜索结果精准度极高，汇集了官方文档、权威技术社区和高质量博客，无任何无关内容。页面完全没有广告，布局清晰，信息密度合理，用户体验极佳，是理想的搜索结果范本。"
+          },
+          "evaluated_at": "2025-12-04T22:59:05.613074"
+        },
+        {
+          "engine": "Google",
+          "keyword": "Docker 网络 bridge 与 host 区别",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Google_Docker 网络 bridge 与 host 区别.png",
+          "timestamp": "2025-12-04T22:08:05.796818",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 10,
+            "quality_score": 10,
+            "ux_score": 10,
+            "total_score": 10.0,
+            "comment": "针对该技术类关键词，Google表现堪称完美。结果精准，来源权威，完全无广告。首屏的“AI概览”以表格形式直接对比了bridge和host模式，极大提升了信息获取效率。页面布局清晰，用户体验极佳。"
+          },
+          "evaluated_at": "2025-12-04T22:59:26.817828"
+        },
+        {
+          "engine": "Google",
+          "keyword": "IPv6 地址结构",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Google_IPv6 地址结构.png",
+          "timestamp": "2025-12-04T22:08:16.827455",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 10,
+            "quality_score": 10,
+            "ux_score": 10,
+            "total_score": 10.0,
+            "comment": "针对技术类关键词，谷歌表现堪称完美。AI概览精准直达，搜索结果全部来自权威网站（华为、思科、维基百科等），页面无任何广告，布局清晰，信息获取效率极高。是专业查询的理想结果。"
+          },
+          "evaluated_at": "2025-12-04T22:59:52.405041"
+        },
+        {
+          "engine": "Google",
+          "keyword": "最便宜的机票",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Google_最便宜的机票.png",
+          "timestamp": "2025-12-04T22:08:27.086308",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9.5,
+            "comment": "谷歌在此关键词下表现卓越。结果精准权威，且完全无广告，体验纯净。顶部的“AI概览”直接给出购买便宜机票的实用建议，效率极高。页面布局清晰，关键信息突出，整体用户体验非常出色。几乎没有明显缺点。"
+          },
+          "evaluated_at": "2025-12-04T23:00:11.963778"
+        },
+        {
+          "engine": "Google",
+          "keyword": "个人贷款利率",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Google_个人贷款利率.png",
+          "timestamp": "2025-12-04T22:08:39.790248",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9.25,
+            "comment": "Google在此关键词下表现出色。顶部的AI概览直接给出核心利率数据，结果页内容精准且来源权威（各大银行、金融机构）。整个页面无任何广告，布局清晰，信息密度合理，提供了贷款计算器等实用工具，用户体验极佳。是金融信息查询的优质范本。"
+          },
+          "evaluated_at": "2025-12-04T23:00:30.807377"
+        },
+        {
+          "engine": "Google",
+          "keyword": "汽车保险报价",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Google_汽车保险报价.png",
+          "timestamp": "2025-12-04T22:08:49.992700",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9.5,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9.5,
+            "total_score": 9.5,
+            "comment": "本次搜索表现极佳。结果精准权威，均为官方保险或汽车门户，完全无广告。页面干净，布局合理，关键词高亮和相关问题模块显著提升了用户体验。信息的相关性和可信度非常高，是高质量搜索结果的典范。"
+          },
+          "evaluated_at": "2025-12-04T23:00:54.944581"
+        },
+        {
+          "engine": "Google",
+          "keyword": "AI 工具免费版",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Google_AI 工具免费版.png",
+          "timestamp": "2025-12-04T22:09:00.409513",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9.25,
+            "comment": "谷歌在此关键词下表现卓越。结果精准度和权威性高，完全无广告。页面布局清晰，通过加粗关键词等方式突出关键信息，提供了流畅、高效的用户体验。几乎无可挑剔。"
+          },
+          "evaluated_at": "2025-12-04T23:01:21.003979"
+        },
+        {
+          "engine": "Google",
+          "keyword": "减肥方法有效",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Google_减肥方法有效.png",
+          "timestamp": "2025-12-04T22:09:13.068107",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 10,
+            "quality_score": 10,
+            "ux_score": 10,
+            "total_score": 10.0,
+            "comment": "谷歌在此关键词下表现堪称完美。搜索结果精准，汇集了梅奥诊所、丁香医生等顶级权威来源，无任何广告干扰。AI概览功能直接提供了高质量摘要，页面布局清晰，用户体验极佳，是高质量信息检索的典范。"
+          },
+          "evaluated_at": "2025-12-04T23:01:48.454734"
+        },
+        {
+          "engine": "Google",
+          "keyword": "微信电脑版下载",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Google_微信电脑版下载.png",
+          "timestamp": "2025-12-04T22:09:24.057929",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 10,
+            "ux_score": 10,
+            "total_score": 9.75,
+            "comment": "整体表现出色。搜索结果精准，将官网和官方应用商店置顶，权威性高。页面完全无广告，布局清晰，关键信息突出，用户体验极佳。唯一的微小不足是结果中后部包含了个别第三方下载站。"
+          },
+          "evaluated_at": "2025-12-04T23:02:14.127522"
+        }
+      ]
+    },
+    {
+      "engine": "Bing",
+      "results": [
+        {
+          "engine": "Bing",
+          "keyword": "vscode 扩展 esbuild external 错误",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Bing_vscode 扩展 esbuild external 错误.png",
+          "timestamp": "2025-12-04T21:31:29.761327",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9.3,
+            "comment": "针对此技术类关键词，必应（Bing）表现出色。搜索结果精准度极高，来源权威（GitHub、Stack Overflow等），且完全没有广告。页面布局清晰，通过置顶摘要和关键词高亮提供了优秀的快速解答体验，整体用户体验上佳。"
+          },
+          "evaluated_at": "2025-12-04T23:02:36.427370"
+        },
+        {
+          "engine": "Bing",
+          "keyword": "RTCPeerConnection 文件传输慢原因",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Bing_RTCPeerConnection 文件传输慢原因.png",
+          "timestamp": "2025-12-04T21:31:37.976352",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 8,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9.0,
+            "comment": "本次搜索表现出色。页面顶部AI摘要精准回答了“传输慢原因”，结果均来自CSDN、掘金等权威技术社区，可信度高。页面完全无广告，布局清晰，右侧知识卡片和底部相关搜索等元素提升了用户体验。不足之处在于，部分自然结果与关键词弱相关，偏向于基础介绍而非问题排查。"
+          },
+          "evaluated_at": "2025-12-04T23:02:58.796775"
+        },
+        {
+          "engine": "Bing",
+          "keyword": "http2 和 http3 有什么区别",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Bing_http2 和 http3 有什么区别.png",
+          "timestamp": "2025-12-04T21:31:45.546754",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9.5,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9.5,
+            "total_score": 9.5,
+            "comment": "必应在此技术关键词下表现卓越。置顶的Copilot摘要精准回答了核心问题。搜索结果均来自CSDN、知乎等权威技术社区，相关性极强，且页面完全无广告。整体布局清晰，关键信息突出，右侧知识卡片和相关问题补充了上下文，用户体验极佳，是高质量搜索结果的典范。"
+          },
+          "evaluated_at": "2025-12-04T23:03:23.455697"
+        },
+        {
+          "engine": "Bing",
+          "keyword": "Git 交互式 rebase 教程",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Bing_Git 交互式 rebase 教程.png",
+          "timestamp": "2025-12-04T21:31:54.478316",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 10,
+            "total_score": 9.75,
+            "comment": "必应在此技术类关键词下表现卓越。搜索结果精准且权威，包含官方文档，完全无广告。页面布局清晰，右侧的知识卡片极大地提升了用户体验，信息获取高效。整体表现接近完美。"
+          },
+          "evaluated_at": "2025-12-04T23:03:48.128414"
+        },
+        {
+          "engine": "Bing",
+          "keyword": "Docker 网络 bridge 与 host 区别",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Bing_Docker 网络 bridge 与 host 区别.png",
+          "timestamp": "2025-12-04T21:32:01.101635",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 9,
+            "quality_score": 10,
+            "ux_score": 10,
+            "total_score": 9.8,
+            "comment": "针对该技术类关键词，Bing的表现堪称典范。结果精准权威，无任何无关内容。页面几乎无广告，布局清晰现代。特别是顶部的AI整合答案（Copilot Search）和带有图文对比的富文本摘要，极大地提升了信息获取效率和用户体验，能让用户在搜索结果页就快速理解核心区别。"
+          },
+          "evaluated_at": "2025-12-04T23:04:13.013294"
+        },
+        {
+          "engine": "Bing",
+          "keyword": "IPv6 地址结构",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Bing_IPv6 地址结构.png",
+          "timestamp": "2025-12-04T21:32:07.156150",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9.25,
+            "comment": "必应在此技术类关键词下表现优异。搜索结果精准，来源均为CSDN、博客园等专业技术社区，完全没有广告。页面布局清晰，并通过精选回答、知识卡片等功能提供了极佳的用户体验，信息获取效率很高。"
+          },
+          "evaluated_at": "2025-12-04T23:04:35.847303"
+        },
+        {
+          "engine": "Bing",
+          "keyword": "最便宜的机票",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Bing_最便宜的机票.png",
+          "timestamp": "2025-12-04T21:32:14.798965",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 10,
+            "ad_score": 9,
+            "quality_score": 9,
+            "ux_score": 10,
+            "total_score": 9.5,
+            "comment": "Bing在此关键词下表现极佳。结果精准度非常高，覆盖了主流比价网站、预订平台和实用攻略。页面广告占比低，且标识清晰。最大的亮点是集成了Copilot总结和交互式机票搜索模块，提供了丰富的直接答案和功能，用户体验出色。"
+          },
+          "evaluated_at": "2025-12-04T23:04:54.198062"
+        },
+        {
+          "engine": "Bing",
+          "keyword": "个人贷款利率",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Bing_个人贷款利率.png",
+          "timestamp": "2025-12-04T21:32:21.548530",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9.3,
+            "comment": "Bing在此关键词下表现卓越。首屏的答案卡片直接、清晰地展示了贷款利率，满足用户核心需求。结果页完全无广告，来源权威（含银行、官网），页面布局清晰，视频等模块丰富了内容。整体信息获取效率高，体验优秀。"
+          },
+          "evaluated_at": "2025-12-04T23:05:18.888809"
+        },
+        {
+          "engine": "Bing",
+          "keyword": "汽车保险报价",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Bing_汽车保险报价.png",
+          "timestamp": "2025-12-04T21:32:28.413393",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 9.5,
+            "quality_score": 9,
+            "ux_score": 9.5,
+            "total_score": 9.25,
+            "comment": "Bing在此关键词下表现优秀。搜索结果精准，提供了多家保险公司和计算工具，且包含知乎等用户生成内容，增加了信息广度。广告占比极低且标识清晰，页面布局合理，信息突出，整体用户体验良好。"
+          },
+          "evaluated_at": "2025-12-04T23:27:58.301625"
+        },
+        {
+          "engine": "Bing",
+          "keyword": "AI 工具免费版",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Bing_AI 工具免费版.png",
+          "timestamp": "2025-12-04T21:32:35.572517",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 8,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 8.75,
+            "comment": "Bing在此关键词下表现优秀，提供了大量高度相关的免费AI工具列表和测评。结果形式多样，覆盖面广。广告数量适中且区分度高，页面布局清晰，用户体验良好。其主要优点在于内容匹配度和丰富性，略显不足的是部分结果来源的权威性有待加强，且有重复广告。"
+          },
+          "evaluated_at": "2025-12-04T23:28:17.667538"
+        },
+        {
+          "engine": "Bing",
+          "keyword": "减肥方法有效",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Bing_减肥方法有效.png",
+          "timestamp": "2025-12-04T21:32:42.840066",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9.5,
+            "ad_score": 10.0,
+            "quality_score": 9.5,
+            "ux_score": 9.5,
+            "total_score": 9.625,
+            "comment": "Bing表现优秀。Copilot即时总结提供权威信息，结合丁香医生、维基百科等多样化可信内容（文章、视频、问答）保证高精准度。页面无广告干扰，布局清晰，视觉体验良好。主要优点是内容丰富且可信度高，无广告；不足是部分标题略有夸大嫌疑。"
+          },
+          "evaluated_at": "2025-12-04T23:28:33.552112"
+        },
+        {
+          "engine": "Bing",
+          "keyword": "微信电脑版下载",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Bing_微信电脑版下载.png",
+          "timestamp": "2025-12-04T21:32:50.291581",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9.5,
+            "total_score": 9.375,
+            "comment": "Bing在“微信电脑版下载”这一查询下表现出色。它提供了官方权威的下载链接，并置于最显眼位置，无明显广告干扰，页面布局清晰，用户体验良好。视频和相关搜索建议也增强了结果的丰富性。尽管存在少量第三方下载站的链接，但由于官方链接已置顶，其影响微乎其微。"
+          },
+          "evaluated_at": "2025-12-04T23:28:52.993306"
+        }
+      ]
+    },
+    {
+      "engine": "Brave",
+      "results": [
+        {
+          "engine": "Brave",
+          "keyword": "vscode 扩展 esbuild external 错误",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Brave_vscode 扩展 esbuild external 错误.png",
+          "timestamp": "2025-12-04T21:32:59.560011",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9.5,
+            "ad_score": 10,
+            "quality_score": 9.5,
+            "ux_score": 9.5,
+            "total_score": 9.625,
+            "comment": "Brave在技术关键词“vscode 扩展 esbuild external 错误”下的表现非常出色。搜索结果高度相关，包含了大量来自GitHub和Stack Overflow等权威来源的讨论和解决方案，精准度极高。页面完全无广告，布局简洁，无任何干扰元素，用户体验流畅。关键信息突出，整体视觉效果良好。"
+          },
+          "evaluated_at": "2025-12-04T23:29:08.985540"
+        },
+        {
+          "engine": "Brave",
+          "keyword": "RTCPeerConnection 文件传输慢原因",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Brave_RTCPeerConnection 文件传输慢原因.png",
+          "timestamp": "2025-12-04T21:33:10.022719",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 7.5,
+            "ad_score": 10.0,
+            "quality_score": 9.5,
+            "ux_score": 9.0,
+            "total_score": 9.0,
+            "comment": "Brave Search在此关键词下表现优秀。首个结果直接提供了详细的原因分析，且结果中包含大量权威来源如MDN、GitHub。页面极其干净，无任何广告干扰，布局清晰，提供了极佳的视觉和用户体验。不足之处在于部分靠前的结果偏向于API文档或入门教程，而非直接针对“传输慢原因”的分析，用户可能需进一步筛选。"
+          },
+          "evaluated_at": "2025-12-04T23:29:28.832291"
+        },
+        {
+          "engine": "Brave",
+          "keyword": "http2 和 http3 有什么区别",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Brave_http2 和 http3 有什么区别.png",
+          "timestamp": "2025-12-04T21:33:16.667471",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9.5,
+            "ad_score": 10,
+            "quality_score": 9.5,
+            "ux_score": 9.5,
+            "total_score": 9.6,
+            "comment": "该搜索引擎在技术关键词下表现出色。提供精准直接答案，所有结果高度相关且来源可信。页面无广告、无干扰元素，布局清晰，用户体验极佳。主要优点是内容精准、无广告和良好的用户体验。"
+          },
+          "evaluated_at": "2025-12-04T23:29:45.428761"
+        },
+        {
+          "engine": "Brave",
+          "keyword": "Git 交互式 rebase 教程",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Brave_Git 交互式 rebase 教程.png",
+          "timestamp": "2025-12-04T21:33:23.304360",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9.5,
+            "ad_score": 10,
+            "quality_score": 9.5,
+            "ux_score": 9.5,
+            "total_score": 9.6,
+            "comment": "Brave搜索引擎在此技术关键词下表现出色。精准度高，结果来源权威且相关性强，尤其顶部即时回答直接提供核心信息。页面布局极其简洁，无任何广告或干扰元素，信息呈现清晰易读，提供了极佳的用户体验。是获取技术教程的理想选择。"
+          },
+          "evaluated_at": "2025-12-04T23:30:03.856999"
+        },
+        {
+          "engine": "Brave",
+          "keyword": "Docker 网络 bridge 与 host 区别",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Brave_Docker 网络 bridge 与 host 区别.png",
+          "timestamp": "2025-12-04T21:33:29.822462",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9.5,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9.5,
+            "total_score": 9.5,
+            "comment": "Brave在“Docker 网络 bridge 与 host 区别”的搜索表现非常出色。结果高度精准，首屏聚合了多个权威技术平台的内容，并提供了清晰的精选摘要。页面无广告，布局整洁，信息易于阅读和获取，整体用户体验极佳。主要优点是高质量内容与无干扰界面的完美结合，没有任何明显不足。"
+          },
+          "evaluated_at": "2025-12-04T23:30:19.111561"
+        },
+        {
+          "engine": "Brave",
+          "keyword": "IPv6 地址结构",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Brave_IPv6 地址结构.png",
+          "timestamp": "2025-12-04T21:33:36.486013",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9.5,
+            "ad_score": 10,
+            "quality_score": 9.5,
+            "ux_score": 9.5,
+            "total_score": 9.6,
+            "comment": "Brave Search在“IPv6 地址结构”关键词下表现出色。结果高度相关且权威，零广告页面提供了极致纯净的浏览体验。页面布局清晰，信息呈现合理，整体用户体验极佳。优点是无广告和高质量结果，几乎无明显缺点。"
+          },
+          "evaluated_at": "2025-12-04T23:30:35.615213"
+        },
+        {
+          "engine": "Brave",
+          "keyword": "最便宜的机票",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Brave_最便宜的机票.png",
+          "timestamp": "2025-12-04T21:33:42.916893",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9.5,
+            "ad_score": 10,
+            "quality_score": 9.5,
+            "ux_score": 9.5,
+            "total_score": 9.6,
+            "comment": "Brave Search在该关键词下表现极佳。结果精准，涵盖权威比价平台与攻略。页面布局清晰，无广告干扰，用户体验优秀。优点是无广告和高相关性。若能直接显示实时比价信息会更完美。"
+          },
+          "evaluated_at": "2025-12-04T23:30:51.162037"
+        },
+        {
+          "engine": "Brave",
+          "keyword": "个人贷款利率",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Brave_个人贷款利率.png",
+          "timestamp": "2025-12-04T22:10:19.994754",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 8.5,
+            "ad_score": 10.0,
+            "quality_score": 9.5,
+            "ux_score": 9.5,
+            "total_score": 9.375,
+            "comment": "Brave搜索在“个人贷款利率”下表现优异。结果相关且权威，主要来自国内银行和金融平台。零广告是突出优势，提供纯净搜索体验。页面布局清晰，易读，用户体验良好。少数结果略有偏差，但整体表现非常出色。"
+          },
+          "evaluated_at": "2025-12-04T23:31:07.751361"
+        },
+        {
+          "engine": "Brave",
+          "keyword": "汽车保险报价",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Brave_汽车保险报价.png",
+          "timestamp": "2025-12-04T22:10:41.248872",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 8,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9,
+            "comment": "Brave在此关键词下表现优秀。结果与关键词高度相关，多数来自权威保险公司及专业平台，可信度高。页面无广告，布局清晰，无干扰元素，用户体验极佳。虽有少数面向美国市场的结果，但整体信息质量高，提供有效且干净的搜索体验。"
+          },
+          "evaluated_at": "2025-12-04T23:31:20.929284"
+        },
+        {
+          "engine": "Brave",
+          "keyword": "AI 工具免费版",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Brave_AI 工具免费版.png",
+          "timestamp": "2025-12-04T22:11:05.639935",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9,
+            "ad_score": 10,
+            "quality_score": 9,
+            "ux_score": 9,
+            "total_score": 9.25,
+            "comment": "Brave在此关键词下表现出色，结果高度精准且与用户意图强相关。页面无广告干扰，布局清晰，信息可读性强，提供了优秀的搜索体验。知识卡片能快速提供核心信息，各结果权威性也较高，有效避免了标题党和内容农场。整体无明显不足，用户能高效获取所需信息。"
+          },
+          "evaluated_at": "2025-12-04T23:31:36.376772"
+        },
+        {
+          "engine": "Brave",
+          "keyword": "减肥方法有效",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Brave_减肥方法有效.png",
+          "timestamp": "2025-12-04T22:11:22.468918",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9.5,
+            "ad_score": 10,
+            "quality_score": 9.5,
+            "ux_score": 9.5,
+            "total_score": 9.6,
+            "comment": "Brave搜索在“减肥方法有效”关键词下表现卓越。结果精准且来源权威，无任何广告干扰，页面布局清晰，视觉体验良好。主要优点是信息可信度高和极致的用户纯净体验，几乎没有明显缺点。"
+          },
+          "evaluated_at": "2025-12-04T23:31:55.399650"
+        },
+        {
+          "engine": "Brave",
+          "keyword": "微信电脑版下载",
+          "status": "success",
+          "screenshot_path": "search_screenshots/Brave_微信电脑版下载.png",
+          "timestamp": "2025-12-04T22:11:37.361826",
+          "error_message": null,
+          "evaluation": {
+            "accuracy_score": 9.5,
+            "ad_score": 10,
+            "quality_score": 9.5,
+            "ux_score": 9.5,
+            "total_score": 9.6,
+            "comment": "Brave搜索引擎在此关键词下表现极佳。结果精准度高，大部分指向官方或权威来源，无无关内容。页面完全无广告，提供了极致的纯净体验。布局清晰，右侧知识面板直观提供关键信息，大大提升了用户体验和查找效率。整体视觉简洁，无干扰，是用户寻求软件下载的优质选择。"
+          },
+          "evaluated_at": "2025-12-04T23:32:10.727252"
+        }
+      ]
+    }
+  ]
+}

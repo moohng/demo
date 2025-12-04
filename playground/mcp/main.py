@@ -10,7 +10,7 @@ from openai import OpenAI
 async def main():
     async with Client("http://127.0.0.1:8001/sse") as mcp_client:
         # 初始化LLM客户端，使用deepseek
-        llm_client = LLMClient(model_name='deepseek-chat', api_key="sk-47867ef606b143f58abb905e95c2b380",
+        llm_client = LLMClient(model_name='deepseek-chat', api_key=os.getenv("DP_API_KEY"),
                                url='https://api.deepseek.com')
 
         # 获取可用工具列表并格式化为系统提示的一部分
