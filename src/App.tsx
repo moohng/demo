@@ -13,6 +13,7 @@ import { ManualImportModal } from './components/modals/ManualImportModal';
 import { HelpModal } from './components/modals/HelpModal';
 import { CategoryModal } from './components/modals/CategoryModal';
 import { ConfirmModal } from './components/modals/ConfirmModal';
+import { AISettingsModal } from './components/modals/AISettingsModal';
 import { ImportProgressOverlay } from './components/overlays/ImportProgressOverlay';
 import { Category, CategoryType, LinkItem, Language } from './types';
 import { INITIAL_DATA, TRANSLATIONS, CATEGORY_NAMES } from './constants';
@@ -50,6 +51,7 @@ function App() {
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showAISettings, setShowAISettings] = useState(false);
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
   const [isQuickAddCategory, setIsQuickAddCategory] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -163,6 +165,14 @@ function App() {
   useEffect(() => {
     localStorage.setItem('isAiSearch', JSON.stringify(isAiSearch));
   }, [isAiSearch]);
+
+  // Expose AI settings function globally for Sidebar
+  useEffect(() => {
+    (window as any).openAISettings = () => setShowAISettings(true);
+    return () => {
+      delete (window as any).openAISettings;
+    };
+  }, []);
 
   // AI Search Effect
   useEffect(() => {
@@ -878,6 +888,12 @@ function App() {
             const cat = categories.find(c => c.id === editingCategoryId);
             return cat ? { name: cat.customName || CATEGORY_NAMES[lang][cat.type], type: cat.type } : undefined;
           })() : undefined}
+          lang={lang}
+        />
+
+        <AISettingsModal
+          isOpen={showAISettings}
+          onClose={() => setShowAISettings(false)}
           lang={lang}
         />
 

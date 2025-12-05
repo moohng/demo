@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronLeft, ChevronRight, Hash, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Hash, Plus, Settings } from 'lucide-react';
 import { Category, CategoryType, Language } from '../types';
 import { CATEGORY_ICONS, CATEGORY_NAMES, CATEGORY_THEMES } from '../constants';
 
@@ -87,6 +87,27 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollaps
           </button>
         )}
       </nav>
+
+      {/* AI Settings Button */}
+      <div className="p-3 border-t border-glassBorder shrink-0">
+        <button
+          onClick={() => (window as any).openAISettings?.()}
+          className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 group hover:bg-glassHover text-gray-400 hover:text-white ${isCollapsed ? 'justify-center' : 'justify-start gap-4'}`}
+          title={lang === 'cn' ? 'AI 设置' : 'AI Settings'}
+        >
+          <Settings size={20} className="flex-shrink-0 text-primary" />
+          <span
+            className={`whitespace-nowrap font-medium text-sm transition-all duration-300 origin-left ${isCollapsed ? 'opacity-0 w-0 scale-0' : 'opacity-100 w-auto scale-100 animate-fade-in'}`}
+          >
+            {lang === 'cn' ? 'AI 设置' : 'AI Settings'}
+          </span>
+          {isCollapsed && (
+            <div className="absolute left-full ml-4 px-3 py-1.5 bg-gray-800 text-white text-xs font-medium rounded-lg border border-gray-700 opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 shadow-xl translate-x-2 group-hover:translate-x-0 transition-all duration-200">
+              {lang === 'cn' ? 'AI 设置' : 'AI Settings'}
+            </div>
+          )}
+        </button>
+      </div>
 
       {/* GitHub Link at Bottom */}
       <div className="p-3 border-t border-glassBorder shrink-0">

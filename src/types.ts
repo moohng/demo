@@ -53,3 +53,26 @@ export interface Message {
   text: string;
   timestamp: number;
 }
+
+// AI Configuration
+export interface AIProviderConfig {
+  id: string;
+  name: string;
+  baseURL: string;
+  icon?: string;
+}
+
+export interface AIConfig {
+  providerId: string;
+  apiKey: string; // Encrypted
+  model: string;
+  baseURL: string;
+  enabled: boolean;
+}
+
+export interface UsageStats {
+  daily: number;
+  monthly: number;
+  lastReset: number;
+  totalCalls: number;
+}
