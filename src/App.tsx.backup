@@ -59,7 +59,7 @@ function App() {
 
   // Load from local storage on mount
   useEffect(() => {
-    const savedData = localStorage.getItem('devspace_data');
+    const savedData = localStorage.getItem('devgo_data');
     if (savedData) {
       try {
         setCategories(JSON.parse(savedData));
@@ -89,7 +89,7 @@ function App() {
 
   // Save to local storage on change
   useEffect(() => {
-    localStorage.setItem('devspace_data', JSON.stringify(categories));
+    localStorage.setItem('devgo_data', JSON.stringify(categories));
   }, [categories]);
 
   // Keyboard shortcut for search

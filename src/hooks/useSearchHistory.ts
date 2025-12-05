@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { LinkItem } from '../types';
 
-const STORAGE_KEY = 'devspace_recent_links';
+const STORAGE_KEY = 'devgo_recent_links';
 const MAX_HISTORY = 10;
 
 export const useSearchHistory = () => {

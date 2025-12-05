@@ -24,7 +24,7 @@ import { useSearchHistory } from './hooks/useSearchHistory';
 function App() {
   // Core State
   const [categories, setCategories] = useState<Category[]>(() => {
-    const savedData = localStorage.getItem('devspace_data');
+    const savedData = localStorage.getItem('devgo_data');
     if (savedData) {
       try {
         return JSON.parse(savedData);
@@ -107,7 +107,7 @@ function App() {
 
   // Load from localStorage
   useEffect(() => {
-    const savedData = localStorage.getItem('devspace_data');
+    const savedData = localStorage.getItem('devgo_data');
     if (savedData) {
       try {
         setCategories(JSON.parse(savedData));
@@ -119,7 +119,7 @@ function App() {
 
   // Save to localStorage
   useEffect(() => {
-    localStorage.setItem('devspace_data', JSON.stringify(categories));
+    localStorage.setItem('devgo_data', JSON.stringify(categories));
   }, [categories]);
 
   // Responsive sidebar
