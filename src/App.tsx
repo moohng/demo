@@ -842,7 +842,7 @@ function App() {
               />
               <label
                 htmlFor="import-bookmarks"
-                className={`w - 14 h - 14 bg - gray - 800 hover: bg - gray - 700 text - white rounded - full shadow - lg shadow - black / 50 flex items - center justify - center transition - transform hover: scale - 105 border border - gray - 700 cursor - pointer ${isImporting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`w-14 h-14 bg-gray-800/80 hover:bg-gray-700 text-white rounded-full flex items-center justify-center transition-colors border border-gray-700 cursor-pointer ${isImporting ? 'opacity-50 cursor-not-allowed' : ''}`}
                 title={lang === 'cn' ? "导入书签" : "Import Bookmarks"}
               >
                 {isImporting ? <Loader2 size={24} className="animate-spin" /> : <Upload size={24} />}

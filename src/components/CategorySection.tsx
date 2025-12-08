@@ -44,7 +44,7 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   return (
     <div id={category.type} className="mb-12 scroll-mt-8">
       <div className="flex items-center gap-3 mb-6">
-        <div className={`w - 10 h - 10 rounded - xl ${theme.bg} flex items - center justify - center flex - shrink - 0`}>
+        <div className={`w-10 h-10 rounded-xl ${theme.bg} flex items-center justify-center flex-shrink-0`}>
           <Icon className={theme.text} size={22} />
         </div>
         <h2 className="text-2xl font-bold text-white">{displayName}</h2>

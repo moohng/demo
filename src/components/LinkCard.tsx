@@ -49,7 +49,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, onDelete, onEdit, onVisit, ed
   // Reusable content to maintain consistent layout
   const CardContent = () => (
     <>
-      <div className="w-10 h-10 flex-shrink-0 rounded-lg bg-gray-800/50 p-1.5 border border-gray-700 overflow-hidden flex items-center justify-center">
+      <div className="w-8 h-8 flex-shrink-0 rounded-lg bg-gray-800/50 overflow-hidden flex items-center justify-center">
         <img
           src={getFavicon(link.url)}
           alt="icon"
