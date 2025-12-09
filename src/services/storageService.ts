@@ -17,6 +17,7 @@ class StorageService {
   private listeners: Listener[] = [];
 
   constructor() {
+    console.log('StorageService constructor');
     this.checkAuth();
     // Subscribe to auth changes
     supabase.auth.onAuthStateChange((event, session) => {
@@ -47,10 +48,17 @@ class StorageService {
   }
 
   private async checkAuth() {
+    console.log('checkAuth');
     const { data } = await supabase.auth.getSession();
     if (data.session?.user) {
+      console.log('checkAuth found user:', data.session.user.id);
       this.userId = data.session.user.id;
       this.isCloudEnabled = true;
+      // Load cloud data immediately if user is found during init
+      this.fetchCloudData().then(data => {
+        console.log('checkAuth loaded cloud data');
+        this.notifyListeners(data);
+      });
     }
   }
 
@@ -78,11 +86,12 @@ class StorageService {
 
   private async fetchCloudData(): Promise<StorageData> {
     try {
+      console.log('fetchCloudData', this.userId);
       const { data: dbCategories, error: catError } = await supabase
         .from('categories')
         .select('*')
         .order('sort_order');
-
+      console.log('fetchCloudData---', dbCategories, catError);
       if (catError) throw catError;
 
       const { data: dbLinks, error: linkError } = await supabase

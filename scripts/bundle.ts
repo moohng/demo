@@ -2,7 +2,7 @@ import { join } from 'path';
 import fs from 'fs';
 import { build, createServer, mergeConfig, loadEnv } from 'vite';
 import UnoCSS from 'unocss/vite';
-import presetWind from '@unocss/preset-wind3';
+import presetWind4 from '@unocss/preset-wind4';
 import presetIcons from '@unocss/preset-icons';
 import react from '@vitejs/plugin-react';
 
@@ -63,8 +63,25 @@ const getCommonConfig = (mode) => {
   return {
     plugins: [
       UnoCSS({
+        theme: {
+          colors: {
+            glass: "rgba(255, 255, 255, 0.05)",
+            glassHover: "rgba(255, 255, 255, 0.1)",
+            glassBorder: "rgba(255, 255, 255, 0.1)",
+            primary: "#6366f1", // Indigo 500
+            secondary: "#ec4899", // Pink 500
+          },
+          font: {
+            sans: 'Inter, sans-serif',
+          },
+        },
         presets: [
-          presetWind(),
+          presetWind4({
+            preflights: {
+              reset: true,
+              theme: true,
+            },
+          }),
           presetIcons({
             prefix: 'i-',
             extraProperties: {
@@ -120,7 +137,7 @@ async function runBuild() {
       build: {
         outDir: relativeRoot('dist', 'demos', dir),
       },
-    }), config.default);
+    }, config.default));
   }));
 }
 

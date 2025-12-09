@@ -51,6 +51,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, onDelete, onEdit, onVisit, ed
     <>
       <div className="w-8 h-8 flex-shrink-0 rounded-lg bg-gray-800/50 overflow-hidden flex items-center justify-center">
         <img
+          loading="lazy"
           src={getFavicon(link.url)}
           alt="icon"
           className="w-full h-full object-contain"

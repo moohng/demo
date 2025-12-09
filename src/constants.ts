@@ -408,7 +408,6 @@ export const INITIAL_DATA: Category[] = [
     links: [
       { id: generateId(), title: 'Lucide', url: 'https://lucide.dev', description: 'Beautiful & consistent icons' },
       { id: generateId(), title: 'Google Fonts', url: 'https://fonts.google.com', description: 'A library of open source font families' },
-      { id: generateId(), title: 'React Icons', url: 'https://react-icons.github.io/react-icons', description: 'Include popular icons in your React projects' },
     ]
   },
 ];

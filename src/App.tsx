@@ -114,6 +114,7 @@ function App() {
 
     // Check for sync opportunity on login
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      console.log('event', event, session);
       if (event === 'SIGNED_IN' && session) {
         // Trigger sync if needed, or storageService handles it internally
         const fresh = await storageService.getData();
