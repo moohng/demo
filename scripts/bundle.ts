@@ -74,6 +74,23 @@ const getCommonConfig = (mode) => {
           font: {
             sans: 'Inter, sans-serif',
           },
+          animation: {
+            durations: {
+              'fade-in': '0.2s',
+              'fade-in-up': '0.3s',
+              'fade-in-down': '0.3s',
+            },
+            timingFns: {
+              'fade-in': 'ease-out',
+              'fade-in-up': 'cubic-bezier(0.4, 0, 0.2, 1)',
+              'fade-in-down': 'cubic-bezier(0.4, 0, 0.2, 1)',
+            },
+            counts: {
+              'fade-in': 'forwards',
+              'fade-in-up': 'forwards',
+              'fade-in-down': 'forwards',
+            },
+          },
         },
         presets: [
           presetWind4({

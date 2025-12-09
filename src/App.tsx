@@ -23,7 +23,6 @@ import { useImport } from './hooks/useImport';
 import { useSearchHistory } from './hooks/useSearchHistory';
 import { storageService } from './services/storageService';
 import { AuthModal } from './components/modals/AuthModal';
-import { supabase } from './lib/supabase';
 
 function App() {
   // Core State
@@ -102,29 +101,21 @@ function App() {
 
   // Initialize Storage Service & Auth
   useEffect(() => {
-    // Initial fetch
-    storageService.getData().then(data => {
-      setCategories(data.categories);
-    });
-
     // Subscribe to changes
     const unsubscribe = storageService.subscribe((data) => {
-      setCategories(data.categories);
-    });
+      if (!data.categories?.length) {
+        storageService.loadLocalData().then(data => {
+          setCategories(data.categories);
 
-    // Check for sync opportunity on login
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('event', event, session);
-      if (event === 'SIGNED_IN' && session) {
-        // Trigger sync if needed, or storageService handles it internally
-        const fresh = await storageService.getData();
-        setCategories(fresh.categories);
-      }
+          storageService.syncLocalToCloud();
+        });
+      } else {
+        setCategories(data.categories);
+      }      
     });
 
     return () => {
       unsubscribe();
-      subscription.unsubscribe();
     };
   }, []);
 

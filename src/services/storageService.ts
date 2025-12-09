@@ -17,16 +17,14 @@ class StorageService {
   private listeners: Listener[] = [];
 
   constructor() {
-    console.log('StorageService constructor');
-    this.checkAuth();
     // Subscribe to auth changes
     supabase.auth.onAuthStateChange((event, session) => {
-      if (session?.user) {
+      if (event === 'SIGNED_IN' && session?.user) {
         this.userId = session.user.id;
         this.isCloudEnabled = true;
         // Reload data from cloud on login
         this.fetchCloudData().then(data => this.notifyListeners(data));
-      } else {
+      } else if (!session?.user) {
         this.userId = null;
         this.isCloudEnabled = false;
         // Reload local data on logout
@@ -47,29 +45,7 @@ class StorageService {
     this.listeners.forEach(l => l(data));
   }
 
-  private async checkAuth() {
-    console.log('checkAuth');
-    const { data } = await supabase.auth.getSession();
-    if (data.session?.user) {
-      console.log('checkAuth found user:', data.session.user.id);
-      this.userId = data.session.user.id;
-      this.isCloudEnabled = true;
-      // Load cloud data immediately if user is found during init
-      this.fetchCloudData().then(data => {
-        console.log('checkAuth loaded cloud data');
-        this.notifyListeners(data);
-      });
-    }
-  }
-
-  async getData(): Promise<StorageData> {
-    if (this.isCloudEnabled && this.userId) {
-      return this.fetchCloudData();
-    }
-    return this.loadLocalData();
-  }
-
-  private async loadLocalData(): Promise<StorageData> {
+  public async loadLocalData(): Promise<StorageData> {
     const local = localStorage.getItem(STORAGE_KEY);
     if (local) {
       try {
@@ -81,17 +57,16 @@ class StorageService {
       }
     }
     this.dataCache = { categories: INITIAL_DATA };
+    this.saveToLocal();
     return { categories: INITIAL_DATA };
   }
 
   private async fetchCloudData(): Promise<StorageData> {
     try {
-      console.log('fetchCloudData', this.userId);
       const { data: dbCategories, error: catError } = await supabase
         .from('categories')
         .select('*')
         .order('sort_order');
-      console.log('fetchCloudData---', dbCategories, catError);
       if (catError) throw catError;
 
       const { data: dbLinks, error: linkError } = await supabase

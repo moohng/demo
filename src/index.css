@@ -62,7 +62,7 @@
   }
 }
 
-.animate-fade-in {
+/* .animate-fade-in {
   animation: fadeIn 0.2s ease-out forwards;
 }
 
@@ -73,6 +73,8 @@
 .animate-fade-in-down {
   animation: fadeInDown 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
+
+*/
 
 .animate-scale-in {
   animation: scaleIn 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
