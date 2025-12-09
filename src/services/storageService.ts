@@ -18,7 +18,6 @@ class StorageService {
 
   constructor() {
     this.checkAuth();
-    console.log('StorageService constructor');
     // Subscribe to auth changes
     supabase.auth.onAuthStateChange((event, session) => {
       if (session?.user) {

@@ -21,22 +21,13 @@ import { analyzeLinkInfo, recommendTools } from './services/geminiService';
 import { useNotification } from './hooks/useNotification';
 import { useImport } from './hooks/useImport';
 import { useSearchHistory } from './hooks/useSearchHistory';
+import { storageService } from './services/storageService';
 import { AuthModal } from './components/modals/AuthModal';
+import { supabase } from './lib/supabase';
 
 function App() {
   // Core State
-  const [categories, setCategories] = useState<Category[]>(() => {
-    const savedData = localStorage.getItem('devgo_data');
-    if (savedData) {
-      try {
-        return JSON.parse(savedData);
-      } catch (e) {
-        console.error("Failed to load data", e);
-        return INITIAL_DATA;
-      }
-    }
-    return INITIAL_DATA;
-  });
+  const [categories, setCategories] = useState<Category[]>(INITIAL_DATA);
   const [searchQuery, setSearchQuery] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -109,22 +100,34 @@ function App() {
 
   const t = TRANSLATIONS[lang];
 
-  // Load from localStorage
+  // Initialize Storage Service & Auth
   useEffect(() => {
-    const savedData = localStorage.getItem('devgo_data');
-    if (savedData) {
-      try {
-        setCategories(JSON.parse(savedData));
-      } catch (e) {
-        console.error("Failed to load data", e);
+    // Initial fetch
+    storageService.getData().then(data => {
+      setCategories(data.categories);
+    });
+
+    // Subscribe to changes
+    const unsubscribe = storageService.subscribe((data) => {
+      setCategories(data.categories);
+    });
+
+    // Check for sync opportunity on login
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session) {
+        // Trigger sync if needed, or storageService handles it internally
+        const fresh = await storageService.getData();
+        setCategories(fresh.categories);
       }
-    }
+    });
+
+    return () => {
+      unsubscribe();
+      subscription.unsubscribe();
+    };
   }, []);
 
-  // Save to localStorage
-  useEffect(() => {
-    localStorage.setItem('devgo_data', JSON.stringify(categories));
-  }, [categories]);
+
 
   // Responsive sidebar
   useEffect(() => {
@@ -197,15 +200,10 @@ function App() {
   }, [searchQuery, isAiSearch, categories, lang]);
 
   // Handlers
-  const handleDeleteLink = useCallback((categoryId: string, linkId: string) => {
-    setCategories(prev => prev.map(cat => {
-      if (cat.id !== categoryId) return cat;
-      return {
-        ...cat,
-        links: cat.links.filter(l => l.id !== linkId)
-      };
-    }));
-  }, []);
+  const handleDeleteLink = useCallback(async (categoryId: string, linkId: string) => {
+    await storageService.deleteLink(categoryId, linkId);
+    showNotification(lang === 'cn' ? '链接已删除' : 'Link deleted', 'success');
+  }, [lang, showNotification]);
 
   const openAddModal = useCallback(() => {
     setEditingLinkId(null);
@@ -262,12 +260,12 @@ function App() {
           if (!existingCat) {
             // Auto-create new category
             const newCategory: Category = {
-              id: Math.random().toString(36).substr(2, 9),
+              id: crypto.randomUUID(),
               type: iconType,
               customName: info.category,
               links: []
             };
-            setCategories(prev => [...prev, newCategory]);
+            await storageService.saveCategory(newCategory);
             showNotification(
               lang === 'cn' ? `已创建新分类: ${info.category}` : `Created new category: ${info.category}`,
               'success'
@@ -313,52 +311,39 @@ function App() {
   }, [newLinkUrl, newLinkTitle, lang, showNotification, categories]);
 
   // Helper function to save link (extracted to avoid duplication)
-  const saveLinkWithOverwrite = useCallback((formattedUrl: string, duplicateLink: LinkItem | null) => {
+  const saveLinkWithOverwrite = useCallback(async (formattedUrl: string, duplicateLink: LinkItem | null) => {
     const linkData: LinkItem = {
-      id: editingLinkId || Math.random().toString(36).substr(2, 9),
+      id: editingLinkId || crypto.randomUUID(),
       title: newLinkTitle,
       url: formattedUrl,
       description: newLinkDesc || 'Custom Bookmark',
     };
 
-    setCategories(prev => {
-      const newCategories = [...prev];
-
-      // If there's a duplicate, remove it first
-      if (duplicateLink) {
-        newCategories.forEach(cat => {
-          cat.links = cat.links.filter(l => l.id !== duplicateLink.id);
-        });
+    // 1. If duplicate exists (and we confirmed overwrite), remove the old one first
+    if (duplicateLink) {
+      const dupCat = categories.find(c => c.links.some(l => l.id === duplicateLink.id));
+      if (dupCat) {
+        await storageService.deleteLink(dupCat.id, duplicateLink.id);
       }
+    }
 
-      if (editingLinkId && originalCategoryId) {
-        // Remove from original category
-        const originalCat = newCategories.find(c => c.id === originalCategoryId);
-        if (originalCat) {
-          originalCat.links = originalCat.links.filter(l => l.id !== editingLinkId);
-        }
-      }
+    // 2. If moving category (editing exist link)
+    if (editingLinkId && originalCategoryId && originalCategoryId !== categories.find(c => c.type === newLinkCategory)?.id) {
+      // Deleting from old category logic needs original category ID
+      // Note: originalCategoryId state is available here
+      await storageService.deleteLink(originalCategoryId, editingLinkId);
+    }
 
-      // Add to target category (only the first match to avoid duplicates)
-      const targetCat = newCategories.find(c => c.type === newLinkCategory);
-      if (targetCat) {
-        // Check if link already exists (for edit mode)
-        const linkExists = targetCat.links.some(l => l.id === linkData.id);
-        if (!linkExists) {
-          targetCat.links = [...targetCat.links, linkData];
-        } else {
-          // Update existing link
-          targetCat.links = targetCat.links.map(l =>
-            l.id === linkData.id ? linkData : l
-          );
-        }
-      }
-
-      return newCategories;
-    });
+    // 3. Add/Update in target category
+    // Finding target category by TYPE (as per current UI selection)
+    const targetCat = categories.find(c => c.type === newLinkCategory);
+    if (targetCat) {
+      await storageService.saveLink(targetCat.id, linkData);
+    }
 
     setShowAddModal(false);
-  }, [newLinkTitle, newLinkDesc, newLinkCategory, editingLinkId, originalCategoryId]);
+    showNotification(lang === 'cn' ? '保存成功' : 'Saved successfully', 'success');
+  }, [newLinkTitle, newLinkDesc, newLinkCategory, editingLinkId, originalCategoryId, categories, lang, showNotification]);
 
   const handleSaveLink = useCallback(() => {
     if (!newLinkTitle || !newLinkUrl) return;
@@ -399,7 +384,7 @@ function App() {
     setShowCategoryModal(true);
   }, []);
 
-  const handleDeleteCategory = useCallback((categoryId: string) => {
+  const handleDeleteCategory = useCallback(async (categoryId: string) => {
     const category = categories.find(c => c.id === categoryId);
     if (!category) return;
 
@@ -411,7 +396,7 @@ function App() {
       : (lang === 'cn' ? '确定要删除此分类吗？' : 'Are you sure you want to delete this category?');
 
     if (window.confirm(confirmMessage)) {
-      setCategories(prev => prev.filter(c => c.id !== categoryId));
+      await storageService.deleteCategory(categoryId);
       showNotification(
         lang === 'cn' ? '分类已删除' : 'Category deleted',
         'success'
@@ -440,42 +425,53 @@ function App() {
   }, [editMode]);
 
   // Handle Link Visit - Track visit frequency
+  // Handle Link Visit - Track visit frequency
   const handleLinkVisit = useCallback((linkId: string) => {
-    setCategories(prev => prev.map(category => ({
-      ...category,
-      links: category.links.map(link =>
-        link.id === linkId
-          ? {
-            ...link,
-            visitCount: (link.visitCount || 0) + 1,
-            lastVisited: Date.now()
-          }
-          : link
-      )
-    })));
-  }, []);
+    // Optional: We can choose to sync this or keep it local only in memory/cache?
+    // For now, let's just update local state via setCategories to avoid re-rendering entire list via service?
+    // OR better: use storageService but maybe not await?
+    // storageService has optimistic updates.
 
-  const handleSaveCategory = useCallback((name: string, type: CategoryType) => {
+    // Finding category for link
+    const category = categories.find(c => c.links.some(l => l.id === linkId));
+    if (category) {
+      const link = category.links.find(l => l.id === linkId);
+      if (link) {
+        const updatedLink = {
+          ...link,
+          visitCount: (link.visitCount || 0) + 1,
+          lastVisited: Date.now()
+           };
+           // We don't await this to avoid blocking UI interaction
+           storageService.saveLink(category.id, updatedLink);
+         }
+    }
+  }, [categories]);
+
+  const handleSaveCategory = useCallback(async (name: string, type: CategoryType) => {
     if (editingCategoryId) {
       // Edit existing category
-      setCategories(prev => prev.map(cat =>
-        cat.id === editingCategoryId
-          ? { ...cat, customName: name, type }
-          : cat
-      ));
-      showNotification(
-        lang === 'cn' ? '分类已更新' : 'Category updated',
-        'success'
-      );
+      const cat = categories.find(c => c.id === editingCategoryId);
+      if (cat) {
+        await storageService.saveCategory({
+          ...cat,
+          customName: name,
+          type
+        });
+        showNotification(
+          lang === 'cn' ? '分类已更新' : 'Category updated',
+          'success'
+        );
+      }
     } else {
       // Add new category
       const newCategory: Category = {
-        id: Math.random().toString(36).substr(2, 9),
+        id: crypto.randomUUID(),
         type,
         customName: name,
         links: []
       };
-      setCategories(prev => [...prev, newCategory]);
+      await storageService.saveCategory(newCategory);
 
       // If quick add from link modal, auto-select the new category
       if (isQuickAddCategory) {
@@ -490,7 +486,7 @@ function App() {
     }
     setEditingCategoryId(null);
     setShowCategoryModal(false);
-  }, [editingCategoryId, lang, showNotification, isQuickAddCategory]);
+  }, [editingCategoryId, lang, showNotification, isQuickAddCategory, categories]);
 
   const handleAddCategory = useCallback(() => {
     setEditingCategoryId(null);
@@ -515,27 +511,21 @@ function App() {
     setShowImportConfirmModal(false);
     const results = await processAIImport(pendingImportLinks, lang);
 
-    setCategories(prev => {
-      const newCategories = [...prev];
-      results.forEach(item => {
-        const catIndex = newCategories.findIndex(c => c.type === item.category);
-        if (catIndex > -1) {
-          newCategories[catIndex] = {
-            ...newCategories[catIndex],
-            links: [...newCategories[catIndex].links, item.link]
-          };
-        }
-      });
-      return newCategories;
-    });
+    // Bulk Add
+    for (const item of results) {
+      const cat = categories.find(c => c.type === item.category);
+      if (cat) {
+        await storageService.saveLink(cat.id, item.link);
+      }
+    }
 
     showNotification(
       lang === 'cn' ? `成功导入并智能分类了 ${results.length} 个书签！` : `Successfully imported and categorized ${results.length} bookmarks!`,
       'success'
     );
-  }, [pendingImportLinks, lang, processAIImport, setShowImportConfirmModal, showNotification]);
+  }, [pendingImportLinks, lang, processAIImport, setShowImportConfirmModal, showNotification, categories]);
 
-  const finishBulkImport = useCallback(() => {
+  const finishBulkImport = useCallback(async () => {
     const selectedCandidates = manualImportCandidates.filter(c => c.selected);
 
     if (selectedCandidates.length === 0) {
@@ -543,27 +533,20 @@ function App() {
       return;
     }
 
-    setCategories(prev => {
-      const newCategories = [...prev];
-      selectedCandidates.forEach(item => {
-        const catIndex = newCategories.findIndex(c => c.type === item.category);
+    for (const item of selectedCandidates) {
+      const cat = categories.find(c => c.type === item.category);
+      if (cat) {
         const linkToAdd = { ...item.link, description: item.link.description || 'Imported Bookmark' };
-        if (catIndex > -1) {
-          newCategories[catIndex] = {
-            ...newCategories[catIndex],
-            links: [...newCategories[catIndex].links, linkToAdd]
-          };
+          await storageService.saveLink(cat.id, linkToAdd);
         }
-      });
-      return newCategories;
-    });
+    }
 
     setShowManualImportModal(false);
     showNotification(
       lang === 'cn' ? `成功导入了 ${selectedCandidates.length} 个书签！` : `Successfully imported ${selectedCandidates.length} bookmarks!`,
       'success'
     );
-  }, [manualImportCandidates, lang, setShowManualImportModal, showNotification]);
+  }, [manualImportCandidates, lang, setShowManualImportModal, showNotification, categories]);
 
   const toggleLang = useCallback(() => {
     setLang(prev => prev === 'en' ? 'cn' : 'en');
