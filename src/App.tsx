@@ -21,6 +21,7 @@ import { analyzeLinkInfo, recommendTools } from './services/geminiService';
 import { useNotification } from './hooks/useNotification';
 import { useImport } from './hooks/useImport';
 import { useSearchHistory } from './hooks/useSearchHistory';
+import { AuthModal } from './components/modals/AuthModal';
 
 function App() {
   // Core State
@@ -48,6 +49,7 @@ function App() {
     const saved = localStorage.getItem('language');
     return (saved as Language) || 'cn';
   });
+  const [showAuthModal, setShowAuthModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
@@ -761,6 +763,7 @@ function App() {
           toggleAiSearch={toggleAiSearch}
           onSearchClick={() => setShowSearchOverlay(true)}
           showWallpaperPanel={showWallpaperPanel}
+          onLoginClick={() => setShowAuthModal(true)}
         />
 
         <div className="flex flex-1 overflow-hidden">
@@ -870,6 +873,12 @@ function App() {
             </button>
           )}
         </div>
+
+        <AuthModal
+          isOpen={showAuthModal}
+          onClose={() => setShowAuthModal(false)}
+          lang={lang}
+        />
 
         <HelpModal
           isOpen={showHelpModal}

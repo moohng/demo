@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Command, Terminal, Globe, Sparkles } from 'lucide-react';
+import { Search, Command, Terminal, Globe, Sparkles, User, LogOut } from 'lucide-react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
+import { supabase } from '../lib/supabase';
 
 interface HeaderProps {
   searchQuery: string;
@@ -14,12 +15,14 @@ interface HeaderProps {
   toggleAiSearch: () => void;
   onSearchClick?: () => void;
   showWallpaperPanel?: boolean;
+  onLoginClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, toggleLang, editMode, setEditMode, isAiSearch, toggleAiSearch, onSearchClick, showWallpaperPanel = false }) => {
+const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, toggleLang, editMode, setEditMode, isAiSearch, toggleAiSearch, onSearchClick, showWallpaperPanel = false, onLoginClick }) => {
   const [greeting, setGreeting] = useState('');
   const [time, setTime] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
+  const [user, setUser] = useState<any>(null);
   const t = TRANSLATIONS[lang];
 
   useEffect(() => {
@@ -39,6 +42,25 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, togg
     const timer = setInterval(updateTime, 1000 * 60);
     return () => clearInterval(timer);
   }, [lang, t]);
+
+  // Auth State Listener
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   // Detect scroll
   useEffect(() => {
@@ -67,7 +89,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, togg
             {t.systemOnline}
           </div>
           <h1 className="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-2 tracking-tight">
-            {greeting}, Dev.
+            {greeting}, {user ? (user.email?.split('@')[0] || 'Dev') : 'Dev'}.
           </h1>
           <p className="text-gray-400 text-lg font-light tracking-wide">{time} — {t.timeToShip}</p>
         </div>
@@ -124,6 +146,27 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, togg
             <Terminal size={14} />
             {editMode ? t.doneEditing : t.editMode}
           </button>
+
+          {/* User / Login Button */}
+          {user ? (
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors border bg-glass text-gray-400 border-glassBorder hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/30"
+              title={lang === 'cn' ? "退出登录" : "Sign Out"}
+            >
+              <LogOut size={14} />
+              {lang === 'cn' ? '退出' : 'Out'}
+            </button>
+          ) : (
+            <button
+              onClick={onLoginClick}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors border bg-blue-600/20 text-blue-400 border-blue-500/30 hover:bg-blue-600/30 hover:text-blue-300 hover:border-blue-500/50 shadow-[0_0_15px_rgba(59,130,246,0.2)]"
+            >
+              <User size={14} />
+              {lang === 'cn' ? '登录' : 'Login'}
+            </button>
+          )}
+
         </div>
       </div>
 

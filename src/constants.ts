@@ -222,7 +222,17 @@ export const TRANSLATIONS = {
   }
 };
 
-const generateId = () => Math.random().toString(36).substr(2, 9);
+// Use Web Crypto API for UUIDs to match Supabase requirements
+const generateId = () => {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  // Fallback for environments without crypto.randomUUID (should rarely happen in modern contexts)
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
 
 export const CATEGORY_THEMES: Record<CategoryType, { text: string; bg: string; border: string; hover: string }> = {
   // Development
