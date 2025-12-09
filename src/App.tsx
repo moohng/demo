@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { Bot, Plus, Github, Sparkles, Loader2, Upload, HelpCircle } from 'lucide-react';
+import { Sparkles, Loader2, Upload, Plus } from 'lucide-react';
+
+// Components
 import Header from './components/Header';
 import CategorySection from './components/CategorySection';
 import Footer from './components/Footer';
-import GeminiChat from './components/GeminiChat';
 import Sidebar from './components/Sidebar';
 import WallpaperPanel from './components/WallpaperPanel';
 import { Toast } from './components/Toast';
@@ -15,73 +16,51 @@ import { CategoryModal } from './components/modals/CategoryModal';
 import { ConfirmModal } from './components/modals/ConfirmModal';
 import { AISettingsModal } from './components/modals/AISettingsModal';
 import { ImportProgressOverlay } from './components/overlays/ImportProgressOverlay';
-import { Category, CategoryType, LinkItem, Language } from './types';
-import { INITIAL_DATA, TRANSLATIONS, CATEGORY_NAMES } from './constants';
-import { analyzeLinkInfo, recommendTools } from './services/geminiService';
+import { AuthModal } from './components/modals/AuthModal';
+import { AddLinkModal } from './components/modals/AddLinkModal';
+
+// Types & Config
+import { Category, CategoryType, LinkItem } from './types';
+import { recommendTools } from './services/geminiService';
+
+// Hooks
 import { useNotification } from './hooks/useNotification';
 import { useImport } from './hooks/useImport';
 import { useSearchHistory } from './hooks/useSearchHistory';
-import { storageService } from './services/storageService';
-import { AuthModal } from './components/modals/AuthModal';
+import { useCategories } from './hooks/useCategories';
+import { useAppState } from './hooks/useAppState';
+import { useLinkModal } from './hooks/useLinkModal';
 
 function App() {
-  // Core State
-  const [categories, setCategories] = useState<Category[]>(INITIAL_DATA);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [editMode, setEditMode] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
-    const saved = localStorage.getItem('sidebarCollapsed');
-    return saved ? JSON.parse(saved) : false;
-  });
-  const [lang, setLang] = useState<Language>(() => {
-    const saved = localStorage.getItem('language');
-    return (saved as Language) || 'cn';
-  });
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [showHelpModal, setShowHelpModal] = useState(false);
-  const [showSearchOverlay, setShowSearchOverlay] = useState(false);
-  const [showCategoryModal, setShowCategoryModal] = useState(false);
-  const [showAISettings, setShowAISettings] = useState(false);
-  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
-  const [isQuickAddCategory, setIsQuickAddCategory] = useState(false);
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [confirmModalData, setConfirmModalData] = useState<{
-    title: string;
-    message: string;
-    onConfirm: () => void;
-  } | null>(null);
+  // 1. Hooks Initialization
+  const { 
+    categories, 
+    addCategory, 
+    updateCategory, 
+    deleteCategory, 
+    addLink, 
+    deleteLink 
+  } = useCategories();
 
-  // Wallpaper State
-  const [wallpaper, setWallpaper] = useState<string>(() => {
-    const saved = localStorage.getItem('wallpaper');
-    return saved || '';
-  });
-  const [showWallpaperPanel, setShowWallpaperPanel] = useState(false);
+  const {
+    isSidebarCollapsed,
+    setIsSidebarCollapsed,
+    lang,
+    setLang,
+    toggleLang,
+    wallpaper,
+    setWallpaper,
+    isAiSearch,
+    toggleAiSearch,
+    editMode,
+    toggleEditMode
+  } = useAppState();
 
-  // AI States
-  const [isAiSearch, setIsAiSearch] = useState(() => {
-    const saved = localStorage.getItem('isAiSearch');
-    return saved ? JSON.parse(saved) : false;
-  });
-  const [aiRecommendations, setAiRecommendations] = useState('');
-  const [isAiSearching, setIsAiSearching] = useState(false);
-  const [isAutoFilling, setIsAutoFilling] = useState(false);
-
-  // Link Form State
-  const [editingLinkId, setEditingLinkId] = useState<string | null>(null);
-  const [originalCategoryId, setOriginalCategoryId] = useState<string | null>(null);
-  const [newLinkTitle, setNewLinkTitle] = useState('');
-  const [newLinkUrl, setNewLinkUrl] = useState('');
-  const [newLinkDesc, setNewLinkDesc] = useState('');
-  const [newLinkCategory, setNewLinkCategory] = useState<CategoryType>(CategoryType.TOOLS);
-
-  // Custom Hooks
   const { notification, showNotification } = useNotification();
   const { history: searchHistory, addToHistory, removeFromHistory } = useSearchHistory();
+  
+  // Import Logic
   const {
-    isImporting,
     importProgress,
     showImportConfirmModal,
     showManualImportModal,
@@ -97,41 +76,67 @@ function App() {
     setShowManualImportModal
   } = useImport();
 
-  const t = TRANSLATIONS[lang];
+  // Local UI State
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
+  const [showSearchOverlay, setShowSearchOverlay] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showAISettings, setShowAISettings] = useState(false);
+  const [showWallpaperPanel, setShowWallpaperPanel] = useState(false);
+  
+  // Confirm Modal
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [confirmModalData, setConfirmModalData] = useState<{
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  } | null>(null);
 
-  // Initialize Storage Service & Auth
+  // Category Edit State
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
+  const [isQuickAddCategory, setIsQuickAddCategory] = useState(false);
+
+  // AI Search State
+  const [aiRecommendations, setAiRecommendations] = useState('');
+  const [isAiSearching, setIsAiSearching] = useState(false);
+
+  // Link Modal Hook
+  const {
+    isOpen: showAddModal,
+    setIsOpen: setShowAddModal,
+    editingLinkId,
+    originalCategoryId,
+    linkUrl,
+    setLinkUrl,
+    linkTitle,
+    setLinkTitle,
+    linkDesc,
+    setLinkDesc,
+    linkCategory,
+    setLinkCategory,
+    isAutoFilling,
+    handleAutoFill,
+    openAddModal,
+    openEditModal
+  } = useLinkModal({ 
+    categories, 
+    lang, 
+    showNotification,
+    onSaveCategory: addCategory
+  });
+
+  // 2. Effects
+  
+  // Resize Handler
   useEffect(() => {
-    // Subscribe to changes
-    const unsubscribe = storageService.subscribe((data) => {
-      if (!data.categories?.length) {
-        storageService.loadLocalData().then(data => {
-          setCategories(data.categories);
-
-          storageService.syncLocalToCloud();
-        });
-      } else {
-        setCategories(data.categories);
-      }      
-    });
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
-
-
-
-  // Responsive sidebar
-  useEffect(() => {
-    const handleResize = () => {
-      setIsSidebarCollapsed(window.innerWidth < 1280);
-    };
+    const handleResize = () => setIsSidebarCollapsed(window.innerWidth < 1280);
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [setIsSidebarCollapsed]);
 
-  // Keyboard shortcut for search
+  // Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -143,35 +148,13 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Save wallpaper to localStorage
-  useEffect(() => {
-    localStorage.setItem('wallpaper', wallpaper);
-  }, [wallpaper]);
-
-  // Save language preference
-  useEffect(() => {
-    localStorage.setItem('language', lang);
-  }, [lang]);
-
-  // Save sidebar state
-  useEffect(() => {
-    localStorage.setItem('sidebarCollapsed', JSON.stringify(isSidebarCollapsed));
-  }, [isSidebarCollapsed]);
-
-  // Save AI search preference
-  useEffect(() => {
-    localStorage.setItem('isAiSearch', JSON.stringify(isAiSearch));
-  }, [isAiSearch]);
-
-  // Expose AI settings function globally for Sidebar
+  // Expose Settings
   useEffect(() => {
     (window as any).openAISettings = () => setShowAISettings(true);
-    return () => {
-      delete (window as any).openAISettings;
-    };
+    return () => { delete (window as any).openAISettings; };
   }, []);
 
-  // AI Search Effect
+  // AI Search Debounce
   useEffect(() => {
     const timer = setTimeout(async () => {
       if (isAiSearch && searchQuery.length > 2) {
@@ -191,368 +174,163 @@ function App() {
     return () => clearTimeout(timer);
   }, [searchQuery, isAiSearch, categories, lang]);
 
-  // Handlers
-  const handleDeleteLink = useCallback(async (categoryId: string, linkId: string) => {
-    await storageService.deleteLink(categoryId, linkId);
-    showNotification(lang === 'cn' ? '链接已删除' : 'Link deleted', 'success');
-  }, [lang, showNotification]);
-
-  const openAddModal = useCallback(() => {
-    setEditingLinkId(null);
-    setOriginalCategoryId(null);
-    setNewLinkTitle('');
-    setNewLinkUrl('');
-    setNewLinkDesc('');
-    setNewLinkCategory(CategoryType.TOOLS);
-    setShowAddModal(true);
-  }, []);
-
-  const openEditModal = useCallback((categoryId: string, link: LinkItem) => {
-    setEditingLinkId(link.id);
-    setOriginalCategoryId(categoryId);
-    setNewLinkTitle(link.title);
-    setNewLinkUrl(link.url);
-    setNewLinkDesc(link.description);
-    const currentCategory = categories.find(c => c.id === categoryId);
-    if (currentCategory) {
-      setNewLinkCategory(currentCategory.type);
+  // Edit Mode Side Effects
+  useEffect(() => {
+    if (editMode) {
+      setIsSidebarCollapsed(false);
+      setShowWallpaperPanel(true);
+    } else {
+      setShowWallpaperPanel(false);
     }
-    setShowAddModal(true);
-  }, [categories]);
+  }, [editMode, setIsSidebarCollapsed]);
 
-  const handleAutoFill = useCallback(async () => {
-    console.log('Auto-filling', newLinkUrl);
-    if (!newLinkUrl) return;
-    setIsAutoFilling(true);
-    try {
-      // Prepare existing categories for AI
-      const existingCategories = categories.map(c => ({
-        name: c.customName || CATEGORY_NAMES[lang][c.type],
-        type: c.type
-      }));
-      console.log('Existing categories', existingCategories);
-      const info = await analyzeLinkInfo(newLinkUrl, newLinkTitle, lang, existingCategories);
-      console.log('AI info', info);
-      // If AI inferred a complete URL from keyword, update the URL field
-      if (info.url && info.url !== newLinkUrl) {
-        setNewLinkUrl(info.url);
-      }
 
-      // Handle AI suggesting a new category
-      if (info.isNewCategory && info.suggestedIcon) {
-        // Find the CategoryType that matches the suggested icon
-        const iconType = Object.values(CategoryType).find(
-          type => type.toLowerCase() === info.suggestedIcon?.toLowerCase() ||
-            CATEGORY_NAMES[lang][type].toLowerCase() === info.suggestedIcon?.toLowerCase()
-        );
+  // 3. Handlers
 
-        if (iconType) {
-          // Check if category with this type already exists
-          const existingCat = categories.find(c => c.type === iconType && c.customName === info.category);
+  // Link Saving
+  const handleSaveLink = useCallback(async () => {
+    if (!linkTitle || !linkUrl) return;
 
-          if (!existingCat) {
-            // Auto-create new category
-            const newCategory: Category = {
-              id: crypto.randomUUID(),
-              type: iconType,
-              customName: info.category,
-              links: []
-            };
-            await storageService.saveCategory(newCategory);
-            showNotification(
-              lang === 'cn' ? `已创建新分类: ${info.category}` : `Created new category: ${info.category}`,
-              'success'
-            );
-          }
-
-          // Update the selected category
-          setNewLinkCategory(iconType);
-        }
-      } else {
-        // Try to match existing category
-        // First, try to find by CategoryType enum value or translated name
-        let foundType = Object.values(CategoryType).find(t =>
-          t.toLowerCase() === info.category.toLowerCase() ||
-          CATEGORY_NAMES['en'][t].toLowerCase() === info.category.toLowerCase() ||
-          CATEGORY_NAMES['cn'][t].toLowerCase() === info.category.toLowerCase()
-        );
-
-        // If not found, try to match against existing category custom names
-        if (!foundType) {
-          const matchingCategory = categories.find(c =>
-            c.customName?.toLowerCase() === info.category.toLowerCase()
-          );
-          if (matchingCategory) {
-            foundType = matchingCategory.type;
-          }
-        }
-
-        if (foundType) {
-          setNewLinkCategory(foundType);
-        } else {
-          console.log('Category not matched:', info.category);
-        }
-      }
-
-      if (info.description) setNewLinkDesc(info.description);
-      if (info.title) setNewLinkTitle(info.title);
-    } catch (e) {
-      console.error("Auto-fill failed", e);
-    } finally {
-      setIsAutoFilling(false);
-    }
-  }, [newLinkUrl, newLinkTitle, lang, showNotification, categories]);
-
-  // Helper function to save link (extracted to avoid duplication)
-  const saveLinkWithOverwrite = useCallback(async (formattedUrl: string, duplicateLink: LinkItem | null) => {
-    const linkData: LinkItem = {
-      id: editingLinkId || crypto.randomUUID(),
-      title: newLinkTitle,
-      url: formattedUrl,
-      description: newLinkDesc || 'Custom Bookmark',
-    };
-
-    // 1. If duplicate exists (and we confirmed overwrite), remove the old one first
-    if (duplicateLink) {
-      const dupCat = categories.find(c => c.links.some(l => l.id === duplicateLink.id));
-      if (dupCat) {
-        await storageService.deleteLink(dupCat.id, duplicateLink.id);
-      }
-    }
-
-    // 2. If moving category (editing exist link)
-    if (editingLinkId && originalCategoryId && originalCategoryId !== categories.find(c => c.type === newLinkCategory)?.id) {
-      // Deleting from old category logic needs original category ID
-      // Note: originalCategoryId state is available here
-      await storageService.deleteLink(originalCategoryId, editingLinkId);
-    }
-
-    // 3. Add/Update in target category
-    // Finding target category by TYPE (as per current UI selection)
-    const targetCat = categories.find(c => c.type === newLinkCategory);
-    if (targetCat) {
-      await storageService.saveLink(targetCat.id, linkData);
-    }
-
-    setShowAddModal(false);
-    showNotification(lang === 'cn' ? '保存成功' : 'Saved successfully', 'success');
-  }, [newLinkTitle, newLinkDesc, newLinkCategory, editingLinkId, originalCategoryId, categories, lang, showNotification]);
-
-  const handleSaveLink = useCallback(() => {
-    if (!newLinkTitle || !newLinkUrl) return;
-
-    let formattedUrl = newLinkUrl;
+    let formattedUrl = linkUrl;
     if (!/^https?:\/\//i.test(formattedUrl)) {
       formattedUrl = 'https://' + formattedUrl;
     }
 
-    // Check for duplicate URL (skip if editing the same link)
+    // Check duplicate
     const duplicateLink = categories.flatMap(c => c.links).find(
-      link => link.url.toLowerCase() === formattedUrl.toLowerCase() && link.id !== editingLinkId
+      l => l.url.toLowerCase() === formattedUrl.toLowerCase() && l.id !== editingLinkId
     );
 
+    const saveAction = async () => {
+      const linkData: LinkItem = {
+        id: editingLinkId || crypto.randomUUID(),
+        title: linkTitle,
+        url: formattedUrl,
+        description: linkDesc || 'Custom Bookmark',
+      };
+
+      // 1. Remove duplicate if exists
+      if (duplicateLink) {
+        const dupCat = categories.find(c => c.links.some(l => l.id === duplicateLink.id));
+        if (dupCat) await deleteLink(dupCat.id, duplicateLink.id);
+      }
+
+      // 2. Remove from old category if moving
+      if (editingLinkId && originalCategoryId) {
+         const oldCat = categories.find(c => c.id === originalCategoryId);
+         const targetCat = categories.find(c => c.type === linkCategory);
+         if (oldCat && targetCat && oldCat.id !== targetCat.id) {
+             await deleteLink(originalCategoryId, editingLinkId);
+         }
+      }
+
+      // 3. Add/Update in target
+      const targetCat  = categories.find(c => c.type === linkCategory);
+      if (targetCat) {
+        await addLink(targetCat.id, linkData);
+      }
+      
+      setShowAddModal(false);
+      showNotification(lang === 'cn' ? '保存成功' : 'Saved successfully', 'success');
+    };
+
     if (duplicateLink) {
-      // Show custom confirmation modal
       setConfirmModalData({
         title: lang === 'cn' ? 'URL 已存在' : 'URL Already Exists',
         message: lang === 'cn'
           ? `URL "${formattedUrl}" 已存在于书签中（${duplicateLink.title}）。确认保存将覆盖现有链接。`
-          : `URL "${formattedUrl}" already exists in your bookmarks (${duplicateLink.title}). Confirming will overwrite the existing link.`,
-        onConfirm: () => {
-          saveLinkWithOverwrite(formattedUrl, duplicateLink);
-        }
+          : `URL "${formattedUrl}" already exists. Overwrite?`,
+        onConfirm: saveAction
       });
       setShowConfirmModal(true);
-      return;
-    }
-
-    // No duplicate, proceed normally
-    saveLinkWithOverwrite(formattedUrl, null);
-  }, [newLinkTitle, newLinkUrl, newLinkDesc, newLinkCategory, editingLinkId, originalCategoryId, categories, lang, setConfirmModalData, setShowConfirmModal, saveLinkWithOverwrite]);
-
-
-  // Category Management Functions
-  const handleEditCategory = useCallback((categoryId: string) => {
-    setEditingCategoryId(categoryId);
-    setShowCategoryModal(true);
-  }, []);
-
-  const handleDeleteCategory = useCallback(async (categoryId: string) => {
-    const category = categories.find(c => c.id === categoryId);
-    if (!category) return;
-
-    const linkCount = category.links.length;
-    const confirmMessage = linkCount > 0
-      ? (lang === 'cn'
-        ? `此分类下有 ${linkCount} 个链接，删除分类将同时删除所有链接。确定要删除吗？`
-        : `This category has ${linkCount} links. Deleting it will also delete all links. Are you sure?`)
-      : (lang === 'cn' ? '确定要删除此分类吗？' : 'Are you sure you want to delete this category?');
-
-    if (window.confirm(confirmMessage)) {
-      await storageService.deleteCategory(categoryId);
-      showNotification(
-        lang === 'cn' ? '分类已删除' : 'Category deleted',
-        'success'
-      );
-    }
-  }, [categories, lang, showNotification]);
-
-  // Wallpaper Handler
-  const handleWallpaperChange = useCallback((newWallpaper: string) => {
-    setWallpaper(newWallpaper);
-  }, []);
-
-  // Edit Mode Toggle Handler
-  const handleEditModeToggle = useCallback(() => {
-    const newEditMode = !editMode;
-    setEditMode(newEditMode);
-
-    if (newEditMode) {
-      // Entering edit mode - expand sidebar and show wallpaper panel
-      setIsSidebarCollapsed(false);
-      setShowWallpaperPanel(true);
     } else {
-      // Exiting edit mode - hide wallpaper panel
-      setShowWallpaperPanel(false);
+      await saveAction();
     }
-  }, [editMode]);
+  }, [linkTitle, linkUrl, linkDesc, linkCategory, editingLinkId, originalCategoryId, categories, lang, deleteLink, addLink, showNotification, setShowAddModal]);
 
-  // Handle Link Visit - Track visit frequency
-  // Handle Link Visit - Track visit frequency
-  const handleLinkVisit = useCallback((linkId: string) => {
-    // Optional: We can choose to sync this or keep it local only in memory/cache?
-    // For now, let's just update local state via setCategories to avoid re-rendering entire list via service?
-    // OR better: use storageService but maybe not await?
-    // storageService has optimistic updates.
 
-    // Finding category for link
-    const category = categories.find(c => c.links.some(l => l.id === linkId));
-    if (category) {
-      const link = category.links.find(l => l.id === linkId);
-      if (link) {
-        const updatedLink = {
-          ...link,
-          visitCount: (link.visitCount || 0) + 1,
-          lastVisited: Date.now()
-           };
-           // We don't await this to avoid blocking UI interaction
-           storageService.saveLink(category.id, updatedLink);
-         }
-    }
-  }, [categories]);
-
+  // Category Management
   const handleSaveCategory = useCallback(async (name: string, type: CategoryType) => {
     if (editingCategoryId) {
-      // Edit existing category
       const cat = categories.find(c => c.id === editingCategoryId);
       if (cat) {
-        await storageService.saveCategory({
-          ...cat,
-          customName: name,
-          type
-        });
-        showNotification(
-          lang === 'cn' ? '分类已更新' : 'Category updated',
-          'success'
-        );
+        await updateCategory({ ...cat, customName: name, type });
+        showNotification(lang === 'cn' ? '分类已更新' : 'Category updated', 'success');
       }
     } else {
-      // Add new category
       const newCategory: Category = {
         id: crypto.randomUUID(),
         type,
         customName: name,
         links: []
       };
-      await storageService.saveCategory(newCategory);
-
-      // If quick add from link modal, auto-select the new category
+      await addCategory(newCategory);
       if (isQuickAddCategory) {
-        setNewLinkCategory(type);
+        setLinkCategory(type);
         setIsQuickAddCategory(false);
       }
-
-      showNotification(
-        lang === 'cn' ? '分类已添加' : 'Category added',
-        'success'
-      );
+      showNotification(lang === 'cn' ? '分类已添加' : 'Category added', 'success');
     }
     setEditingCategoryId(null);
     setShowCategoryModal(false);
-  }, [editingCategoryId, lang, showNotification, isQuickAddCategory, categories]);
+  }, [editingCategoryId, categories, updateCategory, addCategory, isQuickAddCategory, setLinkCategory, showNotification, lang]);
 
-  const handleAddCategory = useCallback(() => {
-    setEditingCategoryId(null);
-    setIsQuickAddCategory(false);
-    setShowCategoryModal(true);
-  }, []);
+  const handleDeleteCategoryHandler = useCallback(async (categoryId: string) => {
+    const category = categories.find(c => c.id === categoryId);
+    if (!category) return;
+    if (window.confirm(lang === 'cn' ? '确定删除吗？' : 'Are you sure?')) {
+      await deleteCategory(categoryId);
+      showNotification(lang === 'cn' ? '分类已删除' : 'Category deleted', 'success');
+    }
+  }, [categories, lang, deleteCategory, showNotification]);
 
-  const handleQuickAddCategory = useCallback(() => {
-    setEditingCategoryId(null);
-    setIsQuickAddCategory(true);
-    setShowCategoryModal(true);
-  }, []);
+  const handleLinkVisit = useCallback((linkId: string) => {
+    const category = categories.find(c => c.links.some(l => l.id === linkId));
+    if (category) {
+      const link = category.links.find(l => l.id === linkId);
+      if (link) {
+        addLink(category.id, {
+           ...link, 
+           visitCount: (link.visitCount || 0) + 1, 
+           lastVisited: Date.now() 
+        });
+      }
+    }
+  }, [categories, addLink]);
 
   const handleImportBookmarks = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-    await handleFileSelect(file);
-    e.target.value = '';
+    if (file) {
+      await handleFileSelect(file);
+      e.target.value = '';
+    }
   }, [handleFileSelect]);
 
   const processAIImportHandler = useCallback(async () => {
     setShowImportConfirmModal(false);
     const results = await processAIImport(pendingImportLinks, lang);
-
-    // Bulk Add
     for (const item of results) {
-      const cat = categories.find(c => c.type === item.category);
-      if (cat) {
-        await storageService.saveLink(cat.id, item.link);
-      }
+       const cat = categories.find(c => c.type === item.category);
+       if (cat) await addLink(cat.id, item.link);
     }
-
-    showNotification(
-      lang === 'cn' ? `成功导入并智能分类了 ${results.length} 个书签！` : `Successfully imported and categorized ${results.length} bookmarks!`,
-      'success'
-    );
-  }, [pendingImportLinks, lang, processAIImport, setShowImportConfirmModal, showNotification, categories]);
+    showNotification(lang === 'cn' ? '导入成功' : 'Import success', 'success');
+  }, [pendingImportLinks, lang, processAIImport, categories, addLink, showNotification, setShowImportConfirmModal]);
 
   const finishBulkImport = useCallback(async () => {
-    const selectedCandidates = manualImportCandidates.filter(c => c.selected);
-
-    if (selectedCandidates.length === 0) {
-      showNotification(lang === 'cn' ? "未选择任何书签。" : "No bookmarks selected.", 'info');
-      return;
+    const selected = manualImportCandidates.filter(c => c.selected);
+    for (const item of selected) {
+       const cat = categories.find(c => c.type === item.category);
+       if (cat) {
+         await addLink(cat.id, { ...item.link, description: item.link.description || 'Imported' });
+       }
     }
-
-    for (const item of selectedCandidates) {
-      const cat = categories.find(c => c.type === item.category);
-      if (cat) {
-        const linkToAdd = { ...item.link, description: item.link.description || 'Imported Bookmark' };
-          await storageService.saveLink(cat.id, linkToAdd);
-        }
-    }
-
     setShowManualImportModal(false);
-    showNotification(
-      lang === 'cn' ? `成功导入了 ${selectedCandidates.length} 个书签！` : `Successfully imported ${selectedCandidates.length} bookmarks!`,
-      'success'
-    );
-  }, [manualImportCandidates, lang, setShowManualImportModal, showNotification, categories]);
+    showNotification(lang === 'cn' ? '导入成功' : 'Import success', 'success');
+  }, [manualImportCandidates, categories, addLink, setShowManualImportModal, showNotification, lang]);
 
-  const toggleLang = useCallback(() => {
-    setLang(prev => prev === 'en' ? 'cn' : 'en');
-  }, []);
 
-  const toggleAiSearch = useCallback(() => {
-    setIsAiSearch(prev => !prev);
-    if (isAiSearch) {
-      setAiRecommendations('');
-    }
-  }, [isAiSearch]);
-
-  // Filtered categories
+  // 4. Render
+  
   const filteredCategories = useMemo(() => {
     if (!searchQuery || isAiSearch) return categories;
     const lowerQuery = searchQuery.toLowerCase();
@@ -568,29 +346,18 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-white relative overflow-hidden">
-      {/* Wallpaper Background */}
+      {/* Background */}
       {wallpaper && (
-        <>
-          <div
-            className="fixed inset-0 z-0"
-            style={{
-              background: wallpaper.startsWith('data:') || wallpaper.startsWith('http')
-                ? `url(${wallpaper})`
-                : wallpaper,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat'
-            }}
-          />
-          {/* Dark overlay for readability */}
-          <div className="fixed inset-0 z-0 bg-black/40 backdrop-blur-sm" />
-        </>
+        <div className="fixed inset-0 z-0">
+          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${wallpaper})` }} />
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+        </div>
       )}
 
-      {/* Main Content */}
       <div className="relative z-10">
         <Toast {...notification} />
-
+        
+        {/* Modals & Overlays */}
         <SearchOverlay
           isOpen={showSearchOverlay}
           onClose={() => setShowSearchOverlay(false)}
@@ -603,9 +370,9 @@ function App() {
           aiRecommendations={aiRecommendations}
           isAiSearching={isAiSearching}
         />
-
+        
         <ImportProgressOverlay {...importProgress} lang={lang} />
-
+        
         <ImportConfirmModal
           isOpen={showImportConfirmModal}
           bookmarkCount={pendingImportLinks.length}
@@ -626,115 +393,64 @@ function App() {
           onImport={finishBulkImport}
         />
 
-        <HelpModal
-          isOpen={showHelpModal}
-          lang={lang}
-          onClose={() => setShowHelpModal(false)}
+        <HelpModal isOpen={showHelpModal} lang={lang} onClose={() => setShowHelpModal(false)} />
+        
+        <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} lang={lang} />
+        
+        <AISettingsModal isOpen={showAISettings} onClose={() => setShowAISettings(false)} lang={lang} />
+
+        <CategoryModal
+           isOpen={showCategoryModal}
+           onClose={() => setShowCategoryModal(false)}
+           onSave={handleSaveCategory}
+           editingCategory={categories.find(c => c.id === editingCategoryId)}
+           lang={lang}
         />
 
-        {/* Add Link Modal - TODO: Extract to component */}
-        {showAddModal && (
-          <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in" onClick={() => setShowAddModal(false)}>
-            <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 max-w-md w-full shadow-2xl relative animate-fade-in-up" onClick={e => e.stopPropagation()}>
-              <h3 className="text-xl font-bold text-white mb-4">
-                {editingLinkId ? (lang === 'cn' ? '编辑链接' : 'Edit Link') : (lang === 'cn' ? '添加链接' : 'Add Link')}
-              </h3>
+        <ConfirmModal
+          isOpen={showConfirmModal}
+          onClose={() => setShowConfirmModal(false)}
+          onConfirm={() => {
+             confirmModalData?.onConfirm();
+             setShowConfirmModal(false);
+          }}
+          title={confirmModalData?.title || ''}
+          message={confirmModalData?.message || ''}
+          lang={lang}
+        />
 
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? 'URL' : 'URL'}</label>
-                  <div className="flex gap-2">
-                    <input
-                      type="text"
-                      value={newLinkUrl}
-                      onChange={(e) => setNewLinkUrl(e.target.value)}
-                      className="flex-1 bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-                      placeholder="https://example.com"
-                    />
-                    <button
-                      onClick={handleAutoFill}
-                      disabled={!newLinkUrl || isAutoFilling}
-                      className="px-3 py-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-                      title={lang === 'cn' ? 'AI 自动填充' : 'AI Auto-fill'}
-                    >
-                      {isAutoFilling ? <Loader2 size={18} className="animate-spin" /> : <Sparkles size={18} />}
-                    </button>
-                  </div>
-                </div>
+        <AddLinkModal
+           isOpen={showAddModal}
+           onClose={() => setShowAddModal(false)}
+           lang={lang}
+           categories={categories}
+           linkUrl={linkUrl}
+           setLinkUrl={setLinkUrl}
+           linkTitle={linkTitle}
+           setLinkTitle={setLinkTitle}
+           linkDesc={linkDesc}
+           setLinkDesc={setLinkDesc}
+           linkCategory={linkCategory}
+           setLinkCategory={setLinkCategory}
+           onAutoFill={handleAutoFill}
+           isAutoFilling={isAutoFilling}
+           onSave={handleSaveLink}
+           onQuickAddCategory={() => {
+              setEditingCategoryId(null);
+              setIsQuickAddCategory(true);
+              setShowCategoryModal(true);
+           }}
+           isEditing={!!editingLinkId}
+        />
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? '标题' : 'Title'}</label>
-                  <input
-                    type="text"
-                    value={newLinkTitle}
-                    onChange={(e) => setNewLinkTitle(e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none"
-                    placeholder={lang === 'cn' ? '输入标题' : 'Enter title'}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? '描述' : 'Description'}</label>
-                  <textarea
-                    value={newLinkDesc}
-                    onChange={(e) => setNewLinkDesc(e.target.value)}
-                    className="w-full bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none resize-none"
-                    rows={3}
-                    placeholder={lang === 'cn' ? '输入描述' : 'Enter description'}
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-1">{lang === 'cn' ? '分类' : 'Category'}</label>
-                  <div className="flex gap-2">
-                    <select
-                      value={newLinkCategory}
-                      onChange={(e) => setNewLinkCategory(e.target.value as CategoryType)}
-                      className="flex-1 bg-gray-800 border border-gray-700 text-white px-3 py-2 rounded-lg focus:ring-1 focus:ring-primary focus:border-primary outline-none cursor-pointer"
-                    >
-                      {categories.map(category => (
-                        <option key={category.id} value={category.type}>
-                          {category.customName || CATEGORY_NAMES[lang][category.type]}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      onClick={handleQuickAddCategory}
-                      className="p-2 rounded-lg bg-primary/20 hover:bg-primary/30 border border-primary/50 text-primary transition-colors flex-shrink-0"
-                      title={lang === 'cn' ? '添加新分类' : 'Add New Category'}
-                    >
-                      <Plus size={20} />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex gap-3 mt-6">
-                <button
-                  onClick={() => setShowAddModal(false)}
-                  className="flex-1 py-2 px-4 rounded-lg border border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
-                >
-                  {lang === 'cn' ? '取消' : 'Cancel'}
-                </button>
-                <button
-                  onClick={handleSaveLink}
-                  disabled={!newLinkTitle || !newLinkUrl}
-                  className="flex-1 py-2 px-4 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {lang === 'cn' ? '保存' : 'Save'}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
+        {/* Layout */}
         <Header
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           lang={lang}
           toggleLang={toggleLang}
           editMode={editMode}
-          setEditMode={handleEditModeToggle}
+          setEditMode={toggleEditMode}
           isAiSearch={isAiSearch}
           toggleAiSearch={toggleAiSearch}
           onSearchClick={() => setShowSearchOverlay(true)}
@@ -748,155 +464,98 @@ function App() {
             isCollapsed={isSidebarCollapsed}
             setIsCollapsed={setIsSidebarCollapsed}
             editMode={editMode}
-            onAddCategory={handleAddCategory}
+            onAddCategory={() => {
+                setEditingCategoryId(null);
+                setIsQuickAddCategory(false);
+                setShowCategoryModal(true);
+            }}
             lang={lang}
           />
 
           <main className={`flex-1 overflow-y-auto p-8 transition-all duration-300 ${isSidebarCollapsed ? 'md:pl-24' : 'md:pl-52'}`}>
-            {isAiSearch && searchQuery ? (
-              <div className="max-w-4xl mx-auto">
-                <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 mb-6">
-                  <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                    <Sparkles className="text-primary" />
-                    {lang === 'cn' ? 'AI 推荐' : 'AI Recommendations'}
-                  </h2>
-                  {isAiSearching ? (
-                    <div className="flex items-center gap-3 text-gray-400">
-                      <Loader2 className="animate-spin" size={20} />
-                      {lang === 'cn' ? '正在分析...' : 'Analyzing...'}
-                    </div>
-                  ) : (
-                    <div className="prose prose-invert max-w-none">
-                      <p className="text-gray-300 whitespace-pre-wrap">{aiRecommendations || (lang === 'cn' ? '输入搜索词以获取 AI 推荐' : 'Enter a search term to get AI recommendations')}</p>
-                    </div>
-                  )}
+             {isAiSearch && searchQuery ? (
+               <div className="max-w-4xl mx-auto mb-6">
+                 <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
+                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                       <Sparkles className="text-primary" />
+                       {lang === 'cn' ? 'AI 推荐' : 'AI Recommendations'}
+                    </h2>
+                    {isAiSearching ? (
+                      <div className="flex items-center gap-3 text-gray-400">
+                         <Loader2 className="animate-spin" size={20} />
+                         {lang === 'cn' ? '正在分析...' : 'Analyzing...'}
+                      </div>
+                    ) : (
+                      <p className="text-gray-300 whitespace-pre-wrap">{aiRecommendations}</p>
+                    )}
+                 </div>
+               </div>
+             ) : (
+                <div className="space-y-12">
+                   {filteredCategories.map(category => (
+                     <CategorySection
+                        key={category.id}
+                        category={category}
+                        onEdit={openEditModal}
+                        onDelete={(catId, linkId) => deleteLink(catId, linkId)}
+                        onEditCategory={(id) => {
+                            setEditingCategoryId(id);
+                            setShowCategoryModal(true);
+                        }}
+                        onDeleteCategory={handleDeleteCategoryHandler}
+                        onVisit={handleLinkVisit}
+                        editMode={editMode}
+                        lang={lang}
+                     />
+                   ))}
                 </div>
-              </div>
-            ) : (
-              <div className="space-y-12">
-                {filteredCategories.map(category => (
-                  <CategorySection
-                    key={category.id}
-                    category={category}
-                    onEdit={openEditModal}
-                    onDelete={handleDeleteLink}
-                    onEditCategory={handleEditCategory}
-                    onDeleteCategory={handleDeleteCategory}
-                    onVisit={handleLinkVisit}
-                    editMode={editMode}
-                    lang={lang}
-                  />
-                ))}
-              </div>
-            )}
-            <Footer lang={lang} />
+             )}
+             
+
+
+             <Footer lang={lang} />
           </main>
         </div>
 
         <WallpaperPanel
-          isOpen={showWallpaperPanel}
-          onClose={() => setShowWallpaperPanel(false)}
-          currentWallpaper={wallpaper}
-          onWallpaperChange={handleWallpaperChange}
-          lang={lang}
+           isOpen={showWallpaperPanel}
+           onClose={() => setShowWallpaperPanel(false)}
+           currentWallpaper={wallpaper}
+           onWallpaperChange={setWallpaper}
+           lang={lang}
         />
 
-        <div className={`fixed bottom-16 flex flex-col gap-4 z-50 transition-all duration-300 ${showWallpaperPanel ? 'right-[22rem]' : 'right-6'}`}>
-          {editMode && (
-            <div className="flex flex-col gap-2 items-center">
-              <button
-                onClick={() => setShowHelpModal(true)}
-                className="w-8 h-8 bg-gray-800/80 hover:bg-gray-700 text-gray-400 hover:text-white rounded-full flex items-center justify-center transition-colors border border-gray-700 mb-1"
-                title={lang === 'cn' ? "如何导出书签？" : "How to export bookmarks?"}
-              >
-                <HelpCircle size={16} />
-              </button>
-
+        {/* Floating Action Buttons (Only in Edit Mode) */}
+        {editMode && (
+          <div className="fixed bottom-8 right-8 flex flex-col gap-4 z-40">
+            {/* Import Button */}
+            <>
               <input
                 type="file"
-                id="import-bookmarks"
-                className="hidden"
                 accept=".html"
                 onChange={handleImportBookmarks}
+                className="hidden"
+                id="fab-import-file"
               />
               <label
-                htmlFor="import-bookmarks"
-                className={`w-14 h-14 bg-gray-800/80 hover:bg-gray-700 text-white rounded-full flex items-center justify-center transition-colors border border-gray-700 cursor-pointer ${isImporting ? 'opacity-50 cursor-not-allowed' : ''}`}
-                title={lang === 'cn' ? "导入书签" : "Import Bookmarks"}
+                htmlFor="fab-import-file"
+                className="p-4 bg-gray-800 hover:bg-gray-700 text-white rounded-full shadow-xl cursor-pointer hover:scale-110 transition-all flex items-center justify-center border border-gray-700"
+                title={lang === 'cn' ? '导入书签' : 'Import Bookmarks'}
               >
-                {isImporting ? <Loader2 size={24} className="animate-spin" /> : <Upload size={24} />}
+                <Upload size={24} />
               </label>
-            </div>
-          )}
+            </>
 
-          {editMode && (
+            {/* Add Button */}
             <button
               onClick={openAddModal}
-              className="w-14 h-14 bg-primary hover:bg-primary-hover text-white rounded-full shadow-lg shadow-primary/20 flex items-center justify-center transition-transform hover:scale-105"
-              title={lang === 'cn' ? "添加链接" : "Add Link"}
+              className="p-4 bg-primary hover:scale-110 text-white rounded-full shadow-2xl hover:bg-primary/90 transition-all flex items-center justify-center border border-white/20"
+              title={lang === 'cn' ? '添加链接' : 'Add Link'}
             >
               <Plus size={24} />
             </button>
-          )}
-
-          {!editMode && (
-            <button
-              onClick={() => setIsChatOpen(!isChatOpen)}
-              className="w-14 h-14 bg-primary hover:bg-primary-hover text-white rounded-full shadow-lg shadow-black/50 flex items-center justify-center transition-all transform hover:scale-110 border-2 border-gray-700 cursor-pointer"
-              title={lang === 'cn' ? 'AI 助手' : 'AI Assistant'}
-            >
-              <Bot size={24} />
-            </button>
-          )}
-        </div>
-
-        <AuthModal
-          isOpen={showAuthModal}
-          onClose={() => setShowAuthModal(false)}
-          lang={lang}
-        />
-
-        <HelpModal
-          isOpen={showHelpModal}
-          onClose={() => setShowHelpModal(false)}
-          lang={lang}
-        />
-
-        <CategoryModal
-          isOpen={showCategoryModal}
-          onClose={() => {
-            setShowCategoryModal(false);
-            setEditingCategoryId(null);
-          }}
-          onSave={handleSaveCategory}
-          editingCategory={editingCategoryId ? (() => {
-            const cat = categories.find(c => c.id === editingCategoryId);
-            return cat ? { name: cat.customName || CATEGORY_NAMES[lang][cat.type], type: cat.type } : undefined;
-          })() : undefined}
-          lang={lang}
-        />
-
-        <AISettingsModal
-          isOpen={showAISettings}
-          onClose={() => setShowAISettings(false)}
-          lang={lang}
-        />
-
-        <ConfirmModal
-          isOpen={showConfirmModal}
-          onClose={() => setShowConfirmModal(false)}
-          onConfirm={confirmModalData?.onConfirm || (() => { })}
-          title={confirmModalData?.title || ''}
-          message={confirmModalData?.message || ''}
-          lang={lang}
-        />
-
-        <GeminiChat
-          isOpen={isChatOpen}
-          onClose={() => setIsChatOpen(false)}
-          lang={lang}
-          categories={categories}
-        />
+          </div>
+        )}
       </div>
     </div>
   );
