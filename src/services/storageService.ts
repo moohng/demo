@@ -118,6 +118,7 @@ class StorageService {
       this.notifyListeners(this.dataCache);
     }
 
+    this.saveToLocal();
     if (this.isCloudEnabled && this.userId) {
       await supabase.from('categories').upsert({
         id: category.id,
@@ -127,8 +128,6 @@ class StorageService {
         icon: '',
         sort_order: 0
       });
-    } else {
-      this.saveToLocal();
     }
   }
 
@@ -138,27 +137,28 @@ class StorageService {
       this.notifyListeners(this.dataCache);
     }
 
+    this.saveToLocal();
     if (this.isCloudEnabled && this.userId) {
       await supabase.from('categories').delete().eq('id', categoryId);
-    } else {
-      this.saveToLocal();
     }
   }
 
   async saveLink(categoryId: string, link: LinkItem): Promise<void> {
     // Optimistic
-    const cat = this.dataCache?.categories.find(c => c.id === categoryId);
-    if (cat) {
-      // Check exist
-      const idx = cat.links.findIndex(l => l.id === link.id);
-      if (idx >= 0) {
-        cat.links[idx] = link;
-      } else {
-        cat.links.push(link);
+    this.dataCache.categories = this.dataCache.categories.map(c => {
+      if (c.id === categoryId) {
+        const idx = c.links.findIndex(l => l.id === link.id);
+        if (idx >= 0) {
+          c.links[idx] = link;
+        } else {
+          c.links.push(link);
+        }
       }
-      this.notifyListeners(this.dataCache!);
-    }
+      return c;
+    });
+    this.notifyListeners(this.dataCache);
 
+    this.saveToLocal();
     if (this.isCloudEnabled && this.userId) {
       // Upsert logic
       // Note: For upsert, we need link UUID.
@@ -171,22 +171,21 @@ class StorageService {
         description: link.description,
         sort_order: 0
       });
-    } else {
-      this.saveToLocal();
     }
   }
 
   async deleteLink(categoryId: string, linkId: string): Promise<void> {
-    const cat = this.dataCache?.categories.find(c => c.id === categoryId);
-    if (cat) {
-      cat.links = cat.links.filter(l => l.id !== linkId);
-      this.notifyListeners(this.dataCache!);
-    }
+    this.dataCache.categories = this.dataCache.categories.map(c => {
+      if (c.id === categoryId) {
+        c.links = c.links.filter(l => l.id !== linkId);
+      }
+      return c;
+    });
+    this.notifyListeners(this.dataCache);
 
+    this.saveToLocal();
     if (this.isCloudEnabled && this.userId) {
       await supabase.from('links').delete().eq('id', linkId);
-    } else {
-      this.saveToLocal();
     }
   }
 

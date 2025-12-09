@@ -221,6 +221,7 @@ function App() {
   }, [categories]);
 
   const handleAutoFill = useCallback(async () => {
+    console.log('Auto-filling', newLinkUrl);
     if (!newLinkUrl) return;
     setIsAutoFilling(true);
     try {
@@ -229,9 +230,9 @@ function App() {
         name: c.customName || CATEGORY_NAMES[lang][c.type],
         type: c.type
       }));
-
+      console.log('Existing categories', existingCategories);
       const info = await analyzeLinkInfo(newLinkUrl, newLinkTitle, lang, existingCategories);
-
+      console.log('AI info', info);
       // If AI inferred a complete URL from keyword, update the URL field
       if (info.url && info.url !== newLinkUrl) {
         setNewLinkUrl(info.url);
