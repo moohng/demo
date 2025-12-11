@@ -81,11 +81,11 @@ const App: React.FC = () => {
 
     const shadowHost = previewRef.current.querySelector('[data-shadow-host]');
     if (shadowHost && shadowHost.shadowRoot) {
-      markdownBody = shadowHost.shadowRoot.querySelector('.markdown-body');
+      markdownBody = shadowHost.shadowRoot.querySelector('#wemark');
     }
 
     if (!markdownBody) {
-      markdownBody = previewRef.current.querySelector('.markdown-body');
+      markdownBody = previewRef.current.querySelector('#wemark');
     }
 
     if (!markdownBody) return;
@@ -235,7 +235,7 @@ const App: React.FC = () => {
                 view.scrollDOM.addEventListener('scroll', () => syncScroll('editor'));
               }}
               style={{ fontSize: '1.125rem', fontFamily: 'JetBrains Mono, monospace' }}
-              className="h-full"
+              className="h-full max-w-full"
             />
           </div>
 

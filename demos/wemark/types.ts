@@ -5,7 +5,6 @@ export interface Theme {
   css: string;
   colors: {
     primary: string;
-    background: string;
     text: string;
   };
 }

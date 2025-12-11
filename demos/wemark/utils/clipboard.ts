@@ -13,9 +13,9 @@ export async function copyToWeChat(htmlContent: string, themeCss: string): Promi
     const fullCss = `${BASE_CSS}\n${themeCss}`;
 
     // 3. Wrap HTML
-    // We wrap the content in .markdown-body because our BASE_CSS uses selectors like 
-    // `.markdown-body h1`. Without this wrapper, juice won't match those selectors.
-    const wrappedHtml = `<section class="markdown-body">${htmlContent}</section>`;
+    // We wrap the content in #wemark because our BASE_CSS uses selectors like 
+    // `#wemark h1`. Without this wrapper, juice won't match those selectors.
+    const wrappedHtml = `<section id="wemark">${htmlContent}</section>`;
 
     // 4. Inline Styles with Juice
     // juice.inlineContent takes the HTML string and CSS string, and returns HTML with inline styles.
