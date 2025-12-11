@@ -1,0 +1,5 @@
+{
+  "name": "WeMark Pro",
+  "description": "A professional Markdown editor tailored for WeChat Official Accounts. Features real-time preview, mobile simulation, custom themes, and one-click rich text copying.",
+  "requestFramePermissions": []
+}
