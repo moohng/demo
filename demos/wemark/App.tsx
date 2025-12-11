@@ -1,14 +1,13 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef, UIEventHandler } from 'react';
+import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import Toolbar from './components/Toolbar';
 import Preview from './components/Preview';
 import CssEditorModal from './components/CssEditorModal';
 import { INITIAL_CONTENT, DEFAULT_THEMES, BASE_CSS } from './constants';
 import { Theme, ViewMode } from './types';
 import { copyToWeChat } from './utils/clipboard';
-import CodeMirror from '@uiw/react-codemirror';
-import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
-import { languages } from '@codemirror/language-data';
-import { githubLight, githubDark } from '@uiw/codemirror-theme-github';
+import { toJsxRuntime } from 'hast-util-to-jsx-runtime';
+import { createStarryNight, common } from '@wooorm/starry-night';
 
 // Access global Prism object loaded via script tag
 const Prism = (window as any).Prism;
@@ -65,6 +64,13 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('wemark-themes', JSON.stringify(themes));
   }, [themes]);
+
+  const [starryNight, setStarryNight] = useState(null);
+  useEffect(() => {
+    createStarryNight(common).then((starryNight) => {
+      setStarryNight(starryNight);
+    });
+  }, []);
 
 
   // --- Computed ---
@@ -155,12 +161,7 @@ const App: React.FC = () => {
       clearTimeout(scrollTimeoutRef.current);
     }
 
-    // CodeMirror 6 scroll element handling might differ structure-wise
-    // We target the .cm-scroller element inside the wrapper
-    const editor = source === 'editor'
-      ? editorWrapperRef.current?.querySelector('.cm-scroller') as HTMLElement
-      : editorWrapperRef.current; // Fallback or incorrect, but we need to find the right element
-
+    const editor = editorWrapperRef.current;
     const preview = previewRef.current;
 
     if (!editor || !preview) return;
@@ -174,7 +175,7 @@ const App: React.FC = () => {
       const percentage = preview.scrollTop / (preview.scrollHeight - preview.clientHeight);
       if (!isNaN(percentage)) {
         // Find the scroller to set scrollTop
-        const cmScroller = editorWrapperRef.current?.querySelector('.cm-scroller');
+        const cmScroller = editorWrapperRef.current;
         if (cmScroller) {
           cmScroller.scrollTop = percentage * (cmScroller.scrollHeight - cmScroller.clientHeight);
         }
@@ -188,7 +189,7 @@ const App: React.FC = () => {
 
   // Custom hook to attach scroll listener to CodeMirror's scroller
   // Because CodeMirror handles its own scrolling
-  const handleEditorScroll = useCallback((event: Event) => {
+  const handleEditorScroll = useCallback<UIEventHandler<HTMLDivElement>>((event) => {
     // This is a DOM event from the scrollable element
     syncScroll('editor');
   }, []);
@@ -212,31 +213,28 @@ const App: React.FC = () => {
         <div className="w-1/2 h-full border-r border-gray-200 flex flex-col bg-white relative group">
           <div
             ref={editorWrapperRef}
-            // For React Simpe Code editor, the wrapper was the scroll container. 
-            // For CodeMirror, the internal .cm-scroller is the scroll container.
-            // We'll attach the listener via the onCreateEditor prop or by effect if possible,
-            // But CodeMirror doesn't expose onScroll directly on the component same as div.
-            // Actually @uiw/react-codemirror creates a wrapper. 
-            // We can let CodeMirror handle its scroll and capture it.
-            // However, to simplify, we can wrap it or just use the basic setup.
-            // @uiw/react-codemirror exposes `onCreateEditor`.
-            className="flex-1 overflow-hidden w-full relative"
-            id="editor-container"
+            className="flex-1 overflow-auto w-full relative"
+            onScroll={handleEditorScroll}
           >
-            <CodeMirror
-              value={content}
-              height="100%"
-              // theme={githubLight}
-              extensions={[markdown({ base: markdownLanguage, codeLanguages: languages })]}
-              onChange={(val) => setContent(val)}
-              // Attach scroll listener to the underlying scroller
-              onCreateEditor={(view) => {
-                // view.scrollDOM is the scrollable element
-                view.scrollDOM.addEventListener('scroll', () => syncScroll('editor'));
-              }}
-              style={{ fontSize: '1.125rem', fontFamily: 'JetBrains Mono, monospace' }}
-              className="h-full max-w-full"
-            />
+            <div className="relative leading-[1.8] text-[16px] font-sans">
+              {starryNight && <div className="h-full whitespace-pre-wrap tracking-normal">
+                {toJsxRuntime(starryNight.highlight(content, starryNight.flagToScope('markdown')), {
+                  Fragment,
+                  jsx,
+                  jsxs,
+                })}
+                {/\n[ \t]*$/.test(content) ? <br /> : undefined}
+              </div>}
+              <textarea
+                spellCheck="false"
+                className="w-full h-full absolute top-0 left-0 bg-transparent text-transparent overflow-hidden border-none outline-none caret-black tracking-normal resize-none"
+                value={content}
+                rows={content.split('\n').length + 1}
+                onChange={function (event) {
+                  setContent(event.target.value)
+                }}
+              />
+            </div>
           </div>
 
           <div className="bg-white/95 backdrop-blur-sm border-t border-gray-100 px-4 py-2 text-xs text-gray-500 flex justify-between select-none shrink-0 z-10">

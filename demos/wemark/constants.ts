@@ -80,7 +80,6 @@ export const BASE_CSS = `#wemark {
 #wemark p {
   margin-bottom: 16px;
   text-align: justify;
-  color: #3f3f3f;
 }
 #wemark ul, #wemark ol {
   margin-bottom: 16px;

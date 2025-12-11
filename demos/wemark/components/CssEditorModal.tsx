@@ -100,7 +100,12 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
                       <input
                         type="color"
                         value={colors.primary}
-                        onChange={(e) => setColors({ ...colors, primary: e.target.value })}
+                        onChange={(e) => {
+                          const newColor = e.target.value;
+                          setColors({ ...colors, primary: newColor });
+                          // Regex to find --primary-color: #......;
+                          setCss(prev => prev.replace(/--primary-color:\s*#[a-fA-F0-9]{6}/gi, `--primary-color: ${newColor}`));
+                        }}
                         className="h-9 w-full cursor-pointer rounded border border-gray-300"
                       />
                     </div>
@@ -115,7 +120,12 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
                       <input
                         type="color"
                         value={colors.text}
-                        onChange={(e) => setColors({ ...colors, text: e.target.value })}
+                        onChange={(e) => {
+                          const newColor = e.target.value;
+                          setColors({ ...colors, text: newColor });
+                          // Regex to find --text-color: #......;
+                          setCss(prev => prev.replace(/--text-color:\s*#[a-fA-F0-9]{6}/gi, `--text-color: ${newColor}`));
+                        }}
                         className="h-9 w-full cursor-pointer rounded border border-gray-300"
                       />
                     </div>
