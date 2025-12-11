@@ -217,7 +217,7 @@ export const DEFAULT_THEMES: Theme[] = [
     colors: { primary: '#3370ff', background: '#ffffff', text: '#1f2329' },
     css: `
       /* Lark Blue Theme */
-      :root {
+      .markdown-body {
         --primary-color: #3370ff;
       }
       .markdown-body h1 {
@@ -254,7 +254,7 @@ export const DEFAULT_THEMES: Theme[] = [
     colors: { primary: '#07c160', background: '#f6fffa', text: '#333333' },
     css: `
       /* Fresh Green Theme */
-      :root {
+      .markdown-body {
         --primary-color: #07c160;
         --secondary-bg: #e7fbf0;
       }
@@ -311,7 +311,7 @@ export const DEFAULT_THEMES: Theme[] = [
     colors: { primary: '#000000', background: '#ffffff', text: '#24292e' },
     css: `
       /* Geek Black Theme */
-      :root {
+      .markdown-body {
         --primary-color: #24292e;
       }
       .markdown-body h1 {
@@ -368,7 +368,7 @@ export const DEFAULT_THEMES: Theme[] = [
     colors: { primary: '#8e44ad', background: '#fdfbf7', text: '#595959' },
     css: `
       /* Kyoto Purple Theme */
-      :root {
+      .markdown-body {
         --primary-color: #8e44ad;
         --accent-color: #e8d8f0;
       }

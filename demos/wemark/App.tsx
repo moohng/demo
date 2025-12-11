@@ -71,11 +71,6 @@ const App: React.FC = () => {
 
   const activeTheme = themes.find(t => t.id === activeThemeId) || themes[0];
 
-  // Dynamically combine Base CSS with Active Theme CSS
-  // This ensures base styles are always present but overrideable
-  const fullActiveCss = `${BASE_CSS}\n\n${activeTheme.css}`;
-
-
   // --- Handlers ---
 
   const handleCopy = useCallback(async () => {
@@ -97,14 +92,14 @@ const App: React.FC = () => {
 
     const htmlContent = markdownBody.innerHTML;
 
-    // Inject the Combined CSS (Base + Theme)
-    const success = await copyToWeChat(htmlContent, fullActiveCss);
+    // Inject the Theme CSS
+    const success = await copyToWeChat(htmlContent, activeTheme.css);
 
     if (success) {
       setIsCopied(true);
       setTimeout(() => setIsCopied(false), 2000);
     }
-  }, [fullActiveCss]);
+  }, [activeTheme]);
 
   // Theme Management
 
@@ -259,7 +254,7 @@ const App: React.FC = () => {
             theme={activeTheme}
             viewMode={viewMode}
             // Pass the FULL CSS to preview (Base + Theme)
-            customCSS={fullActiveCss}
+            baseCSS={BASE_CSS}
           />
         </div>
       </div>

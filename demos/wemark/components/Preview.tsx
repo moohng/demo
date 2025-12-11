@@ -8,7 +8,7 @@ interface PreviewProps {
   content: string;
   theme: Theme;
   viewMode: ViewMode;
-  customCSS?: string; // This now contains BASE_CSS + Theme CSS
+  baseCSS?: string;
   onScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
 }
 
@@ -30,7 +30,7 @@ const PreBlock = ({ children, ...props }: any) => {
   );
 };
 
-const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, viewMode, customCSS, onScroll }, ref) => {
+const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, viewMode, baseCSS: customCSS, onScroll }, ref) => {
   const shadowHostRef = useRef<HTMLDivElement>(null);
   const [shadowRoot, setShadowRoot] = useState<ShadowRoot | null>(null);
 
@@ -46,19 +46,6 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, view
       }
     }
   }, []);
-
-  // Trigger Prism Autoloader whenever content changes
-  useEffect(() => {
-    if (shadowRoot && (window as any).Prism) {
-      // Use setTimeout to allow React to render the new DOM inside Shadow Root
-      setTimeout(() => {
-        const container = shadowRoot.querySelector('.markdown-body');
-        if (container) {
-          (window as any).Prism.highlightAllUnder(container);
-        }
-      }, 10);
-    }
-  }, [content, theme, shadowRoot]);
 
   return (
     <div className="w-full h-full bg-gray-50 flex flex-col items-center relative overflow-hidden">
@@ -89,12 +76,10 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, view
           <div ref={shadowHostRef} data-shadow-host="true" style={{ display: 'block' }}>
             {shadowRoot && createPortal(
               <>
-                {/* Re-inject Prism CSS into Shadow DOM so it applies to the code blocks */}
-                <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-vs.min.css" rel="stylesheet" />
-
                 {/* Inject Combined Active Theme CSS (Base + Theme) */}
                 <style>
                   {customCSS}
+                  {theme.css}
                 </style>
 
                 <div className="markdown-body">
