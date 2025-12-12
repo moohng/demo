@@ -15,7 +15,7 @@ WeMark Pro 是一款专为微信公众号打造的 **Markdown 编辑器**。它�
 
 ### 1. 文本样式
 
-支持 **加粗**、*斜体*、~~删除线~~ 以及 \`行内代码\`。
+支持 **加粗**、*斜体*、~~删除线~~、[超链接](https://github.com) 以及 \`行内代码\`。
 
 > 这是一个引用块。
 > 好的设计是尽可能少的设计。
@@ -82,42 +82,46 @@ def fibonacci(n):
 // This is always injected first.
 export const BASE_CSS = `#wemark {
   /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; */
+  padding: 1.5em 0;
+  color: #252933;
+  font-size: 16px;
+  font-weight: 400;
+  text-align: left;
   line-height: 1.8;
   letter-spacing: 0.02em;
   word-wrap: break-word;
-  font-size: 15px;
-  padding: 24px 0;
-  color: #333;
-  text-align: left;
 }
 
 /* Headings */
 #wemark h1 {
-  margin-top: 48px;
-  margin-bottom: 40px;
+  margin-top: 2em;
+  margin-bottom: 1.2em;
   font-size: 1.8em;
-  letter-spacing: 0;
 }
 #wemark h2 {
-  margin-top: 40px;
-  margin-bottom: 24px;
+  margin-top: 1.8em;
+  margin-bottom: 1em;
   font-size: 1.5em;
 }
 #wemark h3 {
-  margin-top: 24px;
-  margin-bottom: 20px;
-  font-size: 1.2em;
+  margin-top: 1.6em;
+  margin-bottom: 1em;
+  font-size: 1.25em;
 }
 #wemark h4 {
-  margin-top: 16px;
-  margin-bottom: 16px;
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
 }
 #wemark p {
-  margin-top: 16px;
-  margin-bottom: 16px;
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
 }
 #wemark ul, #wemark ol {
-  padding-left: 24px;
+  margin: 0.25em 0 0.25em;
+  padding-left: 1.5em;
+}
+#wemark > ul, #wemark > ol {
+  margin: 1.25em 0 1.25em;
 }
 #wemark ul {
   list-style-type: disc;
@@ -126,20 +130,18 @@ export const BASE_CSS = `#wemark {
   list-style-type: decimal;
 }
 #wemark li {
-  margin-bottom: 6px;
+  margin-bottom: 0.25em;
 }
 
 /* Images */
 #wemark img {
   max-width: 100%;
-  display: block;
-  margin: 16px auto 24px;
 }
 
 /* Blockquotes */
 #wemark blockquote {
-  margin: 16px 0 24px;
-  padding: 8px 20px;
+  margin: 20px 0 20px;
+  padding: 1px 16px;
   background: #f7f7f7;
   color: #555;
   font-size: 0.95em;
@@ -148,7 +150,7 @@ export const BASE_CSS = `#wemark {
 
 /* Inline Code */
 #wemark :not(pre) > code {
-  font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
   background: #f6f8fa;
   padding: 3px 6px;
   border-radius: 4px;
@@ -159,7 +161,7 @@ export const BASE_CSS = `#wemark {
 
 /* Prism Overrides for WeChat */
 #wemark pre {
-  margin: 16px 0 24px;
+  margin: 20px 0 20px;
   padding: 16px;
   overflow-x: auto;
   background: #f6f8fa;
@@ -169,15 +171,15 @@ export const BASE_CSS = `#wemark {
   border-radius: 4px;
 }
 #wemark pre code {
-  font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
+  font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 /* Tables */
 #wemark table {
   width: 100%;
   border-collapse: collapse;
-  margin: 16px 0 24px;
-  font-size: 14px;
+  margin: 20px 0 20px;
+  font-size: 0.875em;
   table-layout: fixed;
 }
 #wemark th, #wemark td {
@@ -194,7 +196,7 @@ export const BASE_CSS = `#wemark {
 #wemark hr {
   height: 1px;
   padding: 0;
-  margin: 32px 0;
+  margin: 2em 0;
   background-color: #e1e4e8;
   border: 0;
 }
@@ -204,19 +206,15 @@ export const DEFAULT_THEMES: Theme[] = [
   {
     id: 'lark-blue',
     type: 'system',
-    name: 'Lark Blue',
+    name: '蓝湖',
     colors: { primary: '#3370ff', text: '#1f2329' },
-    css: `/* Lark Blue Theme */
+    css: `/* 蓝湖 */
 #wemark {
   --primary-color: #3370ff;
   --text-color: #1f2329;
 }
 #wemark {
   color: var(--text-color);
-}
-#wemark h1 {
-  border-bottom: 2px solid #eaeaea;
-  padding-bottom: 10px;
 }
 #wemark h2 {
   border-left: 4px solid var(--primary-color);
@@ -241,9 +239,9 @@ export const DEFAULT_THEMES: Theme[] = [
   {
     id: 'fresh-green',
     type: 'system',
-    name: 'Fresh Green',
+    name: '清新绿',
     colors: { primary: '#07c160', text: '#333333' },
-    css: `/* Fresh Green Theme */
+    css: `/* 清新绿 */
 #wemark {
   --primary-color: #07c160;
   --secondary-bg: #e7fbf0;
@@ -254,11 +252,15 @@ export const DEFAULT_THEMES: Theme[] = [
 }
 #wemark h1 {
   color: var(--primary-color);
-  font-size: 1.5em;
-  text-align: center;
-  position: relative;
 }
-#wemark h1::after {
+#wemark h2 {
+  margin-top: 2.2em;
+  margin-bottom: 1.8em;
+  color: var(--primary-color);
+  font-size: 1.4em;
+  text-align: center;
+}
+#wemark h2::after {
   content: '';
   display: block;
   margin: auto;
@@ -268,20 +270,8 @@ export const DEFAULT_THEMES: Theme[] = [
   border-radius: 2px;
   margin-top: 8px;
 }
-#wemark h2 {
-  margin: 40px auto 24px;
-  background: var(--secondary-bg);
-  color: var(--primary-color);
-  width: fit-content;
-  padding: 6px 16px;
-  border-radius: 6px;
-  font-size: 1.2em;
-  text-align: center;
-}
 #wemark h3 {
   color: var(--primary-color);
-  padding-left: 8px;
-  border-left: 3px solid var(--primary-color);
 }
 #wemark blockquote {
   background: var(--secondary-bg);
@@ -300,17 +290,20 @@ export const DEFAULT_THEMES: Theme[] = [
 #wemark hr {
   margin: 48px auto 32px;
   background: var(--primary-color);
-  width: 10%;
-  height: 2px;
+}
+#wemark a {
+  color: var(--primary-color);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--primary-color);
 }
 `
   },
   {
     id: 'geek-dark',
     type: 'system',
-    name: 'Geek Black',
+    name: '极客黑',
     colors: { primary: '#000000', text: '#24292e' },
-    css: `/* Geek Black Theme */
+    css: `/* 极客黑 */
 #wemark {
   --primary-color: #000000;
   --text-color: #24292e;
@@ -342,6 +335,8 @@ export const DEFAULT_THEMES: Theme[] = [
   background: #fff0f3;
 }
 #wemark blockquote {
+  padding-top: 16px;
+  padding-bottom: 4px;
   background: #2b3137;
   color: #e1e4e8;
   border-left: none;
@@ -359,18 +354,21 @@ export const DEFAULT_THEMES: Theme[] = [
   color: #586069;
 }
 #wemark strong {
-  color: #000;
-  text-emphasis: dot;
-  -webkit-text-emphasis: dot;
+  color: var(--primary-color);
+}
+#wemark a {
+  color: var(--primary-color);
+  text-decoration: none;
+  border-bottom: 1px dashed var(--primary-color);
 }
 `
   },
   {
     id: 'elegant-serif',
     type: 'system',
-    name: 'Kyoto Purple',
+    name: '京都紫',
     colors: { primary: '#8e44ad', text: '#595959' },
-    css: `/* Kyoto Purple Theme */
+    css: `/* 京都紫 */
 #wemark {
   --primary-color: #8e44ad;
   --accent-color: #e8d8f0;
@@ -378,8 +376,8 @@ export const DEFAULT_THEMES: Theme[] = [
 }
 #wemark {
   font-family: "Optima", "Songti SC", "Noto Serif SC", serif;
-  background-color: #fdfbf7;
   color: var(--text-color);
+  line-height: 2;
 }
 #wemark h1 {
   text-align: center;
@@ -409,17 +407,13 @@ export const DEFAULT_THEMES: Theme[] = [
   color: #333;
   margin-top: 30px;
 }
-#wemark p {
-  text-indent: 2em;
-  line-height: 2;
-}
 #wemark blockquote {
   border: none;
   background: transparent;
   color: var(--primary-color);
-  text-align: center;
+  text-align: right;
   font-style: italic;
-  padding: 20px 40px;
+  padding: 20px 30px;
 }
 #wemark strong {
   color: var(--primary-color);
@@ -428,6 +422,7 @@ export const DEFAULT_THEMES: Theme[] = [
 #wemark img {
   border: 10px solid #fff;
   box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  box-sizing: border-box;
 }
 `
   }
