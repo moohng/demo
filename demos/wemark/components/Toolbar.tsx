@@ -48,7 +48,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         {/* Theme Dropdown */}
         <div className="flex items-center space-x-2">
           <div className="relative group z-30">
-            <button className="w-40 flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg transition-colors">
+            <button className="w-40 h-9 flex items-center space-x-2 bg-gray-100 hover:bg-gray-200 px-3 rounded-lg transition-colors">
               <div
                 className="w-3 h-3 rounded-full border border-black/5"
                 style={{ backgroundColor: currentTheme?.colors.primary }}
@@ -95,9 +95,9 @@ const Toolbar: React.FC<ToolbarProps> = ({
                 currentTheme && onEditTheme(currentTheme.id);
               }
             }}
-            className={`p-2 rounded-lg transition-colors ${isEditorOpen
+            className={`h-9 w-9 flex items-center justify-center rounded-lg transition-colors ${isEditorOpen
               ? 'text-red-500 hover:bg-red-50 bg-red-50/50'
-              : 'text-gray-500 hover:text-blue-600 hover:bg-gray-100'
+              : 'text-gray-500 hover:text-blue-600 bg-gray-100'
               }`}
             title={isEditorOpen ? "关闭编辑器" : "编辑当前主题"}
           >
@@ -111,14 +111,14 @@ const Toolbar: React.FC<ToolbarProps> = ({
         <div className="flex items-center bg-gray-100 p-1 rounded-lg">
           <button
             onClick={() => onViewModeChange('desktop')}
-            className={`p-2 rounded-md transition-all ${viewMode === 'desktop' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`p-1.5 rounded-md transition-all ${viewMode === 'desktop' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
             title="Desktop View"
           >
             <Monitor size={18} />
           </button>
           <button
             onClick={() => onViewModeChange('mobile')}
-            className={`p-2 rounded-md transition-all ${viewMode === 'mobile' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`p-1.5 rounded-md transition-all ${viewMode === 'mobile' ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
             title="Mobile View"
           >
             <Smartphone size={18} />
@@ -129,7 +129,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
         <button
           onClick={onCopy}
           className={`
-            flex items-center space-x-2 px-5 py-2.5 rounded-lg font-semibold transition-all shadow-sm
+            h-9 flex items-center space-x-2 px-4 rounded-lg font-semibold transition-all shadow-sm
             ${isCopied 
               ? 'bg-green-50 text-green-700 border border-green-200' 
               : 'bg-gray-900 text-white hover:bg-gray-800 active:scale-95'}

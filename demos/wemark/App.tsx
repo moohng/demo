@@ -237,8 +237,8 @@ const App: React.FC = () => {
               className="flex-1 overflow-auto w-full relative"
               onScroll={handleEditorScroll}
             >
-              <div className="relative leading-[1.8] text-[16px] font-sans">
-                {starryNight && <div className="h-full whitespace-pre-wrap tracking-normal">
+              <div className="relative min-h-full">
+                {starryNight && <div className="h-full whitespace-pre-wrap tracking-normal p-4 pb-[300px] text-[16px] font-sans leading-[1.8] break-words [&_*]:!font-normal">
                   {toJsxRuntime(starryNight.highlight(content, starryNight.flagToScope('markdown')), {
                     Fragment,
                     jsx,
@@ -248,7 +248,7 @@ const App: React.FC = () => {
                 </div>}
                 <textarea
                   spellCheck="false"
-                  className="w-full h-full absolute top-0 left-0 bg-transparent text-transparent overflow-hidden border-none outline-none caret-black tracking-normal resize-none"
+                  className="w-full h-full absolute top-0 left-0 bg-transparent text-transparent overflow-hidden border-none outline-none caret-black tracking-normal resize-none p-4 text-[16px] font-sans leading-[1.8]"
                   value={content}
                   rows={content.split('\n').length + 1}
                   onChange={function (event) {
@@ -259,8 +259,12 @@ const App: React.FC = () => {
             </div>
 
             <div className="bg-white/95 backdrop-blur-sm border-t border-gray-100 px-4 py-2 text-xs text-gray-500 flex justify-between select-none shrink-0 z-10">
-              <span className="font-medium text-gray-400">Markdown Input</span>
-              <span className="font-mono">{content.length} chars</span>
+              <span className="font-medium text-gray-400">Markdown</span>
+              <div className="flex space-x-4 font-mono">
+                <span>{content.split('\n').length} 行</span>
+                <span>{(content.match(/[\u4e00-\u9fa5]|[a-zA-Z0-9]+/g) || []).length} 字</span>
+                <span>{content.length} 字符</span>
+              </div>
             </div>
           </div>
 
