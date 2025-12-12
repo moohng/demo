@@ -43,46 +43,42 @@ function sayHello() {
 // Shared styles for all themes. 
 // This is always injected first.
 export const BASE_CSS = `#wemark {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; */
   line-height: 1.8;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.02em;
   word-wrap: break-word;
   font-size: 15px;
-  padding-bottom: 20px;
+  padding: 24px 0;
   color: #333;
   text-align: left;
 }
 
 /* Headings */
 #wemark h1 {
-  font-size: 1.6em;
-  font-weight: bold;
-  margin-top: 40px;
-  margin-bottom: 24px;
-  line-height: 1.4;
-  text-align: center;
+  margin-top: 48px;
+  margin-bottom: 40px;
+  font-size: 1.8em;
+  letter-spacing: 0;
 }
 #wemark h2 {
-  font-size: 1.4em;
-  font-weight: bold;
-  margin-top: 32px;
-  margin-bottom: 20px;
-  line-height: 1.4;
+  margin-top: 40px;
+  margin-bottom: 24px;
+  font-size: 1.5em;
 }
 #wemark h3 {
-  font-size: 1.2em;
-  font-weight: bold;
   margin-top: 24px;
+  margin-bottom: 20px;
+  font-size: 1.2em;
+}
+#wemark h4 {
+  margin-top: 16px;
   margin-bottom: 16px;
 }
-
-/* Paragraphs & Lists */
 #wemark p {
+  margin-top: 16px;
   margin-bottom: 16px;
-  text-align: justify;
 }
 #wemark ul, #wemark ol {
-  margin-bottom: 16px;
   padding-left: 24px;
 }
 #wemark ul {
@@ -92,78 +88,30 @@ export const BASE_CSS = `#wemark {
   list-style-type: decimal;
 }
 #wemark li {
-  margin-bottom: 8px;
-  line-height: 1.7;
+  margin-bottom: 6px;
 }
 
 /* Images */
 #wemark img {
   max-width: 100%;
-  border-radius: 8px;
   display: block;
-  margin: 24px auto;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin: 16px auto 24px;
 }
 
 /* Blockquotes */
 #wemark blockquote {
-  margin: 24px 0;
-  padding: 16px 20px;
+  margin: 16px 0 24px;
+  padding: 8px 20px;
   background: #f7f7f7;
-  border-radius: 6px;
   color: #555;
   font-size: 0.95em;
   border-left: 4px solid #ddd;
 }
 
-/* Code Blocks - DOM-based Mac Window */
-.mac-window {
-  background: #f6f8fa;
-  border-radius: 8px;
-  margin: 24px 0;
-  overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.05);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.mac-header {
-  display: flex;
-  align-items: center;
-  padding: 10px 14px;
-  background: #f1f3f5;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-}
-
-.mac-dots {
-  display: flex;
-  gap: 6px;
-}
-
-.mac-dot {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-}
-
-.mac-dot.red { background-color: #ff5f56; }
-.mac-dot.yellow { background-color: #ffbd2e; }
-.mac-dot.green { background-color: #27c93f; }
-
-#wemark pre {
-  margin: 0;
-  padding: 16px;
-  overflow-x: auto;
-  background: transparent;
-  font-size: 13px;
-  line-height: 1.6;
-  border: none;
-  border-radius: 0;
-}
-
 /* Inline Code */
 #wemark :not(pre) > code {
   font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
-  background: rgba(27,31,35,0.05);
+  background: #f6f8fa;
   padding: 3px 6px;
   border-radius: 4px;
   font-size: 0.9em;
@@ -172,18 +120,25 @@ export const BASE_CSS = `#wemark {
 }
 
 /* Prism Overrides for WeChat */
+#wemark pre {
+  margin: 16px 0 24px;
+  padding: 16px;
+  overflow-x: auto;
+  background: #f6f8fa;
+  font-size: 13px;
+  line-height: 1.6;
+  border: none;
+  border-radius: 4px;
+}
 #wemark pre code {
-  font-family: 'JetBrains Mono', Consolas, Monaco, monospace !important;
-  text-shadow: none !important;
-  background: transparent !important;
-  color: inherit;
+  font-family: 'JetBrains Mono', Consolas, Monaco, monospace;
 }
 
 /* Tables */
 #wemark table {
   width: 100%;
   border-collapse: collapse;
-  margin: 24px 0;
+  margin: 16px 0 24px;
   font-size: 14px;
   table-layout: fixed;
 }
@@ -224,7 +179,6 @@ export const DEFAULT_THEMES: Theme[] = [
 #wemark h1 {
   border-bottom: 2px solid #eaeaea;
   padding-bottom: 10px;
-  text-align: left;
 }
 #wemark h2 {
   border-left: 4px solid var(--primary-color);
@@ -261,15 +215,15 @@ export const DEFAULT_THEMES: Theme[] = [
   color: var(--text-color);
 }
 #wemark h1 {
-  display: inline-block;
   color: var(--primary-color);
   font-size: 1.5em;
+  text-align: center;
   position: relative;
-  margin-bottom: 30px;
 }
 #wemark h1::after {
   content: '';
   display: block;
+  margin: auto;
   width: 40px;
   height: 4px;
   background: var(--primary-color);
@@ -277,13 +231,14 @@ export const DEFAULT_THEMES: Theme[] = [
   margin-top: 8px;
 }
 #wemark h2 {
+  margin: 40px auto 24px;
   background: var(--secondary-bg);
   color: var(--primary-color);
-  display: inline-block;
+  width: fit-content;
   padding: 6px 16px;
   border-radius: 6px;
   font-size: 1.2em;
-  border: none;
+  text-align: center;
 }
 #wemark h3 {
   color: var(--primary-color);
@@ -291,18 +246,24 @@ export const DEFAULT_THEMES: Theme[] = [
   border-left: 3px solid var(--primary-color);
 }
 #wemark blockquote {
-  background: #fff;
-  border: 1px solid var(--secondary-bg);
+  background: var(--secondary-bg);
   border-left: 4px solid var(--primary-color);
   box-shadow: 0 2px 8px rgba(7, 193, 96, 0.05);
 }
 #wemark strong {
+  margin: 0 2px;
   color: var(--primary-color);
   background: linear-gradient(transparent 60%, rgba(7, 193, 96, 0.2) 0);
 }
 #wemark img {
-  border-radius: 12px;
-  border: 4px solid var(--secondary-bg);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(7, 193, 96, 0.05);
+}
+#wemark hr {
+  margin: 48px auto 32px;
+  background: var(--primary-color);
+  width: 10%;
+  height: 2px;
 }
 `
   },

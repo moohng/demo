@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useRef, UIEventHandler } from 'react';
+import React, { useState, useCallback, useEffect, useRef, UIEventHandler, useMemo } from 'react';
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import Toolbar from './components/Toolbar';
 import Preview from './components/Preview';
@@ -8,9 +8,6 @@ import { Theme, ViewMode } from './types';
 import { copyToWeChat } from './utils/clipboard';
 import { toJsxRuntime } from 'hast-util-to-jsx-runtime';
 import { createStarryNight, common } from '@wooorm/starry-night';
-
-// Access global Prism object loaded via script tag
-const Prism = (window as any).Prism;
 
 const App: React.FC = () => {
   // --- State ---
@@ -69,6 +66,10 @@ const App: React.FC = () => {
     return () => clearTimeout(timeout);
   }, [content]);
 
+  useEffect(() => {
+    setThemes(DEFAULT_THEMES);
+  }, [DEFAULT_THEMES]);
+
   // Save themes
   useEffect(() => {
     localStorage.setItem('wemark-themes', JSON.stringify(themes));
@@ -76,6 +77,7 @@ const App: React.FC = () => {
 
   const [starryNight, setStarryNight] = useState(null);
   useEffect(() => {
+    console.log('createStarryNight');
     createStarryNight(common).then((starryNight) => {
       setStarryNight(starryNight);
     });
@@ -90,8 +92,7 @@ const App: React.FC = () => {
   }, [activeThemeId, isCssModalOpen, editingThemeId]);
 
   // --- Computed ---
-
-  const activeTheme = themes.find(t => t.id === activeThemeId) || themes[0];
+  const activeTheme = useMemo(() => themes.find(t => t.id === activeThemeId) || themes[0], [themes, activeThemeId]);
 
   // --- Handlers ---
 
@@ -209,6 +210,8 @@ const App: React.FC = () => {
     // This is a DOM event from the scrollable element
     syncScroll('editor');
   }, []);
+
+  console.log('================');
 
   return (
     <div className="h-screen flex flex-col bg-white">

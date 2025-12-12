@@ -1,7 +1,11 @@
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import ReactMarkdown from 'react-markdown';
+import { MarkdownHooks } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
+import rehypeSlug from 'rehype-slug';
+import rehypeStarryNight from 'rehype-starry-night';
+// import githubMarkdownCss from 'github-markdown-css/github-markdown.css';
 import { Theme, ViewMode } from '../types';
 
 interface PreviewProps {
@@ -12,27 +16,12 @@ interface PreviewProps {
   onScroll?: (e: React.UIEvent<HTMLDivElement>) => void;
 }
 
-// Custom component to render Code Blocks with Mac-style window using Pure CSS classes
-const PreBlock = ({ children, ...props }: any) => {
-  return (
-    <div className="mac-window">
-      <div className="mac-header">
-        <div className="mac-dots">
-          <div className="mac-dot red"></div>
-          <div className="mac-dot yellow"></div>
-          <div className="mac-dot green"></div>
-        </div>
-      </div>
-      <pre {...props}>
-        {children}
-      </pre>
-    </div>
-  );
-};
-
-const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, viewMode, baseCSS: customCSS, onScroll }, ref) => {
+const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, viewMode, baseCSS, onScroll }, ref) => {
   const shadowHostRef = useRef<HTMLDivElement>(null);
   const [shadowRoot, setShadowRoot] = useState<ShadowRoot | null>(null);
+
+  const remarkPlugins = [remarkGfm];
+  const rehypePlugins = [rehypeRaw, rehypeSlug, rehypeStarryNight];
 
   // Initialize Shadow DOM for strict style isolation
   useEffect(() => {
@@ -93,19 +82,18 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, view
               <>
                 {/* Inject Combined Active Theme CSS (Base + Theme) */}
                 <style>
-                  {customCSS}
+                  {baseCSS}
                   {theme.css}
                 </style>
+                {/* <link href="//esm.sh/github-markdown-css@5/github-markdown-light.css" rel="stylesheet" /> */}
 
-                <div id="wemark">
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    components={{
-                      pre: PreBlock
-                    }}
+                <div id="wemark" className="markdown-body">
+                  <MarkdownHooks
+                    remarkPlugins={remarkPlugins}
+                    rehypePlugins={rehypePlugins}
                   >
                     {content}
-                  </ReactMarkdown>
+                  </MarkdownHooks>
                 </div>
               </>,
               shadowRoot

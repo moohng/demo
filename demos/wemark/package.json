@@ -15,9 +15,13 @@
     "@uiw/codemirror-theme-github": "4.25.3",
     "@uiw/react-codemirror": "4.25.3",
     "@wooorm/starry-night": "3.8.0",
+    "github-markdown-css": "5.8.1",
     "juice": "11.0.3",
     "react-markdown": "^10.1.0",
     "remark-gfm": "^4.0.1",
-    "hast-util-to-jsx-runtime": "2.3.6"
+    "hast-util-to-jsx-runtime": "2.3.6",
+    "rehype-raw": "7.0.0",
+    "rehype-slug": "6.0.0",
+    "rehype-starry-night": "2.2.0"
   }
 }
