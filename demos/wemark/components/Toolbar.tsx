@@ -4,7 +4,6 @@ import {
   Monitor, 
   Copy, 
   Check,
-  Plus,
   Palette,
   X
 } from 'lucide-react';
@@ -18,7 +17,6 @@ interface ToolbarProps {
   onViewModeChange: (mode: ViewMode) => void;
   onCopy: () => void;
   isCopied: boolean;
-  onAddTheme: () => void;
   onEditTheme: (themeId: string) => void;
   isEditorOpen: boolean;
   onCloseEditor: () => void;
@@ -32,7 +30,6 @@ const Toolbar: React.FC<ToolbarProps> = ({
   onViewModeChange,
   onCopy,
   isCopied,
-  onAddTheme,
   onEditTheme,
   isEditorOpen,
   onCloseEditor
@@ -85,15 +82,7 @@ const Toolbar: React.FC<ToolbarProps> = ({
                   );
                 })}
 
-                <div className="h-px bg-gray-100 my-1"></div>
 
-                <button
-                  onClick={onAddTheme}
-                  className="w-full text-left px-3 py-2 rounded-lg text-sm font-medium text-gray-500 hover:text-gray-900 hover:bg-gray-50 transition-colors flex items-center space-x-2"
-                >
-                  <Plus size={14} />
-                  <span>创建新主题</span>
-                </button>
               </div>
             </div>
           </div>

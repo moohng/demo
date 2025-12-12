@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, Save, RotateCcw, Trash2, Eye, Copy, Palette } from 'lucide-react';
 import CodeMirror from '@uiw/react-codemirror';
 import { css as langcss, cssLanguage } from '@codemirror/lang-css';
@@ -28,10 +28,13 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
   const [css, setCss] = useState('');
   const [colors, setColors] = useState({ primary: '#000000', text: '#333333' });
   const [showResetConfirm, setShowResetConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const previewTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Initialize form when opening
   useEffect(() => {
     setShowResetConfirm(false); // Reset confirmation state
+    setShowDeleteConfirm(false); // Reset delete confirmation state
     if (isOpen && theme) {
       setName(theme.name);
       setCss(theme.css);
@@ -44,30 +47,59 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
     }
   }, [isOpen, theme]);
 
-  // Handle CSS variable updates based on color changes
-  const updateColor = (type: 'primary' | 'text', value: string) => {
-    const newColors = { ...colors, [type]: value };
-    setColors(newColors);
-
-    // Regex Update
-    let newCss = css;
-    if (type === 'primary') {
-      newCss = newCss.replace(/--primary-color:\s*#[a-fA-F0-9]{6}/gi, `--primary-color: ${value}`);
-    } else {
-      newCss = newCss.replace(/--text-color:\s*#[a-fA-F0-9]{6}/gi, `--text-color: ${value}`);
-    }
-    setCss(newCss);
-
-    // Auto-preview on color change for immediate feedback
-    // Construct temp theme
-    const tempTheme: Theme = {
-      id: 'preview-temp',
-      type: 'custom',
-      name,
-      css: newCss,
-      colors: newColors
+  // Cleanup timeout
+  useEffect(() => {
+    return () => {
+      if (previewTimeoutRef.current) {
+        clearTimeout(previewTimeoutRef.current);
+      }
     };
-    onPreview(tempTheme);
+  }, []);
+
+  // Handle CSS variable updates based on color changes
+  const updateTheme = (type: 'primary' | 'text' | 'css', value: string) => {
+    if (type === 'css') {
+      setCss(value);
+    }
+
+    if (previewTimeoutRef.current) {
+      clearTimeout(previewTimeoutRef.current);
+    }
+    previewTimeoutRef.current = setTimeout(() => {
+      if (type === 'css') {
+        onPreview({
+          id: 'preview-temp',
+          type: 'custom',
+          name,
+          css: value,
+          colors
+        });
+        return;
+      }
+
+      const newColors = { ...colors, [type]: value };
+      setColors(newColors);
+
+      // Regex Update
+      let newCss = css;
+      if (type === 'primary') {
+        newCss = newCss.replace(/--primary-color:\s*.*;/gi, `--primary-color: ${value};`);
+      } else {
+        newCss = newCss.replace(/--text-color:\s*.*;/gi, `--text-color: ${value};`);
+      }
+      setCss(newCss);
+
+      // Auto-preview on color change for immediate feedback
+      // Construct temp theme
+      const tempTheme: Theme = {
+        id: 'preview-temp',
+        type: 'custom',
+        name,
+        css: newCss,
+        colors: newColors,
+      };
+      onPreview(tempTheme);
+    }, 100);
   };
 
   const handlePreview = () => {
@@ -90,7 +122,6 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
       colors
     };
     onSave(newTheme);
-    onClose();
   };
 
   const handleSaveAs = () => {
@@ -102,16 +133,15 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
       colors
     };
     onSave(newTheme);
-    onClose();
   };
 
   const isSystemTheme = theme?.type === 'system';
 
   return (
-    <div 
+    <div
       className={`h-full bg-white border-l border-gray-200 transition-all duration-300 ease-in-out overflow-hidden flex flex-col shadow-xl z-10 shrink-0 ${isOpen ? 'w-[450px]' : 'w-0 border-l-0'}`}
     >
-      <div className="w-[450px] flex flex-col h-full"> 
+      <div className="w-[450px] flex flex-col h-full">
 
 
 
@@ -135,29 +165,35 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
             <div className="flex items-center space-x-6">
 
               {/* Primary Picker */}
-              <div className="flex items-center space-x-2 bg-gray-50 px-2 py-1 rounded border border-gray-100">
-                <div className="relative w-4 h-4 rounded-full overflow-hidden border border-black/10 shadow-sm">
-                  <input
-                    type="color"
-                    value={colors.primary}
-                    onChange={(e) => updateColor('primary', e.target.value)}
-                    className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] p-0 border-0 cursor-pointer"
-                  />
-                </div>
-                <span className="text-xs text-gray-600 font-mono">{colors.primary}</span>
-                </div>
+              <div className="relative flex items-center space-x-2 bg-gray-50 hover:bg-gray-100 px-2 py-1.5 rounded border border-gray-100 cursor-pointer transition-colors group">
+                <div
+                  className="w-4 h-4 rounded-full border border-black/10 shadow-sm"
+                  style={{ backgroundColor: colors.primary }}
+                />
+                <span className="text-xs text-gray-600 font-mono group-hover:text-gray-900 transition-colors">{colors.primary}</span>
+                <input
+                  title="主色调"
+                  type="color"
+                  value={colors.primary}
+                  onChange={(e) => updateTheme('primary', e.target.value)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+              </div>
 
               {/* Text Picker */}
-              <div className="flex items-center space-x-2 bg-gray-50 px-2 py-1 rounded border border-gray-100">
-                <div className="relative w-4 h-4 rounded-full overflow-hidden border border-black/10 shadow-sm">
-                  <input
-                    type="color"
-                    value={colors.text}
-                    onChange={(e) => updateColor('text', e.target.value)}
-                    className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] p-0 border-0 cursor-pointer"
-                  />
-                </div>
-                <span className="text-xs text-gray-600 font-mono">{colors.text}</span>
+              <div className="relative flex items-center space-x-2 bg-gray-50 hover:bg-gray-100 px-2 py-1.5 rounded border border-gray-100 cursor-pointer transition-colors group">
+                <div
+                  className="w-4 h-4 rounded-full border border-black/10 shadow-sm"
+                  style={{ backgroundColor: colors.text }}
+                />
+                <span className="text-xs text-gray-600 font-mono group-hover:text-gray-900 transition-colors">{colors.text}</span>
+                <input
+                  title="文本色"
+                  type="color"
+                  value={colors.text}
+                  onChange={(e) => updateTheme('text', e.target.value)}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
               </div>
 
             </div>
@@ -171,13 +207,13 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
             <span>#wemark</span>
           </div>
           <div className="flex-1 pt-8 relative overflow-hidden"> {/* pt-8 for header space */}
-              <CodeMirror
-                height="100%"
-                value={css}
-                onChange={(value) => setCss(value)}
-                className="absolute inset-0 text-sm"
-                spellCheck={false}
-                extensions={[langcss()]}
+            <CodeMirror
+              height="100%"
+              value={css}
+              onChange={(value) => updateTheme('css', value)}
+              className="absolute inset-0 text-sm"
+              spellCheck={false}
+              extensions={[langcss()]}
               style={{ fontFamily: 'JetBrains Mono, monospace' }}
             />
           </div>
@@ -187,18 +223,34 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
         <div className="px-5 py-3 border-t border-gray-200 bg-gray-50 flex justify-between items-center shrink-0">
           <div className="flex space-x-2">
             {theme && !isSystemTheme && (
-              <button
-                onClick={() => {
-                  if (confirm('确认删除该主题？')) {
-                    onDelete(theme.id);
-                    onClose();
-                  }
-                }}
-                className="p-1.5 text-red-500 hover:bg-red-100 rounded transition-colors"
-                title="删除主题"
-              >
-                <Trash2 size={16} />
-              </button>
+              <div className="relative">
+                {showDeleteConfirm ? (
+                  <div className="flex items-center space-x-1 bg-red-50 rounded-lg hover:bg-red-100 transition-colors p-1 animate-in fade-in slide-in-from-left-2 duration-200">
+                    <button
+                      onClick={() => {
+                        onDelete(theme.id);
+                      }}
+                      className="p-1 px-2 text-xs text-red-600 font-medium"
+                    >
+                      删除?
+                    </button>
+                    <button
+                      onClick={() => setShowDeleteConfirm(false)}
+                      className="p-1 text-gray-400 hover:text-gray-600 rounded transition-colors"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="p-1.5 text-red-500 hover:bg-red-50 rounded transition-colors"
+                    title="删除主题"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                )}
+              </div>
             )}
             {theme && isSystemTheme && onReset && (
               <div className="relative">

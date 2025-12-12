@@ -125,10 +125,7 @@ const App: React.FC = () => {
 
   // Theme Management
 
-  const handleAddTheme = () => {
-    setEditingThemeId(null); // Null means creating new
-    setIsCssModalOpen(true);
-  };
+
 
   const handleEditTheme = (id: string) => {
     setEditingThemeId(id);
@@ -224,7 +221,6 @@ const App: React.FC = () => {
         onViewModeChange={setViewMode}
         onCopy={handleCopy}
         isCopied={isCopied}
-        onAddTheme={handleAddTheme}
         onEditTheme={handleEditTheme}
         isEditorOpen={isCssModalOpen}
         onCloseEditor={() => setIsCssModalOpen(false)}
