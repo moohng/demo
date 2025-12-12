@@ -1,43 +1,81 @@
 import { Theme } from './types';
 
-export const INITIAL_CONTENT = `# Welcome to WeMark Pro
+export const INITIAL_CONTENT = `# 欢迎使用 WeMark Pro
 
-This is a **Markdown** editor designed for WeChat Official Accounts.
+WeMark Pro 是一款专为微信公众号打造的 **Markdown 编辑器**。它能将 Markdown 转换为完美的公众号格式，让排版变得简单而优雅。
 
-## Features
+## 主要特性
 
-1.  **Real-time Preview**: Type on the left, see changes on the right.
-2.  **Mobile Simulator**: Toggle the phone icon to see how it looks on a narrow screen.
-3.  **Theming**: Switch between professional themes inspired by popular tools.
-4.  **Code Highlighting**: Professional Mac-style window effects for code blocks.
+1.  **所见即所得**：左侧编辑，右侧实时预览，支持手机端模拟。
+2.  **一键复制**：完美适配公众号后台，格式不丢失。
+3.  **多主题支持**：内置多款精心设计的主题，满足不同风格需求。
+4.  **专业代码高亮**：支持多种编程语言，Mac 风格代码块，提升技术文章质感。
 
-## Code Example
+## 排版演示
 
-\`\`\`javascript
-// Mac-style code blocks are supported by default
-function sayHello() {
-  const msg = "Hello, WeChat!";
-  console.log(msg);
-}
-\`\`\`
+### 1. 文本样式
 
-## Blockquotes
+支持 **加粗**、*斜体*、~~删除线~~ 以及 \`行内代码\`。
 
-> Good design is as little design as possible.
+> 这是一个引用块。
+> 好的设计是尽可能少的设计。
 > — Dieter Rams
 
-## Tables
+### 2. 列表
 
-| Feature | Support |
-| :--- | :--- |
-| Mobile View | ✅ Yes |
-| Custom CSS | ✅ Yes |
-| Syntax Highlight | ✅ Yes |
+**无序列表**：
+*   项目 A
+*   项目 B
+    *   子项目 B1
+    *   子项目 B2
 
-## Images
+**有序列表**：
+1.  第一步：编写 Markdown
+2.  第二步：选择喜欢的主题
+3.  第三步：点击复制按钮
 
-![Placeholder Image](https://images.unsplash.com/photo-1506744038136-46273834b3fb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80)
-*Caption: Beautiful scenery*
+### 3. 代码片断
+
+支持主流编程语言语法高亮：
+
+\`\`\`javascript
+// JavaScript 示例
+function sayHello(name) {
+  console.log(\`Hello, \${name}!\`);
+}
+
+sayHello('WeChat');
+\`\`\`
+
+\`\`\`python
+# Python 示例
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+\`\`\`
+
+### 4. 表格支持
+
+| 功能特性 | 免费版 | WeMark Pro |
+| :--- | :---: | :---: |
+| 实时预览 | ✅ | ✅ |
+| 多款主题 | ❌ | ✅ |
+| 导出 HTML | ✅ | ✅ |
+| 专属客服 | ❌ | ✅ |
+
+### 5. 图片展示
+
+![示例图片](https://images.unsplash.com/photo-1493246507139-91e8fad9978e?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80)
+*配图文字：山川湖海，保持热爱*
+
+---
+
+## 关于公众号排版
+
+公众号排版的核心在于**阅读体验**。WeMark Pro 通过精心调整的字间距、行高和配色，让你的文章在手机屏幕上呈现最佳的阅读效果。
+
+如果您喜欢这个工具，欢迎分享给更多的朋友！
 `;
 
 // Shared styles for all themes. 

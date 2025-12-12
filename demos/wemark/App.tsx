@@ -1,13 +1,15 @@
 import React, { useState, useCallback, useEffect, useRef, UIEventHandler, useMemo } from 'react';
-import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 import Toolbar from './components/Toolbar';
 import Preview from './components/Preview';
+import CodeMirror, { EditorView } from '@uiw/react-codemirror';
+import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
+import { languages } from '@codemirror/language-data';
+import { vscodeLight } from '@uiw/codemirror-theme-vscode';
 import CssEditorModal from './components/CssEditorModal';
 import { INITIAL_CONTENT, DEFAULT_THEMES, BASE_CSS } from './constants';
 import { Theme, ViewMode } from './types';
 import { copyToWeChat } from './utils/clipboard';
-import { toJsxRuntime } from 'hast-util-to-jsx-runtime';
-import { createStarryNight, common } from '@wooorm/starry-night';
+
 
 const App: React.FC = () => {
   // --- State ---
@@ -15,6 +17,7 @@ const App: React.FC = () => {
   const [themes, setThemes] = useState<Theme[]>(DEFAULT_THEMES);
   const [activeThemeId, setActiveThemeId] = useState<string>(DEFAULT_THEMES[0].id);
   const [viewMode, setViewMode] = useState<ViewMode>('mobile');
+  const [isReady, setIsReady] = useState(false);
 
   // UI State
   const [isCopied, setIsCopied] = useState(false);
@@ -56,6 +59,7 @@ const App: React.FC = () => {
         console.warn('Failed to parse saved themes', e);
       }
     }
+    setIsReady(true);
   }, []);
 
   // Save content
@@ -74,15 +78,6 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('wemark-themes', JSON.stringify(themes));
   }, [themes]);
-
-  const [starryNight, setStarryNight] = useState(null);
-  useEffect(() => {
-    console.log('createStarryNight');
-    createStarryNight(common).then((starryNight) => {
-      setStarryNight(starryNight);
-    });
-  }, []);
-
 
   // Sync editing theme with active theme if modal is open (and not creating new)
   useEffect(() => {
@@ -125,8 +120,6 @@ const App: React.FC = () => {
   }, [activeTheme]);
 
   // Theme Management
-
-
 
   const handleEditTheme = (id: string) => {
     setEditingThemeId(id);
@@ -178,23 +171,28 @@ const App: React.FC = () => {
       clearTimeout(scrollTimeoutRef.current);
     }
 
-    const editor = editorWrapperRef.current;
+    const editorRef = editorWrapperRef.current as any;
+    const editor = editorRef?.view?.scrollDOM;
     const preview = previewRef.current;
 
     if (!editor || !preview) return;
 
+    // Account for the 50vh padding added to the editor
+    // const padding = window.innerHeight * 0.3;
+
     if (source === 'editor') {
-      const percentage = editor.scrollTop / (editor.scrollHeight - editor.clientHeight);
+      const effectiveScrollRange = editor.scrollHeight - editor.clientHeight;
+      const percentage = effectiveScrollRange > 0 ? editor.scrollTop / effectiveScrollRange : 0;
+
       if (!isNaN(percentage)) {
         preview.scrollTop = percentage * (preview.scrollHeight - preview.clientHeight);
       }
     } else {
       const percentage = preview.scrollTop / (preview.scrollHeight - preview.clientHeight);
       if (!isNaN(percentage)) {
-        // Find the scroller to set scrollTop
-        const cmScroller = editorWrapperRef.current;
-        if (cmScroller) {
-          cmScroller.scrollTop = percentage * (cmScroller.scrollHeight - cmScroller.clientHeight);
+        const effectiveScrollRange = editor.scrollHeight - editor.clientHeight;
+        if (effectiveScrollRange > 0) {
+          editor.scrollTop = percentage * effectiveScrollRange;
         }
       }
     }
@@ -213,9 +211,20 @@ const App: React.FC = () => {
 
   console.log('================');
 
+  /* eslint-disable react-hooks/exhaustive-deps */
+  const extensions = useMemo(() => [
+    markdown({ base: markdownLanguage, codeLanguages: languages }),
+    EditorView.lineWrapping,
+    EditorView.domEventHandlers({ scroll: () => syncScroll('editor') }),
+    EditorView.theme({
+      '.cm-content': { paddingBottom: '30vh' },
+      '&.cm-editor': { height: '100%' }
+    })
+  ], []);
+
   return (
     <div className="h-screen flex flex-col bg-white">
-      {/* ... (keep Toolbar) */}
+      {/* Toolbar */}
       <Toolbar
         themes={themes}
         currentThemeId={activeThemeId}
@@ -230,35 +239,25 @@ const App: React.FC = () => {
       />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Main Content Wrapper (Flexible) */}
         <div className="flex-1 flex min-w-0 relative">
-          {/* ... (keep Editor Pane) */}
+          {/* Editor */}
           <div className="w-1/2 h-full border-r border-gray-200 flex flex-col bg-white relative group">
-            {/* ... (keep existing editor code) ... */}
-            <div
-              ref={editorWrapperRef}
-              className="flex-1 overflow-auto w-full relative"
-              onScroll={handleEditorScroll}
-            >
-              <div className="relative min-h-full">
-                {starryNight && <div className="h-full whitespace-pre-wrap tracking-normal p-4 pb-[300px] text-[16px] font-sans leading-[1.8] break-words [&_*]:!font-normal">
-                  {toJsxRuntime(starryNight.highlight(content, starryNight.flagToScope('markdown')), {
-                    Fragment,
-                    jsx,
-                    jsxs,
-                  })}
-                  {/\n[ \t]*$/.test(content) ? <br /> : undefined}
-                </div>}
-                <textarea
-                  spellCheck="false"
-                  className="w-full h-full absolute top-0 left-0 bg-transparent text-transparent overflow-hidden border-none outline-none caret-black tracking-normal resize-none p-4 text-[16px] font-sans leading-[1.8]"
-                  value={content}
-                  rows={content.split('\n').length + 1}
-                  onChange={function (event) {
-                    setContent(event.target.value)
-                  }}
-                />
-              </div>
+            <div className="flex-1 overflow-hidden">
+              <CodeMirror
+                ref={editorWrapperRef as any}
+                height="100%"
+                className="relative h-full text-[16px]"
+                value={content}
+                onChange={setContent}
+                extensions={extensions}
+                theme={vscodeLight}
+                basicSetup={{
+                  lineNumbers: false,
+                  foldGutter: false,
+                  highlightActiveLine: false,
+                  drawSelection: true,
+                }}
+              />
             </div>
 
             <div className="bg-white/95 backdrop-blur-sm border-t border-gray-100 px-4 py-2 text-xs text-gray-500 flex justify-between select-none shrink-0 z-10">

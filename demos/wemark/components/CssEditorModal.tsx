@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { X, Save, RotateCcw, Trash2, Eye, Copy, Palette } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, Save, RotateCcw, Trash2, Eye, Copy } from 'lucide-react';
 import CodeMirror from '@uiw/react-codemirror';
-import { css as langcss, cssLanguage } from '@codemirror/lang-css';
+import { css as langcss } from '@codemirror/lang-css';
 import { Theme } from '../types';
 
 interface CssEditorModalProps {
