@@ -60,7 +60,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, view
       >
         {/* Mobile Header / Dynamic Island Simulation */}
         {viewMode === 'mobile' && (
-          <div className="absolute top-0 w-full h-14 z-20 flex justify-center pointer-events-none bg-white">
+          <div className="absolute top-0 w-full h-14 z-10 flex justify-center pointer-events-none bg-white">
             {/* Dynamic Island */}
             <div className="w-[100px] h-[32px] bg-black rounded-[20px] absolute top-2.5 flex items-center justify-center space-x-2">
               <div className="w-16 h-4 bg-[#1a1a1a] rounded-full flex items-center justify-end px-2">
