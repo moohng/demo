@@ -24,6 +24,15 @@ const App: React.FC = () => {
   const [isCssModalOpen, setIsCssModalOpen] = useState(false);
   const [editingThemeId, setEditingThemeId] = useState<string | null>(null);
 
+  const [previewTheme, setPreviewTheme] = useState<Theme | null>(null);
+
+  // Clear preview when modal closes
+  useEffect(() => {
+    if (!isCssModalOpen) {
+      setPreviewTheme(null);
+    }
+  }, [isCssModalOpen]);
+
   // Refs
   const editorWrapperRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
@@ -72,6 +81,13 @@ const App: React.FC = () => {
     });
   }, []);
 
+
+  // Sync editing theme with active theme if modal is open (and not creating new)
+  useEffect(() => {
+    if (isCssModalOpen && editingThemeId !== null && editingThemeId !== activeThemeId) {
+      setEditingThemeId(activeThemeId);
+    }
+  }, [activeThemeId, isCssModalOpen, editingThemeId]);
 
   // --- Computed ---
 
@@ -146,7 +162,10 @@ const App: React.FC = () => {
     // Restore a system theme to its default state from DEFAULT_THEMES
     const defaultTheme = DEFAULT_THEMES.find(t => t.id === id);
     if (defaultTheme) {
-      handleSaveTheme(defaultTheme);
+      // Force a new object reference to ensure updates trigger re-renders
+      handleSaveTheme({ ...defaultTheme });
+      // Clear any active preview so the UI reflects the reset theme
+      setPreviewTheme(null);
     }
   };
 
@@ -196,6 +215,7 @@ const App: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col bg-white">
+      {/* ... (keep Toolbar) */}
       <Toolbar
         themes={themes}
         currentThemeId={activeThemeId}
@@ -206,67 +226,71 @@ const App: React.FC = () => {
         isCopied={isCopied}
         onAddTheme={handleAddTheme}
         onEditTheme={handleEditTheme}
+        isEditorOpen={isCssModalOpen}
+        onCloseEditor={() => setIsCssModalOpen(false)}
       />
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Editor Pane */}
-        <div className="w-1/2 h-full border-r border-gray-200 flex flex-col bg-white relative group">
-          <div
-            ref={editorWrapperRef}
-            className="flex-1 overflow-auto w-full relative"
-            onScroll={handleEditorScroll}
-          >
-            <div className="relative leading-[1.8] text-[16px] font-sans">
-              {starryNight && <div className="h-full whitespace-pre-wrap tracking-normal">
-                {toJsxRuntime(starryNight.highlight(content, starryNight.flagToScope('markdown')), {
-                  Fragment,
-                  jsx,
-                  jsxs,
-                })}
-                {/\n[ \t]*$/.test(content) ? <br /> : undefined}
-              </div>}
-              <textarea
-                spellCheck="false"
-                className="w-full h-full absolute top-0 left-0 bg-transparent text-transparent overflow-hidden border-none outline-none caret-black tracking-normal resize-none"
-                value={content}
-                rows={content.split('\n').length + 1}
-                onChange={function (event) {
-                  setContent(event.target.value)
-                }}
-              />
+        {/* Main Content Wrapper (Flexible) */}
+        <div className="flex-1 flex min-w-0 relative">
+          {/* ... (keep Editor Pane) */}
+          <div className="w-1/2 h-full border-r border-gray-200 flex flex-col bg-white relative group">
+            {/* ... (keep existing editor code) ... */}
+            <div
+              ref={editorWrapperRef}
+              className="flex-1 overflow-auto w-full relative"
+              onScroll={handleEditorScroll}
+            >
+              <div className="relative leading-[1.8] text-[16px] font-sans">
+                {starryNight && <div className="h-full whitespace-pre-wrap tracking-normal">
+                  {toJsxRuntime(starryNight.highlight(content, starryNight.flagToScope('markdown')), {
+                    Fragment,
+                    jsx,
+                    jsxs,
+                  })}
+                  {/\n[ \t]*$/.test(content) ? <br /> : undefined}
+                </div>}
+                <textarea
+                  spellCheck="false"
+                  className="w-full h-full absolute top-0 left-0 bg-transparent text-transparent overflow-hidden border-none outline-none caret-black tracking-normal resize-none"
+                  value={content}
+                  rows={content.split('\n').length + 1}
+                  onChange={function (event) {
+                    setContent(event.target.value)
+                  }}
+                />
+              </div>
+            </div>
+
+            <div className="bg-white/95 backdrop-blur-sm border-t border-gray-100 px-4 py-2 text-xs text-gray-500 flex justify-between select-none shrink-0 z-10">
+              <span className="font-medium text-gray-400">Markdown Input</span>
+              <span className="font-mono">{content.length} chars</span>
             </div>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-sm border-t border-gray-100 px-4 py-2 text-xs text-gray-500 flex justify-between select-none shrink-0 z-10">
-            <span className="font-medium text-gray-400">Markdown Input</span>
-            <span className="font-mono">{content.length} chars</span>
+          {/* Preview Pane */}
+          <div className="w-1/2 h-full relative">
+            <Preview
+              ref={previewRef}
+              onScroll={() => syncScroll('preview')}
+              content={content}
+              theme={previewTheme || activeTheme}
+              viewMode={viewMode}
+              baseCSS={BASE_CSS}
+            />
           </div>
         </div>
-
-        {/* Preview Pane */}
-        <div className="w-1/2 h-full relative">
-          <Preview
-            ref={previewRef}
-            onScroll={() => syncScroll('preview')}
-            content={content}
-            theme={activeTheme}
-            viewMode={viewMode}
-            // Pass the FULL CSS to preview (Base + Theme)
-            baseCSS={BASE_CSS}
-          />
-        </div>
+        {/* CSS Editor Drawer (Inline) */}
+        <CssEditorModal
+          isOpen={isCssModalOpen}
+          onClose={() => setIsCssModalOpen(false)}
+          theme={themes.find(t => t.id === editingThemeId) || null}
+          onSave={handleSaveTheme}
+          onDelete={handleDeleteTheme}
+          onReset={handleResetTheme}
+          onPreview={setPreviewTheme}
+        />
       </div>
-
-      {/* CSS Editor Modal */}
-      <CssEditorModal
-        isOpen={isCssModalOpen}
-        onClose={() => setIsCssModalOpen(false)}
-        // If editing, find the object; otherwise null (new)
-        theme={themes.find(t => t.id === editingThemeId) || null}
-        onSave={handleSaveTheme}
-        onDelete={handleDeleteTheme}
-        onReset={handleResetTheme}
-      />
     </div>
   );
 };

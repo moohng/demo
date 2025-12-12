@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, RotateCcw, Trash2 } from 'lucide-react';
+import { X, Save, RotateCcw, Trash2, Eye, Copy, Palette } from 'lucide-react';
 import CodeMirror from '@uiw/react-codemirror';
 import { css as langcss, cssLanguage } from '@codemirror/lang-css';
 import { Theme } from '../types';
@@ -11,6 +11,7 @@ interface CssEditorModalProps {
   onSave: (theme: Theme) => void;
   onDelete: (themeId: string) => void;
   onReset?: (themeId: string) => void;
+  onPreview: (theme: Theme) => void;
 }
 
 const CssEditorModal: React.FC<CssEditorModalProps> = ({
@@ -19,15 +20,18 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
   theme,
   onSave,
   onDelete,
-  onReset
+  onReset,
+  onPreview
 }) => {
   // Local state for form fields
   const [name, setName] = useState('');
   const [css, setCss] = useState('');
   const [colors, setColors] = useState({ primary: '#000000', text: '#333333' });
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   // Initialize form when opening
   useEffect(() => {
+    setShowResetConfirm(false); // Reset confirmation state
     if (isOpen && theme) {
       setName(theme.name);
       setCss(theme.css);
@@ -35,12 +39,47 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
     } else if (isOpen && !theme) {
       // New theme default
       setName('自定义主题');
-      setCss('/* 自定义你的 CSS, 必须放在 #wemark 选择器下 */\n#wemark {\n  --primary-color: #000000;\n}');
+      setCss('/* 自定义你的 CSS, 必须放在 #wemark 选择器下 */\n#wemark {\n  --primary-color: #000000;\n  --text-color: #333333;\n}');
       setColors({ primary: '#000000', text: '#333333' });
     }
   }, [isOpen, theme]);
 
-  if (!isOpen) return null;
+  // Handle CSS variable updates based on color changes
+  const updateColor = (type: 'primary' | 'text', value: string) => {
+    const newColors = { ...colors, [type]: value };
+    setColors(newColors);
+
+    // Regex Update
+    let newCss = css;
+    if (type === 'primary') {
+      newCss = newCss.replace(/--primary-color:\s*#[a-fA-F0-9]{6}/gi, `--primary-color: ${value}`);
+    } else {
+      newCss = newCss.replace(/--text-color:\s*#[a-fA-F0-9]{6}/gi, `--text-color: ${value}`);
+    }
+    setCss(newCss);
+
+    // Auto-preview on color change for immediate feedback
+    // Construct temp theme
+    const tempTheme: Theme = {
+      id: 'preview-temp',
+      type: 'custom',
+      name,
+      css: newCss,
+      colors: newColors
+    };
+    onPreview(tempTheme);
+  };
+
+  const handlePreview = () => {
+    const tempTheme: Theme = {
+      id: 'preview-temp',
+      type: 'custom',
+      name,
+      css,
+      colors
+    };
+    onPreview(tempTheme);
+  };
 
   const handleSave = () => {
     const newTheme: Theme = {
@@ -54,157 +93,175 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
     onClose();
   };
 
+  const handleSaveAs = () => {
+    const newTheme: Theme = {
+      id: `custom-${Date.now()}`,
+      type: 'custom',
+      name: `${name} (Copy)`,
+      css,
+      colors
+    };
+    onSave(newTheme);
+    onClose();
+  };
+
   const isSystemTheme = theme?.type === 'system';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-      <div className="bg-white w-full max-w-4xl rounded-xl shadow-2xl flex flex-col h-[85vh] overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-bold text-gray-800">
-            {theme ? `编辑主题: ${theme.name}` : '创建新主题'}
-          </h3>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-            <X size={24} />
-          </button>
-        </div>
+    <div 
+      className={`h-full bg-white border-l border-gray-200 transition-all duration-300 ease-in-out overflow-hidden flex flex-col shadow-xl z-10 shrink-0 ${isOpen ? 'w-[450px]' : 'w-0 border-l-0'}`}
+    >
+      <div className="w-[450px] flex flex-col h-full"> 
 
-        {/* Content */}
-        <div className="flex-1 flex overflow-hidden">
-          {/* Settings Sidebar */}
-          <div className="w-1/3 bg-gray-50 border-r border-gray-200 p-6 overflow-y-auto">
-            <div className="space-y-6">
 
-              {/* Name Input */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">主题名称</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
-                  placeholder="e.g., My Awesome Theme"
-                />
-              </div>
 
-              {/* Color Pickers */}
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">颜色选择</label>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between text-xs text-gray-500 mb-1">
-                      <span>主色调</span>
-                      <span>{colors.primary}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="color"
-                        value={colors.primary}
-                        onChange={(e) => {
-                          const newColor = e.target.value;
-                          setColors({ ...colors, primary: newColor });
-                          // Regex to find --primary-color: #......;
-                          setCss(prev => prev.replace(/--primary-color:\s*#[a-fA-F0-9]{6}/gi, `--primary-color: ${newColor}`));
-                        }}
-                        className="h-9 w-full cursor-pointer rounded border border-gray-300"
-                      />
-                    </div>
-                  </div>
+        {/* Compact Controls Section */}
+        <div className="px-5 py-4 bg-white border-b border-gray-100 space-y-3 shrink-0">
+          {/* Name Row */}
+          <div className="flex items-center space-x-3">
+            <label className="text-xs font-semibold text-gray-500 w-12 shrink-0">名称</label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="flex-1 px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-sm focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              placeholder="主题名称"
+            />
+          </div>
 
-                  <div>
-                    <div className="flex justify-between text-xs text-gray-500 mb-1">
-                      <span>文本色</span>
-                      <span>{colors.text}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="color"
-                        value={colors.text}
-                        onChange={(e) => {
-                          const newColor = e.target.value;
-                          setColors({ ...colors, text: newColor });
-                          // Regex to find --text-color: #......;
-                          setCss(prev => prev.replace(/--text-color:\s*#[a-fA-F0-9]{6}/gi, `--text-color: ${newColor}`));
-                        }}
-                        className="h-9 w-full cursor-pointer rounded border border-gray-300"
-                      />
-                    </div>
-                  </div>
+          {/* Colors Row */}
+          <div className="flex items-center space-x-3">
+            <label className="text-xs font-semibold text-gray-500 w-12 shrink-0">配色</label>
+            <div className="flex items-center space-x-6">
+
+              {/* Primary Picker */}
+              <div className="flex items-center space-x-2 bg-gray-50 px-2 py-1 rounded border border-gray-100">
+                <div className="relative w-4 h-4 rounded-full overflow-hidden border border-black/10 shadow-sm">
+                  <input
+                    type="color"
+                    value={colors.primary}
+                    onChange={(e) => updateColor('primary', e.target.value)}
+                    className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] p-0 border-0 cursor-pointer"
+                  />
                 </div>
-              </div>
+                <span className="text-xs text-gray-600 font-mono">{colors.primary}</span>
+                </div>
 
-              {/* Instructions */}
-              <div className="bg-blue-50 p-4 rounded-lg text-xs text-blue-800 border border-blue-100">
-                <p className="font-semibold mb-1">提示:</p>
-                <p>基础样式（字体、间距、布局）总是应用。使用右侧的 CSS 编辑器覆盖它们或添加特定的视觉效果。</p>
+              {/* Text Picker */}
+              <div className="flex items-center space-x-2 bg-gray-50 px-2 py-1 rounded border border-gray-100">
+                <div className="relative w-4 h-4 rounded-full overflow-hidden border border-black/10 shadow-sm">
+                  <input
+                    type="color"
+                    value={colors.text}
+                    onChange={(e) => updateColor('text', e.target.value)}
+                    className="absolute -top-1/2 -left-1/2 w-[200%] h-[200%] p-0 border-0 cursor-pointer"
+                  />
+                </div>
+                <span className="text-xs text-gray-600 font-mono">{colors.text}</span>
               </div>
 
             </div>
           </div>
+        </div>
 
-          {/* CSS Editor */}
-          <div className="flex-1 flex flex-col relative">
-            <CodeMirror
-              height="100%"
-              value={css}
-              onChange={(value) => setCss(value)}
-              className="h-full text-sm"
-              spellCheck={false}
-              extensions={[langcss()]}
+        {/* CSS Editor - Prioritized */}
+        <div className="flex-1 flex flex-col min-h-0 relative">
+          <div className="absolute inset-x-0 top-0 z-10 px-5 py-1.5 bg-gray-50 border-b border-gray-200 flex justify-between items-center text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
+            <span>CSS 编辑器</span>
+            <span>#wemark</span>
+          </div>
+          <div className="flex-1 pt-8 relative overflow-hidden"> {/* pt-8 for header space */}
+              <CodeMirror
+                height="100%"
+                value={css}
+                onChange={(value) => setCss(value)}
+                className="absolute inset-0 text-sm"
+                spellCheck={false}
+                extensions={[langcss()]}
               style={{ fontFamily: 'JetBrains Mono, monospace' }}
-              placeholder="/* Enter your custom CSS overrides here */"
             />
           </div>
         </div>
 
-        {/* Footer Actions */}
-        <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-between items-center">
-          <div className="flex space-x-3">
-            {/* Delete/Reset Logic */}
+        {/* Footer */}
+        <div className="px-5 py-3 border-t border-gray-200 bg-gray-50 flex justify-between items-center shrink-0">
+          <div className="flex space-x-2">
             {theme && !isSystemTheme && (
               <button
                 onClick={() => {
-                  if (confirm('Are you sure you want to delete this theme?')) {
+                  if (confirm('确认删除该主题？')) {
                     onDelete(theme.id);
                     onClose();
                   }
                 }}
-                className="flex items-center space-x-2 text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-2 rounded-lg transition-colors"
+                className="p-1.5 text-red-500 hover:bg-red-100 rounded transition-colors"
+                title="删除主题"
               >
                 <Trash2 size={16} />
-                <span>Delete</span>
               </button>
             )}
-
             {theme && isSystemTheme && onReset && (
-              <button
-                onClick={() => {
-                  if (confirm('Reset this system theme to defaults?')) {
-                    onReset(theme.id);
-                    onClose();
-                  }
-                }}
-                className="flex items-center space-x-2 text-gray-500 hover:text-gray-700 hover:bg-gray-200 px-3 py-2 rounded-lg transition-colors"
-              >
-                <RotateCcw size={16} />
-                <span>Reset</span>
-              </button>
+              <div className="relative">
+                {showResetConfirm ? (
+                  <div className="flex items-center space-x-1 bg-red-50 rounded-lg p-1 animate-in fade-in slide-in-from-left-2 duration-200 hover:bg-red-100 transition-colors">
+                    <button
+                      onClick={() => {
+                        onReset(theme.id);
+                        setShowResetConfirm(false);
+                      }}
+                      className="p-1 px-2 text-xs text-red-600 font-medium"
+                    >
+                      确认重置？
+                    </button>
+                    <button
+                      onClick={() => setShowResetConfirm(false)}
+                      className="p-1 text-gray-400 hover:text-gray-600 rounded transition-colors"
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setShowResetConfirm(true)}
+                      className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded transition-colors"
+                      title="重置为默认值"
+                    >
+                      <RotateCcw size={16} />
+                    </button>
+                )}
+              </div>
             )}
           </div>
 
-          <div className="flex space-x-3">
+          <div className="flex items-center space-x-3">
+            {/* Preview Button */}
             <button
-              onClick={onClose}
-              className="px-4 py-2 text-gray-600 font-medium hover:bg-gray-200 rounded-lg transition-colors"
+              onClick={handlePreview}
+              className="flex items-center space-x-1.5 text-gray-600 hover:text-blue-600 px-3 py-1.5 rounded hover:bg-blue-50 transition-colors text-sm font-medium"
+              title="应用样式查看效果（不保存）"
             >
-              Cancel
+              <Eye size={14} />
+              <span>预览</span>
             </button>
+
+            {/* Save As Button (Only if editing existing) */}
+            {theme && (
+              <button
+                onClick={handleSaveAs}
+                className="flex items-center space-x-1.5 text-gray-600 hover:text-green-600 px-3 py-1.5 rounded hover:bg-green-50 transition-colors text-sm font-medium"
+                title="保存为新主题"
+              >
+                <Copy size={14} />
+                <span>另存为</span>
+              </button>
+            )}
+
             <button
               onClick={handleSave}
-              className="px-6 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 shadow-md flex items-center space-x-2"
+              className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded shadow-sm transition-colors flex items-center space-x-2"
             >
-              <Save size={18} />
-              <span>{theme ? 'Save Changes' : 'Create Theme'}</span>
+              <Save size={14} />
+              <span>保存</span>
             </button>
           </div>
         </div>

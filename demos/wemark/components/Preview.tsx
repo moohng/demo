@@ -48,7 +48,7 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, view
   }, []);
 
   return (
-    <div className="w-full h-full bg-gray-50 flex flex-col items-center relative overflow-hidden">
+    <div className="w-full min-w-96 h-full bg-gray-50 flex flex-col items-center relative overflow-hidden">
       {/* Viewport Container */}
       <div
         className={`
