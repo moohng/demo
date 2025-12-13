@@ -154,7 +154,7 @@ async function runBuild() {
       build: {
         outDir: relativeRoot('dist', 'demos', dir),
       },
-    }, config.default));
+    }, typeof config.default === 'function' ? config.default({ mode: 'production' }) : config.default));
   }));
 }
 

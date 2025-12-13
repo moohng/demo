@@ -81,7 +81,6 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, view
                   {highlightCss}
                   {theme.css}
                 </style>
-                {/* <link href="//esm.sh/github-markdown-css@5/github-markdown-light.css" rel="stylesheet" /> */}
 
                 <div
                   id="wemark"
