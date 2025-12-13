@@ -1,4 +1,3 @@
-import { BASE_CSS } from '../constants';
 import juice from 'juice';
 
 /**
@@ -6,30 +5,23 @@ import juice from 'juice';
  * This ensures that all styles (Theme + Prism Syntax Highlighting) are correctly 
  * applied to the HTML elements as inline styles, which is required for WeChat.
  */
-export async function copyToWeChat(htmlContent: string, themeCss: string): Promise<boolean> {
+export async function copyToWeChat(htmlContent: string, fullCss: string): Promise<boolean> {
   try {
-    // 2. Combine CSS
-    // Order matters: Prism CSS first, then Theme CSS (to allow overrides if needed)
-    const fullCss = `${BASE_CSS}\n${themeCss}`;
-
     // 3. Wrap HTML
-    // We wrap the content in #wemark because our BASE_CSS uses selectors like 
-    // `#wemark h1`. Without this wrapper, juice won't match those selectors.
     const wrappedHtml = `<section id="wemark">${htmlContent}</section>`;
 
     // 4. Inline Styles with Juice
-    // juice.inlineContent takes the HTML string and CSS string, and returns HTML with inline styles.
-    const inlinedHtml = juice.inlineContent(wrappedHtml, fullCss, {
-      inlinePseudoElements: false, // WeChat doesn't support pseudo-elements in inline styles
-      removeStyleTags: true,       // Don't leave the <style> block in the body
-      preserveImportant: true,     // Keep !important flags
+    let inlinedHtml = juice.inlineContent(wrappedHtml, fullCss, {
+      inlinePseudoElements: true,
+      preserveImportant: true,
       resolveCSSVariables: true,
-      webResources: {
-        images: false,             // Don't try to fetch remote images
-        scripts: false,
-        links: false
-      }
+      xmlMode: true,
     });
+
+    // 过滤微信不支持的标签
+    inlinedHtml = inlinedHtml
+      .replace(/<a\s/g, '<span ')
+      .replace(/<\/a>/g, '</span>');
 
     console.log(inlinedHtml);
 
@@ -38,12 +30,12 @@ export async function copyToWeChat(htmlContent: string, themeCss: string): Promi
 
     // 6. Write to Clipboard
     await navigator.clipboard.write([
-      new ClipboardItem({ 
+      new ClipboardItem({
         'text/html': inlinedHtml,
         'text/plain': textContent
       })
     ]);
-    
+
     return true;
 
   } catch (err) {

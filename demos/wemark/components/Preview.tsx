@@ -1,11 +1,7 @@
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useRef, useState, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { MarkdownHooks } from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import rehypeRaw from 'rehype-raw';
-import rehypeSlug from 'rehype-slug';
-import rehypeStarryNight from 'rehype-starry-night';
-// import githubMarkdownCss from 'github-markdown-css/github-markdown.css';
+import highlightCss from 'highlight.js/styles/atom-one-dark.css?inline';
+import { md } from '../utils/markdown';
 import { Theme, ViewMode } from '../types';
 
 interface PreviewProps {
@@ -20,9 +16,6 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, view
   const shadowHostRef = useRef<HTMLDivElement>(null);
   const [shadowRoot, setShadowRoot] = useState<ShadowRoot | null>(null);
 
-  const remarkPlugins = [remarkGfm];
-  const rehypePlugins = [rehypeRaw, rehypeSlug, rehypeStarryNight];
-
   // Initialize Shadow DOM for strict style isolation
   useEffect(() => {
     if (shadowHostRef.current) {
@@ -35,6 +28,8 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, view
       }
     }
   }, []);
+
+  const htmlContent = useMemo(() => md.render(content), [content]);
 
   return (
     <div className="w-full min-w-96 h-full bg-gray-50 flex flex-col items-center relative overflow-hidden">
@@ -81,20 +76,18 @@ const Preview = forwardRef<HTMLDivElement, PreviewProps>(({ content, theme, view
             {shadowRoot && createPortal(
               <>
                 {/* Inject Combined Active Theme CSS (Base + Theme) */}
-                <style>
+                <style id="wemark-theme">
                   {baseCSS}
+                  {highlightCss}
                   {theme.css}
                 </style>
                 {/* <link href="//esm.sh/github-markdown-css@5/github-markdown-light.css" rel="stylesheet" /> */}
 
-                <div id="wemark" className="markdown-body">
-                  <MarkdownHooks
-                    remarkPlugins={remarkPlugins}
-                    rehypePlugins={rehypePlugins}
-                  >
-                    {content}
-                  </MarkdownHooks>
-                </div>
+                <div
+                  id="wemark"
+                  className="markdown-body"
+                  dangerouslySetInnerHTML={{ __html: htmlContent }}
+                />
               </>,
               shadowRoot
             )}

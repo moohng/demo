@@ -82,7 +82,7 @@ def fibonacci(n):
 // This is always injected first.
 export const BASE_CSS = `#wemark {
   /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; */
-  padding: 1.5em 0;
+  padding-bottom: 1em;
   color: #252933;
   font-size: 16px;
   font-weight: 400;
@@ -97,20 +97,25 @@ export const BASE_CSS = `#wemark {
   margin-top: 2em;
   margin-bottom: 1.2em;
   font-size: 1.8em;
+  font-weight: 600;
 }
 #wemark h2 {
   margin-top: 1.8em;
   margin-bottom: 1em;
   font-size: 1.5em;
+  font-weight: 600;
 }
 #wemark h3 {
   margin-top: 1.6em;
   margin-bottom: 1em;
   font-size: 1.25em;
+  font-weight: 600;
 }
 #wemark h4 {
   margin-top: 1.25em;
   margin-bottom: 1.25em;
+  font-size: 1em;
+  font-weight: 600;
 }
 #wemark p {
   margin-top: 1.25em;
@@ -162,16 +167,28 @@ export const BASE_CSS = `#wemark {
 /* Prism Overrides for WeChat */
 #wemark pre {
   margin: 20px 0 20px;
-  padding: 16px;
-  overflow-x: auto;
-  background: #f6f8fa;
-  font-size: 13px;
-  line-height: 1.6;
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  overflow-x: hidden;
+}
+#wemark pre::before {
+  content: "";
+  display: block;
+  margin: 18px 16px 2px;
+  width: 12px;
+  height: 12px;
+  background: #ff5f56;
+  border-radius: 50%;
+  box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
 }
 #wemark pre code {
+  display: block;
+  padding: 16px;
   font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
 }
 
 /* Tables */
@@ -199,6 +216,10 @@ export const BASE_CSS = `#wemark {
   margin: 2em 0;
   background-color: #e1e4e8;
   border: 0;
+}
+
+#wemark em {
+  font-style: italic;
 }
 `;
 

@@ -96,10 +96,15 @@ const App: React.FC = () => {
 
     // Attempt to find content in Shadow DOM first (for isolation mode)
     let markdownBody: Element | null | undefined;
+    let fullCss = '';
 
     const shadowHost = previewRef.current.querySelector('[data-shadow-host]');
     if (shadowHost && shadowHost.shadowRoot) {
       markdownBody = shadowHost.shadowRoot.querySelector('#wemark');
+      const styleElement = shadowHost.shadowRoot.querySelector('#wemark-theme');
+      if (styleElement) {
+        fullCss = styleElement.textContent || '';
+      }
     }
 
     if (!markdownBody) {
@@ -111,7 +116,7 @@ const App: React.FC = () => {
     const htmlContent = markdownBody.innerHTML;
 
     // Inject the Theme CSS
-    const success = await copyToWeChat(htmlContent, activeTheme.css);
+    const success = await copyToWeChat(htmlContent, fullCss || activeTheme.css);
 
     if (success) {
       setIsCopied(true);
