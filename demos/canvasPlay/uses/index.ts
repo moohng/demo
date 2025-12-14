@@ -1,1 +1,0 @@
-export { useTouchMove } from './useTouchMove';
