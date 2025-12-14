@@ -102,17 +102,6 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
     }, 100);
   };
 
-  const handlePreview = () => {
-    const tempTheme: Theme = {
-      id: 'preview-temp',
-      type: 'custom',
-      name,
-      css,
-      colors
-    };
-    onPreview(tempTheme);
-  };
-
   const handleSave = () => {
     const newTheme: Theme = {
       id: theme ? theme.id : `custom-${Date.now()}`,
@@ -201,17 +190,17 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
         </div>
 
         {/* CSS Editor - Prioritized */}
-        <div className="flex-1 flex flex-col min-h-0 relative">
-          <div className="absolute inset-x-0 top-0 z-10 px-5 py-1.5 bg-gray-50 border-b border-gray-200 flex justify-between items-center text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
+        <div className="flex-1 flex flex-col min-h-0">
+          <div className="px-5 py-1.5 bg-gray-50 border-b border-gray-200 flex justify-between items-center text-[10px] text-gray-400 uppercase tracking-wider font-semibold">
             <span>CSS 编辑器</span>
             <span>#wemark</span>
           </div>
-          <div className="flex-1 pt-8 relative overflow-hidden"> {/* pt-8 for header space */}
+          <div className="flex-1 overflow-hidden">
             <CodeMirror
               height="100%"
               value={css}
               onChange={(value) => updateTheme('css', value)}
-              className="absolute inset-0 text-sm"
+              className="text-sm"
               spellCheck={false}
               extensions={[langcss()]}
               style={{ fontFamily: 'JetBrains Mono, monospace' }}
@@ -225,7 +214,7 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
             {theme && !isSystemTheme && (
               <div className="relative">
                 {showDeleteConfirm ? (
-                  <div className="flex items-center space-x-1 bg-red-50 rounded-lg hover:bg-red-100 transition-colors p-1 animate-in fade-in slide-in-from-left-2 duration-200">
+                  <div className="flex items-center space-x-1 bg-red-100 rounded-lg hover:bg-red-200 transition-colors p-1 animate-in fade-in slide-in-from-left-2 duration-200">
                     <button
                       onClick={() => {
                         onDelete(theme.id);
@@ -244,7 +233,7 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
                 ) : (
                   <button
                     onClick={() => setShowDeleteConfirm(true)}
-                    className="p-1.5 text-red-500 hover:bg-red-50 rounded transition-colors"
+                      className="p-2 text-red-500 hover:text-red-600 rounded transition-colors"
                     title="删除主题"
                   >
                     <Trash2 size={16} />
@@ -255,7 +244,7 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
             {theme && isSystemTheme && onReset && (
               <div className="relative">
                 {showResetConfirm ? (
-                  <div className="flex items-center space-x-1 bg-red-50 rounded-lg p-1 animate-in fade-in slide-in-from-left-2 duration-200 hover:bg-red-100 transition-colors">
+                  <div className="flex items-center space-x-1 bg-red-100 rounded-lg p-1 animate-in fade-in slide-in-from-left-2 duration-200 hover:bg-red-200 transition-colors">
                     <button
                       onClick={() => {
                         onReset(theme.id);
@@ -275,7 +264,7 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
                 ) : (
                   <button
                     onClick={() => setShowResetConfirm(true)}
-                      className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded transition-colors"
+                      className="p-2 text-gray-400 hover:text-gray-600 rounded transition-colors"
                       title="重置为默认值"
                     >
                       <RotateCcw size={16} />
@@ -286,21 +275,11 @@ const CssEditorModal: React.FC<CssEditorModalProps> = ({
           </div>
 
           <div className="flex items-center space-x-3">
-            {/* Preview Button */}
-            <button
-              onClick={handlePreview}
-              className="flex items-center space-x-1.5 text-gray-600 hover:text-blue-600 px-3 py-1.5 rounded hover:bg-blue-50 transition-colors text-sm font-medium"
-              title="应用样式查看效果（不保存）"
-            >
-              <Eye size={14} />
-              <span>预览</span>
-            </button>
-
             {/* Save As Button (Only if editing existing) */}
             {theme && (
               <button
                 onClick={handleSaveAs}
-                className="flex items-center space-x-1.5 text-gray-600 hover:text-green-600 px-3 py-1.5 rounded hover:bg-green-50 transition-colors text-sm font-medium"
+                className="flex items-center space-x-1.5 text-blue-600 hover:text-blue-700 px-3 py-1.5 rounded bg-blue-100 hover:bg-blue-200 transition-colors text-sm font-medium"
                 title="保存为新主题"
               >
                 <Copy size={14} />

@@ -15,7 +15,7 @@ WeMark Pro 是一款专为微信公众号打造的 **Markdown 编辑器**。它�
 
 ### 1. 文本样式
 
-支持 **加粗**、*斜体*、~~删除线~~、[超链接](https://github.com) 以及 \`行内代码\`。
+支持 **加粗**、*斜体*、~~删除线~~、[超链接](https://github.com) 以及 \`行内代码 const\`。
 
 > 这是一个引用块。
 > 好的设计是尽可能少的设计。
@@ -78,7 +78,6 @@ def fibonacci(n):
 如果您喜欢这个工具，欢迎分享给更多的朋友！
 `;
 
-// Shared styles for all themes. 
 // This is always injected first.
 export const BASE_CSS = `#wemark {
   /* font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; */
@@ -93,58 +92,58 @@ export const BASE_CSS = `#wemark {
 }
 
 /* Headings */
-#wemark h1 {
+h1 {
   margin-top: 2em;
   margin-bottom: 1.2em;
   font-size: 1.8em;
   font-weight: 600;
 }
-#wemark h2 {
+h2 {
   margin-top: 1.8em;
   margin-bottom: 1em;
   font-size: 1.5em;
   font-weight: 600;
 }
-#wemark h3 {
+h3 {
   margin-top: 1.6em;
   margin-bottom: 1em;
   font-size: 1.25em;
   font-weight: 600;
 }
-#wemark h4 {
+h4 {
   margin-top: 1.25em;
   margin-bottom: 1.25em;
   font-size: 1em;
   font-weight: 600;
 }
-#wemark p {
+p {
   margin-top: 1.25em;
   margin-bottom: 1.25em;
 }
-#wemark ul, #wemark ol {
-  margin: 0.25em 0 0.25em;
+ul, ol {
+  margin: 1.25em 0 1.25em;
   padding-left: 1.5em;
 }
-#wemark > ul, #wemark > ol {
-  margin: 1.25em 0 1.25em;
+* > ul, * > ol {
+  margin: 0.25em 0 0.25em;
 }
-#wemark ul {
+ul {
   list-style-type: disc;
 }
-#wemark ol {
+ol {
   list-style-type: decimal;
 }
-#wemark li {
+li {
   margin-bottom: 0.25em;
 }
 
 /* Images */
-#wemark img {
+img {
   max-width: 100%;
 }
 
 /* Blockquotes */
-#wemark blockquote {
+blockquote {
   margin: 20px 0 20px;
   padding: 1px 16px;
   background: #f7f7f7;
@@ -154,25 +153,25 @@ export const BASE_CSS = `#wemark {
 }
 
 /* Inline Code */
-#wemark :not(pre) > code {
+:not(pre) > code {
   font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
   background: #f6f8fa;
   padding: 3px 6px;
   border-radius: 4px;
   font-size: 0.9em;
   margin: 0 2px;
-  color: #476582;
+  color: #1e6bb8;
 }
 
 /* Prism Overrides for WeChat */
-#wemark pre {
+pre {
   margin: 20px 0 20px;
   border: none;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0,0,0,0.02);
   overflow-x: hidden;
 }
-#wemark pre::before {
+pre::before {
   content: "";
   display: block;
   margin: 18px 16px 2px;
@@ -182,7 +181,7 @@ export const BASE_CSS = `#wemark {
   border-radius: 50%;
   box-shadow: 20px 0 0 #ffbd2e, 40px 0 0 #27c93f;
 }
-#wemark pre code {
+pre code {
   display: block;
   padding: 16px;
   font-family: 'JetBrains Mono', Menlo, Monaco, Consolas, 'Courier New', monospace;
@@ -192,25 +191,25 @@ export const BASE_CSS = `#wemark {
 }
 
 /* Tables */
-#wemark table {
+table {
   width: 100%;
   border-collapse: collapse;
   margin: 20px 0 20px;
   font-size: 0.875em;
   table-layout: fixed;
 }
-#wemark th, #wemark td {
+th, td {
   border: 1px solid #dfe2e5;
   padding: 8px 12px;
   word-break: break-word;
 }
-#wemark th {
+th {
   background-color: #f6f8fa;
   font-weight: bold;
 }
 
 /* Horizontal Rule */
-#wemark hr {
+hr {
   height: 1px;
   padding: 0;
   margin: 2em 0;
@@ -218,7 +217,7 @@ export const BASE_CSS = `#wemark {
   border: 0;
 }
 
-#wemark em {
+em {
   font-style: italic;
 }
 `;
@@ -237,20 +236,20 @@ export const DEFAULT_THEMES: Theme[] = [
 #wemark {
   color: var(--text-color);
 }
-#wemark h2 {
+h2 {
   border-left: 4px solid var(--primary-color);
   padding-left: 12px;
 }
-#wemark strong {
+strong {
   color: var(--primary-color);
   font-weight: 600;
 }
-#wemark blockquote {
+blockquote {
   background: #f5f8ff;
   border-left: 4px solid var(--primary-color);
   color: #4a5a75;
 }
-#wemark a {
+a {
   color: var(--primary-color);
   text-decoration: none;
   border-bottom: 1px dashed var(--primary-color);
@@ -271,17 +270,17 @@ export const DEFAULT_THEMES: Theme[] = [
 #wemark {
   color: var(--text-color);
 }
-#wemark h1 {
+h1 {
   color: var(--primary-color);
 }
-#wemark h2 {
+h2 {
   margin-top: 2.2em;
   margin-bottom: 1.8em;
   color: var(--primary-color);
   font-size: 1.4em;
   text-align: center;
 }
-#wemark h2::after {
+h2::after {
   content: '';
   display: block;
   margin: auto;
@@ -291,28 +290,28 @@ export const DEFAULT_THEMES: Theme[] = [
   border-radius: 2px;
   margin-top: 8px;
 }
-#wemark h3 {
+h3 {
   color: var(--primary-color);
 }
-#wemark blockquote {
+blockquote {
   background: var(--secondary-bg);
   border-left: 4px solid var(--primary-color);
   box-shadow: 0 2px 8px rgba(7, 193, 96, 0.05);
 }
-#wemark strong {
+strong {
   margin: 0 2px;
   color: var(--primary-color);
   background: linear-gradient(transparent 60%, rgba(7, 193, 96, 0.2) 0);
 }
-#wemark img {
+img {
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(7, 193, 96, 0.05);
 }
-#wemark hr {
+hr {
   margin: 48px auto 32px;
   background: var(--primary-color);
 }
-#wemark a {
+a {
   color: var(--primary-color);
   text-decoration: none;
   border-bottom: 1px dashed var(--primary-color);
@@ -332,7 +331,7 @@ export const DEFAULT_THEMES: Theme[] = [
 #wemark {
   color: var(--text-color);
 }
-#wemark h1 {
+h1 {
   text-align: center;
   background: var(--primary-color);
   color: #fff;
@@ -341,21 +340,21 @@ export const DEFAULT_THEMES: Theme[] = [
   font-size: 1.4em;
   box-shadow: 0 4px 0 rgba(0,0,0,0.1);
 }
-#wemark h2 {
+h2 {
   border-bottom: 2px solid var(--primary-color);
   padding-bottom: 8px;
   display: block;
 }
-#wemark h2::before {
+h2::before {
   content: '#';
   color: var(--primary-color);
   margin-right: 8px;
 }
-#wemark :not(pre) > code {
+:not(pre) > code {
   color: #e01e5a;
   background: #fff0f3;
 }
-#wemark blockquote {
+blockquote {
   padding-top: 16px;
   padding-bottom: 4px;
   background: #2b3137;
@@ -365,7 +364,7 @@ export const DEFAULT_THEMES: Theme[] = [
   position: relative;
   padding-left: 36px;
 }
-#wemark blockquote::before {
+blockquote::before {
   content: '"';
   font-family: Georgia, serif;
   font-size: 40px;
@@ -374,10 +373,10 @@ export const DEFAULT_THEMES: Theme[] = [
   top: 0;
   color: #586069;
 }
-#wemark strong {
+strong {
   color: var(--primary-color);
 }
-#wemark a {
+a {
   color: var(--primary-color);
   text-decoration: none;
   border-bottom: 1px dashed var(--primary-color);
@@ -400,7 +399,7 @@ export const DEFAULT_THEMES: Theme[] = [
   color: var(--text-color);
   line-height: 2;
 }
-#wemark h1 {
+h1 {
   text-align: center;
   font-weight: normal;
   color: var(--primary-color);
@@ -410,25 +409,25 @@ export const DEFAULT_THEMES: Theme[] = [
   padding: 10px 30px;
   letter-spacing: 0.1em;
 }
-#wemark h2 {
+h2 {
   text-align: center;
   font-weight: normal;
   color: var(--primary-color);
   margin-top: 50px;
 }
-#wemark h2::before, #wemark h2::after {
+h2::before, h2::after {
   content: '❧';
   font-size: 0.8em;
   margin: 0 10px;
   color: #ccc;
   vertical-align: middle;
 }
-#wemark h3 {
+h3 {
   font-weight: bold;
   color: #333;
   margin-top: 30px;
 }
-#wemark blockquote {
+blockquote {
   border: none;
   background: transparent;
   color: var(--primary-color);
@@ -436,11 +435,11 @@ export const DEFAULT_THEMES: Theme[] = [
   font-style: italic;
   padding: 20px 30px;
 }
-#wemark strong {
+strong {
   color: var(--primary-color);
   font-weight: bold;
 }
-#wemark img {
+img {
   border: 10px solid #fff;
   box-shadow: 0 5px 15px rgba(0,0,0,0.05);
   box-sizing: border-box;
