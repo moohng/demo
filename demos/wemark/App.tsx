@@ -9,6 +9,8 @@ import CssEditorModal from './components/CssEditorModal';
 import { INITIAL_CONTENT, DEFAULT_THEMES, BASE_CSS } from './constants';
 import { Theme, ViewMode } from './types';
 import { copyToWeChat } from './utils/clipboard';
+import { SettingsModal } from './components/SettingsModal';
+import { ImageConfig, uploadImage } from './utils/image';
 
 
 const App: React.FC = () => {
@@ -23,6 +25,9 @@ const App: React.FC = () => {
   const [isCopied, setIsCopied] = useState(false);
   const [isCssModalOpen, setIsCssModalOpen] = useState(false);
   const [editingThemeId, setEditingThemeId] = useState<string | null>(null);
+
+  const [imageConfig, setImageConfig] = useState<ImageConfig>({ type: 'github' });
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   const [previewTheme, setPreviewTheme] = useState<Theme | null>(null);
 
@@ -78,6 +83,22 @@ const App: React.FC = () => {
   useEffect(() => {
     localStorage.setItem('wemark-themes', JSON.stringify(themes));
   }, [themes]);
+
+  // Save image config
+  useEffect(() => {
+    const savedConfig = localStorage.getItem('wemark-image-config');
+    if (savedConfig) {
+      try {
+        setImageConfig(JSON.parse(savedConfig));
+      } catch (e) {
+        // ignore
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('wemark-image-config', JSON.stringify(imageConfig));
+  }, [imageConfig]);
 
   // Sync editing theme with active theme if modal is open (and not creating new)
   useEffect(() => {
@@ -214,13 +235,69 @@ const App: React.FC = () => {
     syncScroll('editor');
   }, []);
 
+  const handlePaste = useCallback((event: any) => {
+    // console.log('handlePaste', event);
+    const items = event.clipboardData?.items || event.dataTransfer?.items;
+    if (!items) return;
+
+    const fileItem = Array.from(items).find((item: any) => item.type.startsWith('image/'));
+    if (!fileItem) return;
+
+    event.preventDefault();
+    const file = (fileItem as any).getAsFile();
+    if (!file) return;
+
+    // For onPaste/onDrop prop, we might need to get view from ref
+    const view = (editorWrapperRef.current as any)?.view;
+    if (!view) return;
+
+    const loadingText = `![Uploading ${file.name}...]`;
+    const placeholder = `${loadingText}(...)`;
+
+    const range = view.state.selection.main;
+    const from = range.from;
+    const to = range.to;
+
+    // Insert Placeholder
+    view.dispatch({
+      changes: { from, to, insert: placeholder },
+      selection: { anchor: from + placeholder.length }
+    });
+
+    uploadImage(file, imageConfig).then(res => {
+      const currentDoc = view.state.doc.toString();
+      const idx = currentDoc.indexOf(placeholder);
+      if (idx !== -1) {
+        view.dispatch({
+          changes: { from: idx, to: idx + placeholder.length, insert: `![${res.filename}](${res.url})` }
+        });
+      }
+    }).catch(err => {
+      const currentDoc = view.state.doc.toString();
+      const idx = currentDoc.indexOf(placeholder);
+      if (idx !== -1) {
+        view.dispatch({
+          changes: { from: idx, to: idx + placeholder.length, insert: `[Upload Failed: ${err.message}]` }
+        });
+      }
+    });
+  }, [imageConfig]);
+
+  const handleDrop = useCallback((event: any) => {
+    handlePaste(event);
+  }, [handlePaste]);
+
   console.log('================');
 
   /* eslint-disable react-hooks/exhaustive-deps */
   const extensions = useMemo(() => [
     markdown({ base: markdownLanguage, codeLanguages: languages }),
     EditorView.lineWrapping,
-    EditorView.domEventHandlers({ scroll: () => syncScroll('editor') }),
+    EditorView.lineWrapping,
+    EditorView.domEventHandlers({
+      scroll: () => syncScroll('editor'),
+      // paste handled by prop
+    }),
     EditorView.theme({
       '.cm-content': { paddingBottom: '30vh' },
       '&.cm-editor': { height: '100%' }
@@ -241,6 +318,7 @@ const App: React.FC = () => {
         onEditTheme={handleEditTheme}
         isEditorOpen={isCssModalOpen}
         onCloseEditor={() => setIsCssModalOpen(false)}
+        onSettingsClick={() => setIsSettingsModalOpen(true)}
       />
 
       <div className="flex-1 flex overflow-hidden">
@@ -255,6 +333,8 @@ const App: React.FC = () => {
                 value={content}
                 onChange={setContent}
                 extensions={extensions}
+                onPaste={handlePaste}
+                onDrop={handleDrop}
                 theme={vscodeLight}
                 basicSetup={{
                   lineNumbers: false,
@@ -296,6 +376,12 @@ const App: React.FC = () => {
           onDelete={handleDeleteTheme}
           onReset={handleResetTheme}
           onPreview={setPreviewTheme}
+        />
+        <SettingsModal
+          isOpen={isSettingsModalOpen}
+          onClose={() => setIsSettingsModalOpen(false)}
+          config={imageConfig}
+          onSave={setImageConfig}
         />
       </div>
     </div>

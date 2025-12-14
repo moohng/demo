@@ -5,7 +5,8 @@ import {
   Copy, 
   Check,
   Palette,
-  X
+  X,
+  Settings
 } from 'lucide-react';
 import { Theme, ViewMode } from '../types';
 
@@ -20,6 +21,7 @@ interface ToolbarProps {
   onEditTheme: (themeId: string) => void;
   isEditorOpen: boolean;
   onCloseEditor: () => void;
+  onSettingsClick: () => void;
 }
 
 const Toolbar: React.FC<ToolbarProps> = ({
@@ -32,7 +34,8 @@ const Toolbar: React.FC<ToolbarProps> = ({
   isCopied,
   onEditTheme,
   isEditorOpen,
-  onCloseEditor
+  onCloseEditor,
+  onSettingsClick
 }) => {
   const currentTheme = themes.find(t => t.id === currentThemeId);
 
@@ -124,6 +127,17 @@ const Toolbar: React.FC<ToolbarProps> = ({
             <Smartphone size={18} />
           </button>
         </div>
+
+        <div className="w-px h-6 bg-gray-200 mx-2"></div>
+
+        {/* Settings Button */}
+        <button
+          onClick={onSettingsClick}
+          className="h-9 w-9 flex items-center justify-center rounded-lg text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition-colors"
+          title="设置"
+        >
+          <Settings size={18} />
+        </button>
 
         {/* Action Button */}
         <button
