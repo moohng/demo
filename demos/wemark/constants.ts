@@ -265,6 +265,21 @@ em {
 .custom-container.danger .custom-container-title {
   color: #cc0000;
 }
+
+/* Task Lists */
+.contains-task-list {
+  padding-left: 0;
+}
+.task-list-item {
+  list-style-type: none !important;
+  padding-left: 0 !important;
+}
+.task-list-item input[type="checkbox"] {
+  margin: 0 8px 0 4px;
+  vertical-align: middle;
+  position: relative;
+  top: -2px;
+}
 `;
 
 export const DEFAULT_THEMES: Theme[] = [

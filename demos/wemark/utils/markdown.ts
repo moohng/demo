@@ -1,6 +1,7 @@
 import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js';
 import container from 'markdown-it-container';
+import taskLists from 'markdown-it-task-lists';
 
 export const md = new MarkdownIt({
   html: true,       // Enable HTML tags in source
@@ -64,6 +65,9 @@ md.use(...createContainer('warning', 'WARNING'));
 md.use(...createContainer('danger', 'DANGER'));
 // @ts-ignore
 md.use(...createContainer('success', 'SUCCESS'));
+
+// @ts-ignore
+md.use(taskLists, { enable: true });
 
 // 替换 li 标签，增加 section 包裹
 function replaceLiPlugin(md: MarkdownIt) {
