@@ -1,5 +1,6 @@
 import MarkdownIt from 'markdown-it';
 import hljs from 'highlight.js';
+import container from 'markdown-it-container';
 
 export const md = new MarkdownIt({
   html: true,       // Enable HTML tags in source
@@ -32,6 +33,37 @@ export const md = new MarkdownIt({
 });
 
 md.use(replaceLiPlugin);
+
+// Custom container helper
+const createContainer = (klass: string, defaultTitle: string) => {
+  return [container, klass, {
+    render: function (tokens: any[], idx: number) {
+      const token = tokens[idx];
+      const info = token.info.trim().slice(klass.length).trim();
+
+      if (token.nesting === 1) {
+        // opening tag
+        const title = info || defaultTitle;
+        return `<section class="custom-container ${klass}"><span class="custom-container-title">${title}</span>\n`;
+      } else {
+        // closing tag
+        return '</section>\n';
+      }
+    }
+  }];
+};
+
+// Register containers
+// @ts-ignore
+md.use(...createContainer('tip', 'TIP'));
+// @ts-ignore
+md.use(...createContainer('info', 'INFO'));
+// @ts-ignore
+md.use(...createContainer('warning', 'WARNING'));
+// @ts-ignore
+md.use(...createContainer('danger', 'DANGER'));
+// @ts-ignore
+md.use(...createContainer('success', 'SUCCESS'));
 
 // 替换 li 标签，增加 section 包裹
 function replaceLiPlugin(md: MarkdownIt) {

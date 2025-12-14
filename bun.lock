@@ -63,12 +63,14 @@
         "@codemirror/language-data": "6.5.2",
         "@types/highlight.js": "10.1.0",
         "@types/markdown-it": "14.1.2",
+        "@types/markdown-it-container": "2.0.11",
         "@uiw/codemirror-theme-github": "4.25.3",
         "@uiw/codemirror-theme-vscode": "4.25.3",
         "@uiw/react-codemirror": "4.25.3",
         "highlight.js": "11.11.1",
         "juice": "11.0.3",
         "markdown-it": "14.1.0",
+        "markdown-it-container": "4.0.0",
       },
     },
     "demos/wuziqiPro": {
@@ -580,6 +582,8 @@
 
     "@types/markdown-it": ["@types/markdown-it@14.1.2", "", { "dependencies": { "@types/linkify-it": "^5", "@types/mdurl": "^2" } }, "sha512-promo4eFwuiW+TfGxhi+0x3czqTYJkG8qB17ZUJiVF10Xm7NLVRSLUsfRTU/6h1e24VvRnXCx+hG7li58lkzog=="],
 
+    "@types/markdown-it-container": ["@types/markdown-it-container@2.0.11", "", { "dependencies": { "@types/markdown-it": "<14" } }, "sha512-tiVQNp2zEHoW7EQa3nNjGRoVk1Uqw9FN7xD39k663lknKZFfByPT3oDyHiaGg+IYu0vSL37PGpDjjMOgtw2GUA=="],
+
     "@types/mdurl": ["@types/mdurl@2.0.0", "", {}, "sha512-RGdgjQUZba5p6QEFAVx2OGb8rQDL/cPRG7GiedRzMcJ1tYnUANBncjbSB1NRGwbvjcPeikRABz2nshyPk1bhWg=="],
 
     "@types/node": ["@types/node@24.10.1", "", { "dependencies": { "undici-types": "~7.16.0" } }, "sha512-GNWcUTRBgIRJD5zj+Tq0fKOJ5XZajIiBroOF0yvj2bSU1WvNdYS/dn9UxwsujGW4JX06dnHyjV2y9rRaybH0iQ=="],
@@ -988,6 +992,8 @@
 
     "markdown-it": ["markdown-it@14.1.0", "", { "dependencies": { "argparse": "^2.0.1", "entities": "^4.4.0", "linkify-it": "^5.0.0", "mdurl": "^2.0.0", "punycode.js": "^2.3.1", "uc.micro": "^2.1.0" }, "bin": { "markdown-it": "bin/markdown-it.mjs" } }, "sha512-a54IwgWPaeBCAAsv13YgmALOF1elABB08FxO9i+r4VFk5Vl4pKokRPeX8u5TCgSsPi6ec1otfLjdOpVcgbpshg=="],
 
+    "markdown-it-container": ["markdown-it-container@4.0.0", "", {}, "sha512-HaNccxUH0l7BNGYbFbjmGpf5aLHAMTinqRZQAEQbMr2cdD3z91Q6kIo1oUn1CQndkT03jat6ckrdRYuwwqLlQw=="],
+
     "math-intrinsics": ["math-intrinsics@1.1.0", "", {}, "sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g=="],
 
     "md5": ["md5@2.3.0", "", { "dependencies": { "charenc": "0.0.2", "crypt": "0.0.2", "is-buffer": "~1.1.6" } }, "sha512-T1GITYmFaKuO91vxyoQMFETst+O71VUPEU3ze5GNzDm0OWdP8v1ziTaAEPUr/3kLsY3Sftgz242A1SetQiDL7g=="],
@@ -1234,6 +1240,8 @@
 
     "@supabase/realtime-js/ws": ["ws@8.18.3", "", { "peerDependencies": { "bufferutil": "^4.0.1", "utf-8-validate": ">=5.0.2" }, "optionalPeers": ["bufferutil", "utf-8-validate"] }, "sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg=="],
 
+    "@types/markdown-it-container/@types/markdown-it": ["@types/markdown-it@13.0.9", "", { "dependencies": { "@types/linkify-it": "^3", "@types/mdurl": "^1" } }, "sha512-1XPwR0+MgXLWfTn9gCsZ55AHOKW1WN+P9vr0PaQh5aerR9LLQXUbjfEAFhjmEmyoYFWAyuN2Mqkn40MZ4ukjBw=="],
+
     "@unocss/cli/chokidar": ["chokidar@3.6.0", "", { "dependencies": { "anymatch": "~3.1.2", "braces": "~3.0.2", "glob-parent": "~5.1.2", "is-binary-path": "~2.1.0", "is-glob": "~4.0.1", "normalize-path": "~3.0.0", "readdirp": "~3.6.0" }, "optionalDependencies": { "fsevents": "~2.3.2" } }, "sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw=="],
 
     "@unocss/transformer-attributify-jsx/@babel/parser": ["@babel/parser@7.27.7", "", { "dependencies": { "@babel/types": "^7.27.7" }, "bin": "./bin/babel-parser.js" }, "sha512-qnzXzDXdr/po3bOTbTIQZ7+TxNKxpkN5IifVLXS+r7qwynkZfPyjZfE7hCXbo7IoO9TNcSyibgONsf2HauUd3Q=="],
@@ -1293,6 +1301,10 @@
     "@leancloud/adapters-superagent/superagent/formidable": ["formidable@1.2.6", "", {}, "sha512-KcpbcpuLNOwrEjnbpMC0gS+X8ciDoZE1kkqzat4a8vrprf+s9pKNQ/QIwWfbfs4ltgmFl3MD177SNTkve3BwGQ=="],
 
     "@leancloud/adapters-superagent/superagent/semver": ["semver@7.7.3", "", { "bin": { "semver": "bin/semver.js" } }, "sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q=="],
+
+    "@types/markdown-it-container/@types/markdown-it/@types/linkify-it": ["@types/linkify-it@3.0.5", "", {}, "sha512-yg6E+u0/+Zjva+buc3EIb+29XEg4wltq7cSmd4Uc2EE/1nUVmxyzpX6gUXD0V8jIrG0r7YeOGVIbYRkxeooCtw=="],
+
+    "@types/markdown-it-container/@types/markdown-it/@types/mdurl": ["@types/mdurl@1.0.5", "", {}, "sha512-6L6VymKTzYSrEf4Nev4Xa1LCHKrlTlYCBMTlQKFuddo1CvQcE52I0mwfOJayueUC7MJuXOeHTcIU683lzd0cUA=="],
 
     "@unocss/cli/chokidar/readdirp": ["readdirp@3.6.0", "", { "dependencies": { "picomatch": "^2.2.1" } }, "sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA=="],
 

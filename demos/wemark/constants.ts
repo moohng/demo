@@ -124,7 +124,7 @@ ul, ol {
   margin: 1.25em 0 1.25em;
   padding-left: 1.5em;
 }
-* > ul, * > ol {
+li ul, li ol {
   margin: 0.25em 0 0.25em;
 }
 ul {
@@ -150,6 +150,7 @@ blockquote {
   color: #555;
   font-size: 0.95em;
   border-left: 4px solid #ddd;
+  border-radius: 0 4px 4px 0;
 }
 
 /* Inline Code */
@@ -219,6 +220,50 @@ hr {
 
 em {
   font-style: italic;
+}
+
+/* Custom Containers */
+.custom-container {
+  margin: 1.25em 0;
+  padding: 1.125em 1.125em 1px;
+  border-radius: 4px;
+  background-color: #f8f9fa;
+  font-size: 0.95em;
+}
+.custom-container-title {
+  font-weight: 600;
+}
+
+/* Info */
+.custom-container.info {
+  background-color: #f0f7ff;
+}
+.custom-container.info .custom-container-title {
+  color: #3b8eed;
+}
+
+/* Success */
+.custom-container.success {
+  background-color: #f3fdf9;
+}
+.custom-container.success .custom-container-title {
+  color: #42b983;
+}
+
+/* Warning */
+.custom-container.warning {
+  background-color: #fffbef;
+}
+.custom-container.warning .custom-container-title {
+  color: #b29400;
+}
+
+/* Danger */
+.custom-container.danger {
+  background-color: #ffe6e6;
+}
+.custom-container.danger .custom-container-title {
+  color: #cc0000;
 }
 `;
 
