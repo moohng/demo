@@ -49,9 +49,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, lang }) =
     try {
        const { error } = await supabase.auth.signInWithOAuth({
          provider: 'github',
+         options: {
+           redirectTo: window.location.origin,
+         },
        });
        if (error) throw error;
     } catch (err: any) {
+      console.error('GitHub login error:', err);
         setError(err.message);
     }
   };
