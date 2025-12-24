@@ -20,6 +20,54 @@ interface SearchOverlayProps {
   onQuickAdd?: (query: string) => void;
 }
 
+interface SearchItemProps {
+  title: string;
+  description: string;
+  categoryName?: string;
+  icon: React.ReactNode;
+  isSelected: boolean;
+  onSelect: () => void;
+  onMouseEnter: () => void;
+  onRemove?: () => void;
+  isQuickAdd?: boolean;
+}
+
+const SearchItem: React.FC<SearchItemProps> = ({
+  title, description, categoryName, icon, isSelected, onSelect, onMouseEnter, onRemove, isQuickAdd
+}) => (
+  <button
+    onClick={onSelect}
+    onMouseEnter={onMouseEnter}
+    className={`w-full p-4 flex items-center gap-4 transition-colors border-b border-gray-800/50 last:border-b-0 ${isSelected ? (isQuickAdd ? 'bg-primary/20' : 'bg-gray-800/70') : (isQuickAdd ? 'hover:bg-primary/10' : 'hover:bg-gray-800/50')
+      }`}
+  >
+    <div className={`p-2 rounded-lg flex items-center justify-center flex-shrink-0 ${isQuickAdd ? 'bg-primary/20 text-primary' : 'text-gray-500'}`}>
+      {icon}
+    </div>
+    <div className="flex-1 text-left min-w-0">
+      <div className={`font-medium truncate ${isQuickAdd ? 'text-white' : 'text-white'}`}>{title}</div>
+      <div className="text-sm text-gray-500 truncate">{description}</div>
+      {categoryName && (
+        <div className="text-xs text-gray-600 mt-1">{categoryName}</div>
+      )}
+    </div>
+    {onRemove ? (
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          onRemove();
+        }}
+        className="text-gray-600 hover:text-white transition-colors"
+      >
+        <X size={14} />
+      </button>
+    ) : (
+      !isQuickAdd && <ExternalLink size={16} className="text-gray-600 flex-shrink-0" />
+    )}
+    {isQuickAdd && <Sparkles size={16} className="text-primary animate-pulse" />}
+  </button>
+);
+
 export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
   isOpen,
   onClose,
@@ -85,7 +133,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      const itemsCount = displayItems.length + (showQuickAdd && query.trim() ? 1 : 0);
+      const itemsCount = displayItems.length + (showQuickAdd ? 1 : 0);
       if (e.key === 'Escape') {
         onClose();
       } else if (e.key === 'ArrowDown') {
@@ -175,104 +223,71 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
         {/* Results / History */}
         <div ref={resultsRef} className="max-h-96 overflow-y-auto custom-scrollbar">
           {query.trim() ? (
-            // Regular Search Results
-              <>
-                {searchResults.map((result, index) => (
-                <button
+            // Search Results
+            <>
+              {searchResults.map((result, index) => (
+                <SearchItem
                   key={`${result.categoryId}-${result.link.id}`}
-                  onClick={() => handleSelect(index)}
+                  title={result.link.title}
+                  description={result.link.description}
+                  categoryName={CATEGORY_NAMES[lang][result.categoryType]}
+                  icon={<Search size={18} />}
+                  isSelected={selectedIndex === index}
+                  onSelect={() => handleSelect(index)}
                   onMouseEnter={() => setSelectedIndex(index)}
-                  className={`w-full p-4 flex items-center gap-4 hover:bg-gray-800/50 transition-colors border-b border-gray-800/50 last:border-b-0 ${selectedIndex === index ? 'bg-gray-800/70' : ''
-                    }`}
-                >
-                  <div className="flex-1 text-left min-w-0">
-                    <div className="font-medium text-white truncate">{result.link.title}</div>
-                    <div className="text-sm text-gray-500 truncate">{result.link.description}</div>
-                    <div className="text-xs text-gray-600 mt-1">
-                      {CATEGORY_NAMES[lang][result.categoryType]}
-                    </div>
-                  </div>
-                  <ExternalLink size={16} className="text-gray-600 flex-shrink-0" />
-                </button>
+                />
               ))}
 
-                {showQuickAdd && (
-                  <button
-                    onClick={() => handleSelect(searchResults.length)}
-                    onMouseEnter={() => setSelectedIndex(searchResults.length)}
-                    className={`w-full p-4 flex items-center gap-4 hover:bg-primary/10 transition-colors border-b border-gray-800/50 last:border-b-0 ${selectedIndex === searchResults.length ? 'bg-primary/20' : ''
-                      }`}
-                  >
-                    <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
-                      <Plus size={18} />
-                    </div>
-                    <div className="flex-1 text-left min-w-0">
-                      <div className="font-medium text-white">
-                        {lang === 'cn' ? `将 "${query}" 添加为新链接` : `Add "${query}" as new link`}
-                      </div>
-                      <div className="text-sm text-gray-500 truncate">
-                        {lang === 'cn' ? '自动触发 AI 解析与填充' : 'Auto-trigger AI analysis and fill'}
-                      </div>
-                    </div>
-                    <Sparkles size={16} className="text-primary animate-pulse" />
-                  </button>
-                )}
+              {showQuickAdd && (
+                <SearchItem
+                  title={lang === 'cn' ? `将 "${query}" 添加为新链接` : `Add "${query}" as new link`}
+                  description={lang === 'cn' ? '自动触发 AI 解析与填充' : 'Auto-trigger AI analysis and fill'}
+                  icon={<Plus size={18} />}
+                  isSelected={selectedIndex === searchResults.length}
+                  onSelect={() => handleSelect(searchResults.length)}
+                  onMouseEnter={() => setSelectedIndex(searchResults.length)}
+                  isQuickAdd
+                />
+              )}
 
-                {searchResults.length === 0 && !showQuickAdd && (
-                  <div className="p-8 text-center text-gray-500">
-                    {lang === 'cn' ? '未找到匹配的链接' : 'No links found'}
-                  </div>
-                )}
-              </>
+              {searchResults.length === 0 && !showQuickAdd && (
+                <div className="p-8 text-center text-gray-500">
+                  {lang === 'cn' ? '未找到匹配的链接' : 'No links found'}
+                </div>
+              )}
+            </>
           ) : (
-            // Recent Links
-            recentLinks.length > 0 ? (
+              // Recent Links
               <>
+                {recentLinks.length > 0 && (
                 <div className="px-4 py-2 text-xs text-gray-500 uppercase tracking-wider border-b border-gray-800/50">
                   {lang === 'cn' ? '最近打开' : 'Recent Links'}
                 </div>
+                )}
                 {recentLinks.map((item, index) => {
-                  // Find category for this link
-                  const category = categories.find(cat =>
-                    cat.links.some(link => link.url === item.url)
-                  );
-
-                  return (
-                    <button
-                      key={item.url}
-                      onClick={() => handleSelect(index)}
-                      onMouseEnter={() => setSelectedIndex(index)}
-                      className={`w-full p-4 flex items-center gap-4 hover:bg-gray-800/50 transition-colors border-b border-gray-800/50 last:border-b-0 ${selectedIndex === index ? 'bg-gray-800/70' : ''
-                        }`}
-                    >
-                      <Clock size={16} className="text-gray-600 flex-shrink-0" />
-                      <div className="flex-1 text-left min-w-0">
-                        <div className="font-medium text-white truncate">{item.title}</div>
-                        <div className="text-sm text-gray-500 truncate">{item.description}</div>
-                        {category && (
-                          <div className="text-xs text-gray-600 mt-1">
-                            {CATEGORY_NAMES[lang][category.type]}
-                          </div>
-                        )}
-                      </div>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onRemoveFromRecent(item.url);
-                        }}
-                        className="text-gray-600 hover:text-white transition-colors"
-                      >
-                        <X size={14} />
-                      </button>
-                    </button>
-                  );
-                })}
-              </>
-            ) : (
-              <div className="p-8 text-center text-gray-500">
-                {lang === 'cn' ? '暂无最近打开的链接' : 'No recent links'}
-              </div>
-            )
+                const category = categories.find(cat =>
+                  cat.links.some(link => link.url === item.url)
+                );
+                return (
+                  <SearchItem
+                    key={item.url}
+                    title={item.title}
+                    description={item.description}
+                    categoryName={category ? CATEGORY_NAMES[lang][category.type] : undefined}
+                    icon={<Clock size={16} />}
+                    isSelected={selectedIndex === index}
+                    onSelect={() => handleSelect(index)}
+                    onMouseEnter={() => setSelectedIndex(index)}
+                    onRemove={() => onRemoveFromRecent(item.url)}
+                  />
+                );
+              })}
+                {recentLinks.length === 0 && (
+                  <div className="p-8 text-center text-gray-500">
+                    {lang === 'cn' ? '暂无最近打开的链接' : 'No recent links'}
+                  </div>
+                )}
+            </>
           )}
         </div>
 

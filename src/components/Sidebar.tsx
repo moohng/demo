@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronLeft, ChevronRight, Hash, Plus, Settings } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Hash, Plus, Settings, Search } from 'lucide-react';
 import { Category, CategoryType, Language } from '../types';
 import { CATEGORY_ICONS, CATEGORY_NAMES, CATEGORY_THEMES } from '../constants';
 
@@ -9,11 +9,11 @@ interface SidebarProps {
   categories: Category[];
   isCollapsed: boolean;
   setIsCollapsed: (collapsed: boolean) => void;
-  editMode: boolean;
   onAddCategory: () => void;
+  onSearchClick?: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollapsed, editMode, onAddCategory }) => {
+const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollapsed, onAddCategory, onSearchClick }) => {
   const { lang } = useLanguage();
   const scrollToCategory = (id: string) => {
     const element = document.getElementById(id);
@@ -40,7 +40,6 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollaps
       {/* Navigation Links */}
       <nav className="flex-1 overflow-y-auto overflow-x-hidden py-3 px-3 space-y-2 custom-scrollbar">
         {categories
-          .filter(category => editMode || category.links.length > 0)
           .map((category) => {
             const Icon = CATEGORY_ICONS[category.type] || Hash;
             const displayName = category.customName || CATEGORY_NAMES[lang][category.type];
@@ -79,7 +78,7 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollaps
           })}
 
         {/* Add Category Button - only in edit mode */}
-        {editMode && !isCollapsed && (
+        {!isCollapsed && (
           <button
             onClick={onAddCategory}
             className="w-full flex items-center p-3 rounded-xl transition-all duration-200 border-2 border-dashed border-gray-700 hover:border-primary/50 text-gray-500 hover:text-primary gap-3"

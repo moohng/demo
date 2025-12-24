@@ -7,21 +7,13 @@ export const useAppState = () => {
     return saved ? JSON.parse(saved) : false;
   });
 
-  // Edit Mode
-  const [editMode, setEditMode] = useState(false);
-
   // Persistence Effects
   useEffect(() => {
     localStorage.setItem('sidebarCollapsed', JSON.stringify(isSidebarCollapsed));
   }, [isSidebarCollapsed]);
 
-  const toggleEditMode = () => setEditMode(prev => !prev);
-
   return {
     isSidebarCollapsed,
-    setIsSidebarCollapsed,
-    editMode,
-    setEditMode,
-    toggleEditMode
+    setIsSidebarCollapsed
   };
 };
