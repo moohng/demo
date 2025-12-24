@@ -1,14 +1,14 @@
 import React from 'react';
 import { X, HelpCircle } from 'lucide-react';
-import { Language } from '../../types';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface HelpModalProps {
   isOpen: boolean;
-  lang: Language;
   onClose: () => void;
 }
 
-export const HelpModal: React.FC<HelpModalProps> = React.memo(({ isOpen, lang, onClose }) => {
+export const HelpModal: React.FC<HelpModalProps> = React.memo(({ isOpen, onClose }) => {
+  const { lang } = useLanguage();
   if (!isOpen) return null;
 
   return (

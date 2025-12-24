@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Search, Clock, X, ExternalLink, Sparkles } from 'lucide-react';
-import { Category, LinkItem, Language } from '../types';
+import { Search, Clock, X, ExternalLink, Sparkles, Plus } from 'lucide-react';
+import { Category, LinkItem } from '../types';
 import { CATEGORY_NAMES } from '../constants';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface SearchResult {
   link: LinkItem;
@@ -16,10 +17,7 @@ interface SearchOverlayProps {
   recentLinks: LinkItem[];
   onAddToRecent: (link: LinkItem) => void;
   onRemoveFromRecent: (url: string) => void;
-  lang: Language;
-  isAiSearch: boolean;
-  aiRecommendations: string;
-  isAiSearching: boolean;
+  onQuickAdd?: (query: string) => void;
 }
 
 export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
@@ -29,11 +27,9 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
   recentLinks,
   onAddToRecent,
   onRemoveFromRecent,
-  lang,
-  isAiSearch,
-  aiRecommendations,
-  isAiSearching
+  onQuickAdd
 }) => {
+  const { lang } = useLanguage();
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -41,7 +37,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
 
   // Search results
   const searchResults: SearchResult[] = React.useMemo(() => {
-    if (!query.trim() || isAiSearch) return [];
+    if (!query.trim()) return [];
 
     const lowerQuery = query.toLowerCase();
     const results: SearchResult[] = [];
@@ -63,7 +59,9 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
     });
 
     return results.slice(0, 8); // Limit to 8 results
-  }, [query, categories, isAiSearch]);
+  }, [query, categories]);
+
+  const showQuickAdd = query.trim() !== '' && searchResults.length < 3;
 
   // Display items (search results or recent links)
   const displayItems = query.trim() ? searchResults : recentLinks;
@@ -87,14 +85,15 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
     if (!isOpen) return;
 
     const handleKeyDown = (e: KeyboardEvent) => {
+      const itemsCount = displayItems.length + (showQuickAdd && query.trim() ? 1 : 0);
       if (e.key === 'Escape') {
         onClose();
       } else if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev + 1) % displayItems.length);
+        setSelectedIndex(prev => (prev + 1) % itemsCount);
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setSelectedIndex(prev => (prev - 1 + displayItems.length) % displayItems.length);
+        setSelectedIndex(prev => (prev - 1 + itemsCount) % itemsCount);
       } else if (e.key === 'Enter') {
         e.preventDefault();
         handleSelect(selectedIndex);
@@ -103,7 +102,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, selectedIndex, displayItems, onClose]);
+  }, [isOpen, selectedIndex, displayItems, onClose, showQuickAdd, query]);
 
   // Scroll selected item into view
   useEffect(() => {
@@ -116,6 +115,13 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
   }, [selectedIndex]);
 
   const handleSelect = useCallback((index: number) => {
+    // Check if it's the Quick Add item
+    if (showQuickAdd && index === searchResults.length) {
+      onQuickAdd?.(query);
+      onClose();
+      return;
+    }
+
     const item = displayItems[index];
     if (!item) return;
 
@@ -130,7 +136,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
       window.open(item.url, '_blank');
       onClose();
     }
-  }, [displayItems, onAddToRecent, onClose]);
+  }, [displayItems, onAddToRecent, onClose, showQuickAdd, query, searchResults.length, onQuickAdd]);
 
   if (!isOpen) return null;
 
@@ -168,23 +174,10 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
 
         {/* Results / History */}
         <div ref={resultsRef} className="max-h-96 overflow-y-auto custom-scrollbar">
-          {isAiSearch && query.trim() ? (
-            // AI Search Results
-            <div className="p-6">
-              <div className="flex items-center gap-2 mb-4 text-primary">
-                <Sparkles size={20} />
-                <h3 className="font-bold">{lang === 'cn' ? 'AI 推荐' : 'AI Recommendations'}</h3>
-              </div>
-              {isAiSearching ? (
-                <div className="text-gray-400 text-sm">{lang === 'cn' ? '正在分析...' : 'Analyzing...'}</div>
-              ) : (
-                <div className="text-gray-300 text-sm whitespace-pre-wrap">{aiRecommendations || (lang === 'cn' ? '输入搜索词以获取 AI 推荐' : 'Enter a search term to get AI recommendations')}</div>
-              )}
-            </div>
-          ) : query.trim() ? (
+          {query.trim() ? (
             // Regular Search Results
-            searchResults.length > 0 ? (
-              searchResults.map((result, index) => (
+              <>
+                {searchResults.map((result, index) => (
                 <button
                   key={`${result.categoryId}-${result.link.id}`}
                   onClick={() => handleSelect(index)}
@@ -201,12 +194,36 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
                   </div>
                   <ExternalLink size={16} className="text-gray-600 flex-shrink-0" />
                 </button>
-              ))
-            ) : (
-              <div className="p-8 text-center text-gray-500">
-                {lang === 'cn' ? '未找到匹配的链接' : 'No links found'}
-              </div>
-            )
+              ))}
+
+                {showQuickAdd && (
+                  <button
+                    onClick={() => handleSelect(searchResults.length)}
+                    onMouseEnter={() => setSelectedIndex(searchResults.length)}
+                    className={`w-full p-4 flex items-center gap-4 hover:bg-primary/10 transition-colors border-b border-gray-800/50 last:border-b-0 ${selectedIndex === searchResults.length ? 'bg-primary/20' : ''
+                      }`}
+                  >
+                    <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
+                      <Plus size={18} />
+                    </div>
+                    <div className="flex-1 text-left min-w-0">
+                      <div className="font-medium text-white">
+                        {lang === 'cn' ? `将 "${query}" 添加为新链接` : `Add "${query}" as new link`}
+                      </div>
+                      <div className="text-sm text-gray-500 truncate">
+                        {lang === 'cn' ? '自动触发 AI 解析与填充' : 'Auto-trigger AI analysis and fill'}
+                      </div>
+                    </div>
+                    <Sparkles size={16} className="text-primary animate-pulse" />
+                  </button>
+                )}
+
+                {searchResults.length === 0 && !showQuickAdd && (
+                  <div className="p-8 text-center text-gray-500">
+                    {lang === 'cn' ? '未找到匹配的链接' : 'No links found'}
+                  </div>
+                )}
+              </>
           ) : (
             // Recent Links
             recentLinks.length > 0 ? (

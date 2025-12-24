@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { X, Mail, Lock, LogIn, UserPlus, Loader2, Github } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
-import { Language } from '../../types';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  lang: Language;
 }
 
-export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, lang }) => {
+export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
+  const { lang } = useLanguage();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

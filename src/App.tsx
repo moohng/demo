@@ -6,13 +6,11 @@ import Header from './components/Header';
 import CategorySection from './components/CategorySection';
 import Footer from './components/Footer';
 import Sidebar from './components/Sidebar';
-import { Toast } from './components/Toast';
 import { SearchOverlay } from './components/SearchOverlay';
 import { ImportConfirmModal } from './components/modals/ImportConfirmModal';
 import { ManualImportModal } from './components/modals/ManualImportModal';
 import { HelpModal } from './components/modals/HelpModal';
 import { CategoryModal } from './components/modals/CategoryModal';
-import { ConfirmModal } from './components/modals/ConfirmModal';
 import { AISettingsModal } from './components/modals/AISettingsModal';
 import { ImportProgressOverlay } from './components/overlays/ImportProgressOverlay';
 import { AuthModal } from './components/modals/AuthModal';
@@ -20,42 +18,41 @@ import { AddLinkModal } from './components/modals/AddLinkModal';
 
 // Types & Config
 import { Category, CategoryType, LinkItem } from './types';
-import { recommendTools } from './services/geminiService';
 
 // Hooks
-import { useNotification } from './hooks/useNotification';
 import { useImport } from './hooks/useImport';
 import { useSearchHistory } from './hooks/useSearchHistory';
 import { useCategories } from './hooks/useCategories';
 import { useAppState } from './hooks/useAppState';
 import { useLinkModal } from './hooks/useLinkModal';
+import { useNotification } from './contexts/NotificationContext';
+import { useConfirm } from './contexts/ConfirmContext';
 import { useLanguage } from './contexts/LanguageContext';
 
 function App() {
   // 1. Hooks Initialization
-  const { 
-    categories, 
-    addCategory, 
-    updateCategory, 
-    deleteCategory, 
-    addLink, 
-    deleteLink 
+  const {
+    categories,
+    addCategory,
+    updateCategory,
+    deleteCategory,
+    addLink,
+    deleteLink
   } = useCategories();
 
-  const { lang, toggleLang } = useLanguage();
+  const { lang } = useLanguage();
+  const { showNotification } = useNotification();
+  const { showConfirm } = useConfirm();
 
   const {
     isSidebarCollapsed,
     setIsSidebarCollapsed,
-    isAiSearch,
-    toggleAiSearch,
     editMode,
     toggleEditMode
   } = useAppState();
 
-  const { notification, showNotification } = useNotification();
   const { history: searchHistory, addToHistory, removeFromHistory } = useSearchHistory();
-  
+
   // Import Logic
   const {
     importProgress,
@@ -74,28 +71,18 @@ function App() {
   } = useImport();
 
   // Local UI State
-  const [searchQuery, setSearchQuery] = useState('');
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showHelpModal, setShowHelpModal] = useState(false);
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showAISettings, setShowAISettings] = useState(false);
-  
-  // Confirm Modal
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
-  const [confirmModalData, setConfirmModalData] = useState<{
-    title: string;
-    message: string;
-    onConfirm: () => void;
-  } | null>(null);
 
   // Category Edit State
   const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null);
   const [isQuickAddCategory, setIsQuickAddCategory] = useState(false);
 
-  // AI Search State
-  const [aiRecommendations, setAiRecommendations] = useState('');
-  const [isAiSearching, setIsAiSearching] = useState(false);
+  // Quick Add State
+  const [quickAddUrl, setQuickAddUrl] = useState<string | undefined>(undefined);
 
   // Link Modal Hook
   const {
@@ -103,27 +90,15 @@ function App() {
     setIsOpen: setShowAddModal,
     editingLinkId,
     originalCategoryId,
-    linkUrl,
-    setLinkUrl,
-    linkTitle,
-    setLinkTitle,
-    linkDesc,
-    setLinkDesc,
-    linkCategory,
-    setLinkCategory,
-    isAutoFilling,
-    handleAutoFill,
     openAddModal,
     openEditModal
-  } = useLinkModal({ 
-    categories, 
-    lang, 
-    showNotification,
+  } = useLinkModal({
+    categories,
     onSaveCategory: addCategory
   });
 
   // 2. Effects
-  
+
   // Resize Handler
   useEffect(() => {
     const handleResize = () => setIsSidebarCollapsed(window.innerWidth < 1280);
@@ -135,9 +110,24 @@ function App() {
   // Keyboard Shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
+      // 1. Meta/Ctrl + K
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         setShowSearchOverlay(true);
+        return;
+      }
+
+      // 2. Space (Only when not typing)
+      if (e.code === 'Space' || e.key === ' ') {
+        const target = e.target as HTMLElement;
+        const isInput = target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.isContentEditable;
+
+        if (!isInput) {
+          e.preventDefault();
+          setShowSearchOverlay(true);
+        }
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -150,26 +140,6 @@ function App() {
     return () => { delete (window as any).openAISettings; };
   }, []);
 
-  // AI Search Debounce
-  useEffect(() => {
-    const timer = setTimeout(async () => {
-      if (isAiSearch && searchQuery.length > 2) {
-        setIsAiSearching(true);
-        try {
-          const result = await recommendTools(searchQuery, categories, lang);
-          setAiRecommendations(result);
-        } catch (e) {
-          console.error("AI Search failed", e);
-        } finally {
-          setIsAiSearching(false);
-        }
-      } else if (isAiSearch && searchQuery.length === 0) {
-        setAiRecommendations('');
-      }
-    }, 800);
-    return () => clearTimeout(timer);
-  }, [searchQuery, isAiSearch, categories, lang]);
-
   // Edit Mode Side Effects
   useEffect(() => {
     if (editMode) {
@@ -179,67 +149,13 @@ function App() {
 
 
   // 3. Handlers
+  const handleQuickAdd = useCallback((url: string) => {
+    setQuickAddUrl(url);
+    setShowAddModal(true);
+  }, []);
 
   // Link Saving
-  const handleSaveLink = useCallback(async () => {
-    if (!linkTitle || !linkUrl) return;
 
-    let formattedUrl = linkUrl;
-    if (!/^https?:\/\//i.test(formattedUrl)) {
-      formattedUrl = 'https://' + formattedUrl;
-    }
-
-    // Check duplicate
-    const duplicateLink = categories.flatMap(c => c.links).find(
-      l => l.url.toLowerCase() === formattedUrl.toLowerCase() && l.id !== editingLinkId
-    );
-
-    const saveAction = async () => {
-      const linkData: LinkItem = {
-        id: editingLinkId || crypto.randomUUID(),
-        title: linkTitle,
-        url: formattedUrl,
-        description: linkDesc || 'Custom Bookmark',
-      };
-
-      // 1. Remove duplicate if exists
-      if (duplicateLink) {
-        const dupCat = categories.find(c => c.links.some(l => l.id === duplicateLink.id));
-        if (dupCat) await deleteLink(dupCat.id, duplicateLink.id);
-      }
-
-      // 2. Remove from old category if moving
-      if (editingLinkId && originalCategoryId) {
-         const oldCat = categories.find(c => c.id === originalCategoryId);
-         const targetCat = categories.find(c => c.type === linkCategory);
-         if (oldCat && targetCat && oldCat.id !== targetCat.id) {
-             await deleteLink(originalCategoryId, editingLinkId);
-         }
-      }
-
-      // 3. Add/Update in target
-      const targetCat  = categories.find(c => c.type === linkCategory);
-      if (targetCat) {
-        await addLink(targetCat.id, linkData);
-      }
-      
-      setShowAddModal(false);
-      showNotification(lang === 'cn' ? '保存成功' : 'Saved successfully', 'success');
-    };
-
-    if (duplicateLink) {
-      setConfirmModalData({
-        title: lang === 'cn' ? 'URL 已存在' : 'URL Already Exists',
-        message: lang === 'cn'
-          ? `URL "${formattedUrl}" 已存在于书签中（${duplicateLink.title}）。确认保存将覆盖现有链接。`
-          : `URL "${formattedUrl}" already exists. Overwrite?`,
-        onConfirm: saveAction
-      });
-      setShowConfirmModal(true);
-    } else {
-      await saveAction();
-    }
-  }, [linkTitle, linkUrl, linkDesc, linkCategory, editingLinkId, originalCategoryId, categories, lang, deleteLink, addLink, showNotification, setShowAddModal]);
 
 
   // Category Management
@@ -266,16 +182,21 @@ function App() {
     }
     setEditingCategoryId(null);
     setShowCategoryModal(false);
-  }, [editingCategoryId, categories, updateCategory, addCategory, isQuickAddCategory, setLinkCategory, showNotification, lang]);
+  }, [editingCategoryId, categories, updateCategory, addCategory, isQuickAddCategory, showNotification, lang]);
 
   const handleDeleteCategoryHandler = useCallback(async (categoryId: string) => {
     const category = categories.find(c => c.id === categoryId);
     if (!category) return;
-    if (window.confirm(lang === 'cn' ? '确定删除吗？' : 'Are you sure?')) {
-      await deleteCategory(categoryId);
-      showNotification(lang === 'cn' ? '分类已删除' : 'Category deleted', 'success');
-    }
-  }, [categories, lang, deleteCategory, showNotification]);
+
+    showConfirm({
+      title: lang === 'cn' ? '删除分类' : 'Delete Category',
+      message: lang === 'cn' ? `确定要删除分类 "${category.customName}" 吗？此操作不可撤销。` : `Are you sure you want to delete "${category.customName}"? This action cannot be undone.`,
+      onConfirm: async () => {
+        await deleteCategory(categoryId);
+        showNotification(lang === 'cn' ? '分类已删除' : 'Category deleted', 'success');
+      }
+    });
+  }, [categories, lang, deleteCategory, showNotification, showConfirm]);
 
   const handleLinkVisit = useCallback((linkId: string) => {
     const category = categories.find(c => c.links.some(l => l.id === linkId));
@@ -283,9 +204,9 @@ function App() {
       const link = category.links.find(l => l.id === linkId);
       if (link) {
         addLink(category.id, {
-           ...link, 
-           visitCount: (link.visitCount || 0) + 1, 
-           lastVisited: Date.now() 
+          ...link,
+          visitCount: (link.visitCount || 0) + 1,
+          lastVisited: Date.now()
         });
       }
     }
@@ -303,8 +224,8 @@ function App() {
     setShowImportConfirmModal(false);
     const results = await processAIImport(pendingImportLinks, lang);
     for (const item of results) {
-       const cat = categories.find(c => c.type === item.category);
-       if (cat) await addLink(cat.id, item.link);
+      const cat = categories.find(c => c.type === item.category);
+      if (cat) await addLink(cat.id, item.link);
     }
     showNotification(lang === 'cn' ? '导入成功' : 'Import success', 'success');
   }, [pendingImportLinks, lang, processAIImport, categories, addLink, showNotification, setShowImportConfirmModal]);
@@ -312,36 +233,18 @@ function App() {
   const finishBulkImport = useCallback(async () => {
     const selected = manualImportCandidates.filter(c => c.selected);
     for (const item of selected) {
-       const cat = categories.find(c => c.type === item.category);
-       if (cat) {
-         await addLink(cat.id, { ...item.link, description: item.link.description || 'Imported' });
-       }
+      const cat = categories.find(c => c.type === item.category);
+      if (cat) {
+        await addLink(cat.id, { ...item.link, description: item.link.description || 'Imported' });
+      }
     }
     setShowManualImportModal(false);
     showNotification(lang === 'cn' ? '导入成功' : 'Import success', 'success');
   }, [manualImportCandidates, categories, addLink, setShowManualImportModal, showNotification, lang]);
 
-
-  // 4. Render
-  
-  const filteredCategories = useMemo(() => {
-    if (!searchQuery || isAiSearch) return categories;
-    const lowerQuery = searchQuery.toLowerCase();
-    return categories.map(cat => ({
-      ...cat,
-      links: cat.links.filter(link =>
-        link.title.toLowerCase().includes(lowerQuery) ||
-        link.description.toLowerCase().includes(lowerQuery) ||
-        link.url.toLowerCase().includes(lowerQuery)
-      )
-    })).filter(cat => cat.links.length > 0);
-  }, [categories, searchQuery, isAiSearch]);
-
   return (
     <div className="min-h-screen bg-background text-white relative overflow-hidden">
       <div className="relative z-10">
-        <Toast {...notification} />
-        
         {/* Modals & Overlays */}
         <SearchOverlay
           isOpen={showSearchOverlay}
@@ -350,18 +253,14 @@ function App() {
           recentLinks={searchHistory}
           onAddToRecent={addToHistory}
           onRemoveFromRecent={removeFromHistory}
-          lang={lang}
-          isAiSearch={isAiSearch}
-          aiRecommendations={aiRecommendations}
-          isAiSearching={isAiSearching}
+          onQuickAdd={handleQuickAdd}
         />
-        
-        <ImportProgressOverlay {...importProgress} lang={lang} />
-        
+
+        <ImportProgressOverlay {...importProgress} />
+
         <ImportConfirmModal
           isOpen={showImportConfirmModal}
           bookmarkCount={pendingImportLinks.length}
-          lang={lang}
           onClose={() => setShowImportConfirmModal(false)}
           onAIImport={processAIImportHandler}
           onManualImport={startManualImport}
@@ -370,7 +269,6 @@ function App() {
         <ManualImportModal
           isOpen={showManualImportModal}
           candidates={manualImportCandidates}
-          lang={lang}
           onClose={() => setShowManualImportModal(false)}
           onToggleCandidate={toggleCandidate}
           onUpdateCategory={updateCandidateCategory}
@@ -378,64 +276,40 @@ function App() {
           onImport={finishBulkImport}
         />
 
-        <HelpModal isOpen={showHelpModal} lang={lang} onClose={() => setShowHelpModal(false)} />
-        
-        <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} lang={lang} />
-        
-        <AISettingsModal isOpen={showAISettings} onClose={() => setShowAISettings(false)} lang={lang} />
+        <HelpModal isOpen={showHelpModal} onClose={() => setShowHelpModal(false)} />
+
+        <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+
+        <AISettingsModal isOpen={showAISettings} onClose={() => setShowAISettings(false)} />
 
         <CategoryModal
-           isOpen={showCategoryModal}
-           onClose={() => setShowCategoryModal(false)}
-           onSave={handleSaveCategory}
-           editingCategory={categories.find(c => c.id === editingCategoryId)}
-           lang={lang}
-        />
-
-        <ConfirmModal
-          isOpen={showConfirmModal}
-          onClose={() => setShowConfirmModal(false)}
-          onConfirm={() => {
-             confirmModalData?.onConfirm();
-             setShowConfirmModal(false);
-          }}
-          title={confirmModalData?.title || ''}
-          message={confirmModalData?.message || ''}
-          lang={lang}
+          isOpen={showCategoryModal}
+          onClose={() => setShowCategoryModal(false)}
+          onSave={handleSaveCategory}
+          editingCategory={categories.find(c => c.id === editingCategoryId)}
         />
 
         <AddLinkModal
-           isOpen={showAddModal}
-           onClose={() => setShowAddModal(false)}
-           lang={lang}
-           categories={categories}
-           linkUrl={linkUrl}
-           setLinkUrl={setLinkUrl}
-           linkTitle={linkTitle}
-           setLinkTitle={setLinkTitle}
-           linkDesc={linkDesc}
-           setLinkDesc={setLinkDesc}
-           linkCategory={linkCategory}
-           setLinkCategory={setLinkCategory}
-           onAutoFill={handleAutoFill}
-           isAutoFilling={isAutoFilling}
-           onSave={handleSaveLink}
-           onQuickAddCategory={() => {
-              setEditingCategoryId(null);
-              setIsQuickAddCategory(true);
-              setShowCategoryModal(true);
-           }}
-           isEditing={!!editingLinkId}
+          isOpen={showAddModal}
+          onClose={() => {
+            setShowAddModal(false);
+            setQuickAddUrl(undefined);
+          }}
+          categories={categories}
+          initialUrl={quickAddUrl}
+          // onSave={handleSaveLink}
+          onQuickAddCategory={() => {
+            setEditingCategoryId(null);
+            setIsQuickAddCategory(true);
+            setShowCategoryModal(true);
+          }}
+          isEditing={!!editingLinkId}
         />
 
         {/* Layout */}
         <Header
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
           editMode={editMode}
           setEditMode={toggleEditMode}
-          isAiSearch={isAiSearch}
-          toggleAiSearch={toggleAiSearch}
           onSearchClick={() => setShowSearchOverlay(true)}
           onLoginClick={() => setShowAuthModal(true)}
         />
@@ -447,53 +321,34 @@ function App() {
             setIsCollapsed={setIsSidebarCollapsed}
             editMode={editMode}
             onAddCategory={() => {
-                setEditingCategoryId(null);
-                setIsQuickAddCategory(false);
-                setShowCategoryModal(true);
+              setEditingCategoryId(null);
+              setIsQuickAddCategory(false);
+              setShowCategoryModal(true);
             }}
           />
 
           <main className={`flex-1 overflow-y-auto p-8 transition-all duration-300 ${isSidebarCollapsed ? 'md:pl-24' : 'md:pl-52'}`}>
-             {isAiSearch && searchQuery ? (
-               <div className="max-w-4xl mx-auto mb-6">
-                 <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
-                    <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                       <Sparkles className="text-primary" />
-                       {lang === 'cn' ? 'AI 推荐' : 'AI Recommendations'}
-                    </h2>
-                    {isAiSearching ? (
-                      <div className="flex items-center gap-3 text-gray-400">
-                         <Loader2 className="animate-spin" size={20} />
-                         {lang === 'cn' ? '正在分析...' : 'Analyzing...'}
-                      </div>
-                    ) : (
-                      <p className="text-gray-300 whitespace-pre-wrap">{aiRecommendations}</p>
-                    )}
-                 </div>
-               </div>
-             ) : (
-                <div className="space-y-12">
-                   {filteredCategories.map(category => (
-                     <CategorySection
-                        key={category.id}
-                        category={category}
-                        onEdit={openEditModal}
-                        onDelete={(catId, linkId) => deleteLink(catId, linkId)}
-                        onEditCategory={(id) => {
-                            setEditingCategoryId(id);
-                            setShowCategoryModal(true);
-                        }}
-                        onDeleteCategory={handleDeleteCategoryHandler}
-                        onVisit={handleLinkVisit}
-                       editMode={editMode}
-                     />
-                   ))}
-                </div>
-             )}
-             
+            <div className="space-y-12">
+              {categories.map(category => (
+                  <CategorySection
+                    key={category.id}
+                    category={category}
+                    onEdit={openEditModal}
+                    onDelete={(catId, linkId) => deleteLink(catId, linkId)}
+                    onEditCategory={(id) => {
+                      setEditingCategoryId(id);
+                      setShowCategoryModal(true);
+                    }}
+                    onDeleteCategory={handleDeleteCategoryHandler}
+                    onVisit={handleLinkVisit}
+                    editMode={editMode}
+                  />
+                ))}
+            </div>
 
 
-             <Footer lang={lang} />
+
+            <Footer />
           </main>
         </div>
 

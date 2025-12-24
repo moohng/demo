@@ -5,6 +5,8 @@ import App from './App';
 
 import 'virtual:uno.css';
 import { LanguageProvider } from './contexts/LanguageContext';
+import { NotificationProvider } from './contexts/NotificationContext';
+import { ConfirmProvider } from './contexts/ConfirmContext';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -15,8 +17,12 @@ const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
     <LanguageProvider>
-      <App />
-      <SpeedInsights />
+      <NotificationProvider>
+        <ConfirmProvider>
+          <App />
+          <SpeedInsights />
+        </ConfirmProvider>
+      </NotificationProvider>
     </LanguageProvider>
   </React.StrictMode>
 );

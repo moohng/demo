@@ -1,11 +1,10 @@
 import React from 'react';
 import { X, Upload, Sparkles, User } from 'lucide-react';
-import { Language } from '../../types';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface ImportConfirmModalProps {
   isOpen: boolean;
   bookmarkCount: number;
-  lang: Language;
   onClose: () => void;
   onAIImport: () => void;
   onManualImport: () => void;
@@ -14,11 +13,11 @@ interface ImportConfirmModalProps {
 export const ImportConfirmModal: React.FC<ImportConfirmModalProps> = React.memo(({
   isOpen,
   bookmarkCount,
-  lang,
   onClose,
   onAIImport,
   onManualImport
 }) => {
+  const { lang } = useLanguage();
   if (!isOpen) return null;
 
   return (

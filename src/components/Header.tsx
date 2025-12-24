@@ -1,30 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Command, Terminal, Globe, Sparkles, User, LogOut } from 'lucide-react';
-import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { supabase } from '../lib/supabase';
 
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface HeaderProps {
-  searchQuery: string;
-  setSearchQuery: (query: string) => void;
   editMode: boolean;
   setEditMode: (mode: boolean) => void;
-  isAiSearch: boolean;
-  toggleAiSearch: () => void;
   onSearchClick?: () => void;
   showWallpaperPanel?: boolean;
   onLoginClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, editMode, setEditMode, isAiSearch, toggleAiSearch, onSearchClick, showWallpaperPanel = false, onLoginClick }) => {
+const Header: React.FC<HeaderProps> = ({ editMode, setEditMode, onSearchClick, showWallpaperPanel = false, onLoginClick }) => {
   const { lang, toggleLang } = useLanguage();
   const [greeting, setGreeting] = useState('');
   const [time, setTime] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);
   const [user, setUser] = useState<any>(null);
   const t = TRANSLATIONS[lang];
+
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const updateTime = () => {
@@ -109,19 +106,8 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, editMode, 
             className="w-full bg-gray-900/60 border border-gray-700 hover:border-gray-600 focus:border-primary/50 text-white text-lg rounded-2xl py-4 pl-12 pr-4 shadow-xl focus:ring-4 focus:ring-primary/10 transition-all outline-none placeholder:text-gray-600 cursor-pointer"
           />
           <div className="absolute inset-y-0 right-4 flex items-center gap-2">
-            <button
-              onClick={toggleAiSearch}
-              className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all ${isAiSearch
-                ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                : 'bg-gray-800 text-gray-400 hover:text-white'
-                }`}
-              title={lang === 'cn' ? "AI 智能搜索" : "AI Smart Search"}
-            >
-              <Sparkles size={12} />
-              <span>AI</span>
-            </button>
             <kbd className="hidden md:inline-flex items-center gap-1 px-2 py-1 bg-gray-800 border border-gray-700 rounded text-xs text-gray-400 font-sans">
-              <Command size={10} /> K
+              space
             </kbd>
           </div>
         </div>
@@ -150,14 +136,40 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, editMode, 
 
           {/* User / Login Button */}
           {user ? (
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors border bg-glass text-gray-400 border-glassBorder hover:text-red-400 hover:bg-red-500/10 hover:border-red-500/30"
-              title={lang === 'cn' ? "退出登录" : "Sign Out"}
-            >
-              <LogOut size={14} />
-              {lang === 'cn' ? '退出' : 'Out'}
-            </button>
+            <div className="group relative">
+              <button
+                className="flex items-center gap-2 p-0.5 rounded-full border-2 border-glassBorder hover:border-primary/50 transition-all overflow-hidden bg-glass shadow-lg group-hover:shadow-primary/20"
+              >
+                {user.user_metadata?.avatar_url ? (
+                  <img
+                    src={user.user_metadata.avatar_url}
+                    alt="User"
+                    className="w-8 h-8 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center text-white font-bold text-sm">
+                    {(user.email?.[0] || 'U').toUpperCase()}
+                  </div>
+                )}
+              </button>
+
+              {/* Dropdown Menu */}
+              <div className="absolute top-full right-0 mt-2 w-48 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-2 group-hover:translate-y-0 z-[60]">
+                <div className="bg-gray-900/90 backdrop-blur-xl border border-glassBorder rounded-xl shadow-2xl p-2 overflow-hidden">
+                  <div className="px-3 py-2 border-b border-gray-800 mb-1">
+                    <p className="text-[10px] text-gray-500 uppercase tracking-wider font-bold">Account</p>
+                    <p className="text-sm text-gray-300 truncate font-medium">{user.email}</p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-gray-400 hover:bg-red-500/10 hover:text-red-400 transition-colors group/item"
+                  >
+                    <LogOut size={14} className="group-hover/item:scale-110 transition-transform" />
+                    <span>{lang === 'cn' ? '退出登录' : 'Sign Out'}</span>
+                  </button>
+                </div>
+              </div>
+            </div>
           ) : (
             <button
               onClick={onLoginClick}
@@ -172,7 +184,7 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, editMode, 
       </div>
 
       {/* Sticky Search Bar - shows when scrolled */}
-      <div className={`fixed top-8 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${isScrolled ? 'translate-y-0 opacity-100' : '-translate-y-20 opacity-0 pointer-events-none'
+      <div className={`fixed top-12 left-1/2 -translate-x-1/2 z-50 transition-all duration-300 ${isScrolled ? 'translate-y-0 opacity-100' : '-translate-y-20 opacity-0 pointer-events-none'
         }`}>
         <div className="bg-gray-900/95 backdrop-blur-xl border border-gray-700 rounded-2xl shadow-2xl px-4 py-3 w-[600px] max-w-[90vw]">
           <div className="relative group">
@@ -188,18 +200,8 @@ const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, editMode, 
               className="w-full bg-gray-800/50 border border-gray-700 hover:border-gray-600 focus:border-primary/50 text-white rounded-xl py-2.5 pl-12 pr-28 shadow-xl focus:ring-2 focus:ring-primary/10 transition-all outline-none placeholder:text-gray-600 cursor-pointer"
             />
             <div className="absolute inset-y-0 right-3 flex items-center gap-2">
-              <button
-                onClick={toggleAiSearch}
-                className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs font-medium transition-all ${isAiSearch
-                  ? 'bg-primary text-white shadow-lg shadow-primary/20'
-                  : 'bg-gray-800 text-gray-400 hover:text-white'
-                  }`}
-              >
-                <Sparkles size={12} />
-                AI
-              </button>
               <kbd className="hidden sm:flex items-center gap-1 px-2 py-1 bg-gray-800 text-gray-500 text-xs rounded border border-gray-700">
-                <Command size={10} />K
+                space
               </kbd>
             </div>
           </div>

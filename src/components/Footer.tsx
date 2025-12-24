@@ -1,13 +1,12 @@
 import React from 'react';
 import { Heart } from 'lucide-react';
-import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
+import { useLanguage } from '../contexts/LanguageContext';
 
-interface FooterProps {
-  lang: Language;
-}
+interface FooterProps { }
 
-const Footer: React.FC<FooterProps> = ({ lang }) => {
+const Footer: React.FC<FooterProps> = () => {
+  const { lang } = useLanguage();
   const currentYear = new Date().getFullYear();
   const t = TRANSLATIONS[lang];
 

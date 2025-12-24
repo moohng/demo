@@ -1,23 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { X, FolderPlus } from 'lucide-react';
-import { Category, CategoryType, Language } from '../../types';
+import { Category, CategoryType } from '../../types';
 import { CATEGORY_ICONS, CATEGORY_NAMES, CATEGORY_THEMES } from '../../constants';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface CategoryModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (name: string, type: CategoryType) => void;
   editingCategory?: Category;
-  lang: Language;
 }
 
 export const CategoryModal: React.FC<CategoryModalProps> = React.memo(({
   isOpen,
   onClose,
   onSave,
-  editingCategory,
-  lang
+  editingCategory
 }) => {
+  const { lang } = useLanguage();
   const [categoryName, setCategoryName] = useState('');
   const [categoryType, setCategoryType] = useState<CategoryType>(CategoryType.TOOLS);
 

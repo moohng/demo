@@ -4,15 +4,17 @@ import { aiService } from '../../services/aiService';
 import { AIConfig, UsageStats } from '../../types';
 import { AI_PROVIDERS } from '../../constants';
 
+import { useLanguage } from '../../contexts/LanguageContext';
+
 interface AISettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
-  lang: 'en' | 'cn';
 }
 
 const DEFAULT_BASE_URL = 'https://api.openai.com/v1';
 
-export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClose, lang }) => {
+export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClose }) => {
+  const { lang } = useLanguage();
   const [baseURL, setBaseURL] = useState<string>(DEFAULT_BASE_URL);
   const [apiKey, setApiKey] = useState('');
   const [model, setModel] = useState('');

@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertTriangle, X } from 'lucide-react';
-import { Language } from '../../types';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -10,7 +10,6 @@ interface ConfirmModalProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
-  lang: Language;
 }
 
 export const ConfirmModal: React.FC<ConfirmModalProps> = React.memo(({
@@ -20,9 +19,9 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = React.memo(({
   title,
   message,
   confirmText,
-  cancelText,
-  lang
+  cancelText
 }) => {
+  const { lang } = useLanguage();
   if (!isOpen) return null;
 
   const handleConfirm = () => {
@@ -50,7 +49,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = React.memo(({
           <X size={20} />
         </button>
 
-        <div className="flex items-start gap-4 mb-6">
+        <div className="p-6 flex items-start gap-4 mb-6">
           <div className="flex-shrink-0 w-12 h-12 rounded-full bg-yellow-500/20 flex items-center justify-center">
             <AlertTriangle size={24} className="text-yellow-500" />
           </div>
@@ -60,7 +59,7 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = React.memo(({
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div className="p-6 flex gap-3">
           <button
             onClick={onClose}
             className="flex-1 py-2.5 px-4 rounded-lg border border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-white transition-colors font-medium"

@@ -1,20 +1,19 @@
 import React from 'react';
 import { Sparkles, Loader2 } from 'lucide-react';
-import { Language } from '../types';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface ImportProgressOverlayProps {
   isVisible: boolean;
   current: number;
   total: number;
-  lang: Language;
 }
 
 export const ImportProgressOverlay: React.FC<ImportProgressOverlayProps> = React.memo(({
   isVisible,
   current,
-  total,
-  lang
+  total
 }) => {
+  const { lang } = useLanguage();
   if (!isVisible) return null;
 
   const percentage = total > 0 ? Math.round((current / total) * 100) : 0;

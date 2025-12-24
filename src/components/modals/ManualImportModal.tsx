@@ -1,7 +1,8 @@
 import React from 'react';
 import { X, User, CheckSquare } from 'lucide-react';
-import { CategoryType, Language } from '../../types';
+import { CategoryType } from '../../types';
 import { CATEGORY_NAMES } from '../../constants';
+import { useLanguage } from '../../contexts/LanguageContext';
 
 interface ImportCandidate {
   link: {
@@ -17,7 +18,6 @@ interface ImportCandidate {
 interface ManualImportModalProps {
   isOpen: boolean;
   candidates: ImportCandidate[];
-  lang: Language;
   onClose: () => void;
   onToggleCandidate: (index: number) => void;
   onUpdateCategory: (index: number, category: CategoryType) => void;
@@ -28,13 +28,13 @@ interface ManualImportModalProps {
 export const ManualImportModal: React.FC<ManualImportModalProps> = React.memo(({
   isOpen,
   candidates,
-  lang,
   onClose,
   onToggleCandidate,
   onUpdateCategory,
   onToggleAll,
   onImport
 }) => {
+  const { lang } = useLanguage();
   if (!isOpen) return null;
 
   const selectedCount = candidates.filter(c => c.selected).length;
