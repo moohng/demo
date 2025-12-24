@@ -8,13 +8,6 @@ import { UnifiedProvider } from './providers/unifiedProvider';
 
 const STORAGE_KEY_CONFIG = 'devnavi_ai_config'; // Current active config
 const STORAGE_KEY_STATS = 'devnavi_ai_stats';
-const STORAGE_KEY_PROVIDERS = 'devnavi_ai_providers'; // Encrypted configs for each provider
-
-interface SavedProviderConfig {
-  apiKey: string; // Encrypted
-  model: string;
-  baseURL: string;
-}
 
 export class AIService {
   private provider: UnifiedProvider | null = null;
@@ -26,23 +19,9 @@ export class AIService {
     totalCalls: 0
   };
 
-  private providerConfigs: Record<string, SavedProviderConfig> = {};
-
   constructor() {
     this.loadConfig();
     this.loadStats();
-    this.loadProviderConfigs();
-  }
-
-  private loadProviderConfigs() {
-    const saved = localStorage.getItem(STORAGE_KEY_PROVIDERS);
-    if (saved) {
-      try {
-        this.providerConfigs = JSON.parse(saved);
-      } catch (e) {
-        console.error('Failed to load provider configs', e);
-      }
-    }
   }
 
   private async loadConfig() {
@@ -106,72 +85,30 @@ export class AIService {
     this.saveStats();
   }
 
-  private async getDecryptedKey(encryptedKey: string): Promise<string> {
-    const key = await decryptAPIKey(encryptedKey);
-    return key || '';
-  }
-
-  /**
-   * Get saved configuration for a specific provider
-   * Returns decrypted values for UI population
-   */
-  async getProviderConfig(providerId: string) {
-    const saved = this.providerConfigs[providerId];
-    if (!saved) return null;
-
-    try {
-      const apiKey = await this.getDecryptedKey(saved.apiKey);
-      return {
-        ...saved,
-        apiKey
-      };
-    } catch (e) {
-      console.error(`Failed to decrypt key for ${providerId}`, e);
-      return null;
-    }
-  }
-
-  async saveConfig(config: AIConfig, withActive = false) {
+  async saveConfig(config: AIConfig) {
     const rawApiKey = config.apiKey;
     const encryptedKey = await encryptAPIKey(rawApiKey);
     if (!encryptedKey) throw new Error('Failed to encrypt API Key');
 
+    const configToSave = { ...config, apiKey: encryptedKey };
+    localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(configToSave));
 
-    if (withActive) {
-    // 1. Save as Active Config
-      const configToSave = { ...config, apiKey: encryptedKey };
-      localStorage.setItem(STORAGE_KEY_CONFIG, JSON.stringify(configToSave));
-
-      this.config = configToSave;
-      this.initializeProvider(rawApiKey);
-    }
-
-    // 2. Update Provider Specific Storage
-    this.providerConfigs[config.providerId] = {
-      apiKey: encryptedKey,
-      model: config.model,
-      baseURL: config.baseURL
-    };
-    localStorage.setItem(STORAGE_KEY_PROVIDERS, JSON.stringify(this.providerConfigs));
+    this.config = configToSave;
+    this.initializeProvider(rawApiKey);
   }
 
   isConfigured(): boolean {
-    return !!this.provider && !!this.config?.enabled;
+    return !!this.provider;
   }
 
-  getConfig(): AIConfig | null {
-    return this.config;
+  async getConfig(): Promise<AIConfig | null> {
+    if (!this.config) return null;
+    const decryptedKey = await decryptAPIKey(this.config.apiKey);
+    return { ...this.config, apiKey: decryptedKey };
   }
 
   getStats(): UsageStats {
     return this.stats;
-  }
-
-  /**
-   * Returns a list of provider IDs that have saved configurations
-   */
-  getConfiguredProviders(): string[] {
-    return Object.keys(this.providerConfigs);
   }
 
   /**
@@ -189,7 +126,7 @@ export class AIService {
   }
 
   async chat(prompt: string, lang: Language, systemInstruction?: string): Promise<string> {
-    if (!this.provider || !this.config?.enabled) {
+    if (!this.provider) {
       // Try to re-initialize if we have config but no provider (edge case)
       if (this.config?.apiKey) {
         const decrypted = await decryptAPIKey(this.config.apiKey);
@@ -210,7 +147,7 @@ export class AIService {
   }
 
   async analyzeJSON(prompt: string): Promise<any> {
-    if (!this.provider || !this.config?.enabled) {
+    if (!this.provider) {
       // Try to re-initialize
       if (this.config?.apiKey) {
         const decrypted = await decryptAPIKey(this.config.apiKey);

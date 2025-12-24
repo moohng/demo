@@ -63,11 +63,9 @@ export interface AIProviderConfig {
 }
 
 export interface AIConfig {
-  providerId: string;
   apiKey: string; // Encrypted
   model: string;
   baseURL: string;
-  enabled: boolean;
 }
 
 export interface UsageStats {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Save, Eye, EyeOff, Activity, Server, Key, Zap, CheckCircle, AlertCircle, RefreshCw, List, Plus, Trash2 } from 'lucide-react';
+import { X, Save, Eye, EyeOff, Activity, Server, Key, Zap, CheckCircle, AlertCircle, RefreshCw, List } from 'lucide-react';
 import { aiService } from '../../services/aiService';
 import { AIConfig, UsageStats } from '../../types';
 import { AI_PROVIDERS } from '../../constants';
@@ -10,115 +10,57 @@ interface AISettingsModalProps {
   lang: 'en' | 'cn';
 }
 
-export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClose, lang }) => {
-  const [activeTab, setActiveTab] = useState<string>('openai');
-  const [visibleTabs, setVisibleTabs] = useState<string[]>(AI_PROVIDERS.map(p => p.id));
-  const [showAddTab, setShowAddTab] = useState(false);
+const DEFAULT_BASE_URL = 'https://api.openai.com/v1';
 
-  const [baseURL, setBaseURL] = useState<string>('https://api.openai.com/v1');
+export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClose, lang }) => {
+  const [baseURL, setBaseURL] = useState<string>(DEFAULT_BASE_URL);
   const [apiKey, setApiKey] = useState('');
   const [model, setModel] = useState('');
   const [showKey, setShowKey] = useState(false);
-  const [enabled, setEnabled] = useState(true);
 
   // Track the actual currently active/live provider from config
-  const [liveProviderId, setLiveProviderId] = useState<string>('');
-
   const [stats, setStats] = useState<UsageStats | null>(null);
   const [status, setStatus] = useState<'idle' | 'validating' | 'fetching' | 'success' | 'error'>('idle');
   const [statusMsg, setStatusMsg] = useState('');
   const [availableModels, setAvailableModels] = useState<string[]>([]);
-  const [isCustomBaseURL, setIsCustomBaseURL] = useState(false);
+  const [showUrlDropdown, setShowUrlDropdown] = useState(false);
 
-  const addTabRef = useRef<HTMLDivElement>(null);
-
-  // Close add dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (addTabRef.current && !addTabRef.current.contains(event.target as Node)) {
-        setShowAddTab(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const urlDropdownRef = useRef<HTMLDivElement>(null);
 
   // Effect to populate initial state
   useEffect(() => {
     if (isOpen) {
-      const currentConfig = aiService.getConfig();
-      // const configured = aiService.getConfiguredProviders();
-
-      // Determine initial visible tabs
-      // const initialTabs = new Set(configured);
-      // if (currentConfig?.providerId) initialTabs.add(currentConfig.providerId);
-      // // Ensure we have at least 'openai' or the active one
-      // if (initialTabs.size === 0) initialTabs.add('openai');
-
-      // setVisibleTabs(Array.from(initialTabs));
-
-      if (currentConfig) {
-        setLiveProviderId(currentConfig.providerId);
-        setActiveTab(currentConfig.providerId);
-        loadProviderSettings(currentConfig.providerId);
-      } else {
-        setActiveTab('openai');
-        loadProviderSettings('openai');
-      }
-
+      loadProviderSettings();
       setStats(aiService.getStats());
       setStatus('idle');
       setStatusMsg('');
     }
   }, [isOpen]);
 
-  const loadProviderSettings = async (id: string) => {
-    // 1. Try to get saved config for this provider
-    const savedCallback = await aiService.getProviderConfig(id);
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (urlDropdownRef.current && !urlDropdownRef.current.contains(event.target as Node)) {
+        setShowUrlDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
-    // 2. Get static defaults
-    const providerDef = AI_PROVIDERS.find(p => p.id === id);
+  const loadProviderSettings = async () => {
+    const savedCallback = await aiService.getConfig();
 
     if (savedCallback) {
       setApiKey(savedCallback.apiKey);
-      setBaseURL(savedCallback.baseURL || providerDef?.baseURL || '');
+      setBaseURL(savedCallback.baseURL || DEFAULT_BASE_URL);
       setModel(savedCallback.model);
-      // Enable edit if custom
-      setIsCustomBaseURL(id === 'custom');
-
-      // If it was the active config, update enabled state from live config, 
-      // else default to true as we are editing it potentially to enable it.
-      const currentConfig = aiService.getConfig();
-      if (currentConfig?.providerId === id) {
-        setEnabled(currentConfig.enabled);
-      } else {
-        setEnabled(true);
-      }
-
     } else {
       // Load defaults if no saved config
       setApiKey('');
-      setBaseURL(providerDef?.baseURL || '');
+      setBaseURL(DEFAULT_BASE_URL);
       setModel(''); // Default fallback
-      setIsCustomBaseURL(id === 'custom');
       setAvailableModels([]);
-      setEnabled(true);
     }
-  };
-
-  const handleTabChange = async (newTabId: string) => {
-    setActiveTab(newTabId);
-    setStatus('idle');
-    setStatusMsg('');
-    await loadProviderSettings(newTabId);
-  };
-
-  const handleAddTab = (providerId: string) => {
-    if (!visibleTabs.includes(providerId)) {
-      setVisibleTabs([...visibleTabs, providerId]);
-    }
-    handleTabChange(providerId);
-    setShowAddTab(false);
   };
 
   const fetchModels = async () => {
@@ -180,32 +122,8 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClos
     }
   };
 
-  const handleSave = async () => {
-    if (!apiKey && enabled) {
-      setStatus('error');
-      setStatusMsg(lang === 'cn' ? '请输入 API Key' : 'Please enter API Key');
-      return;
-    }
-
-    try {
-      const config: AIConfig = {
-        providerId: activeTab,
-        apiKey,
-        model,
-        baseURL,
-        enabled
-      };
-      await aiService.saveConfig(config);
-      setStatus('success');
-      setStatusMsg(lang === 'cn' ? '保存成功！' : 'Saved successfully!');
-    } catch (error: any) {
-      setStatus('error');
-      setStatusMsg(lang === 'cn' ? '保存失败: ' + error.message : 'Save failed: ' + error.message);
-    }
-  };
-
   const handleSaveAndUse = async () => {
-    if (!apiKey && enabled) {
+    if (!apiKey) {
       setStatus('error');
       setStatusMsg(lang === 'cn' ? '请输入 API Key' : 'Please enter API Key');
       return;
@@ -213,37 +131,22 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClos
 
     try {
       const config: AIConfig = {
-        providerId: activeTab,
         apiKey,
         model,
         baseURL,
-        enabled
       };
 
-      await aiService.saveConfig(config, true);
+      await aiService.saveConfig(config);
 
-      setLiveProviderId(activeTab); // Update live indicator
-
-      setStatus('success');
-      setStatusMsg(lang === 'cn' ? '保存并启用成功！' : 'Saved and Activated!');
-
-      setTimeout(() => {
-        onClose();
-      }, 1000);
+      onClose();
 
     } catch (error) {
-      console.error(error);
       setStatus('error');
       setStatusMsg(lang === 'cn' ? '保存失败' : 'Failed to save');
     }
   };
 
   if (!isOpen) return null;
-
-  const usage = stats || { daily: 0, monthly: 0, lastReset: Date.now(), totalCalls: 0 };
-
-  // Available providers that are NOT already in visibleTabs
-  const availableToAdd = AI_PROVIDERS.filter(p => !visibleTabs.includes(p.id));
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
@@ -265,70 +168,59 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClos
           </button>
         </div>
 
-        {/* Tab Bar */}
-        <div className="flex items-center px-6 border-b border-slate-800 bg-slate-900/50 overflow-x-auto no-scrollbar">
-          {visibleTabs.map(tabId => {
-            const provider = AI_PROVIDERS.find(p => p.id === tabId);
-            const isActive = tabId === activeTab;
-            const isLive = tabId === liveProviderId;
-
-            return (
-              <button
-                key={tabId}
-                onClick={() => handleTabChange(tabId)}
-                className={`
-                  relative flex items-center gap-2 px-4 py-3 text-sm font-medium transition-colors border-b-2 whitespace-nowrap
-                  ${isActive
-                    ? 'text-blue-400 border-blue-400 bg-blue-400/5'
-                    : 'text-slate-400 border-transparent hover:text-slate-200 hover:bg-slate-800/50'
-                  }
-                `}
-              >
-                {provider?.name || tabId}
-                {isLive && (
-                  <span className="flex h-2 w-2 relative ml-1">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
-                  </span>
-                )}
-              </button>
-            );
-          })}
-
-          {/* Add Tab Button */}
-          {availableToAdd.length > 0 && (
-            <div className="relative ml-2" ref={addTabRef}>
-              <button
-                onClick={() => setShowAddTab(!showAddTab)}
-                className="p-1 rounded-full hover:bg-slate-800 text-slate-500 hover:text-blue-400 transition-colors"
-                title={lang === 'cn' ? '添加服务商' : 'Add Provider'}
-              >
-                <Plus className="w-5 h-5" />
-              </button>
-
-              {showAddTab && (
-                <div className="absolute left-0 top-full mt-2 w-48 bg-slate-800 border border-slate-700 rounded-xl shadow-xl z-10 overflow-hidden animate-fade-in">
-                  {availableToAdd.map(p => (
-                    <button
-                      key={p.id}
-                      onClick={() => handleAddTab(p.id)}
-                      className="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors flex items-center gap-2"
-                    >
-                      <div className="w-1.5 h-1.5 rounded-full bg-slate-500"></div>
-                      {p.name}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
         {/* Content */}
         <div className="p-6 space-y-6 overflow-y-auto flex-1">
 
           {/* Active Tab Config Form */}
           <div className="grid grid-cols-1 gap-6">
+
+            {/* Base URL */}
+            <div className="space-y-2 relative" ref={urlDropdownRef}>
+              <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
+                <Server className="w-4 h-4 text-purple-400" />
+                Base URL
+              </label>
+              <div className="relative">
+                <input
+                  type="text"
+                  value={baseURL}
+                  onChange={(e) => {
+                    setBaseURL(e.target.value);
+                  }}
+                  onFocus={() => setShowUrlDropdown(true)}
+                  className={`w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-mono`}
+                  placeholder="https://api.openai.com/v1"
+                  autoComplete="one-time-code"
+                  spellCheck={false}
+                />
+
+                <button className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300">
+                  <List className="w-4 h-4" onClick={() => setShowUrlDropdown(!showUrlDropdown)} />
+                </button>
+
+                {showUrlDropdown && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl z-[70] overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="p-2 max-h-[240px] overflow-y-auto">
+                      {AI_PROVIDERS.map((p) => (
+                        <button
+                          key={p.id}
+                          onClick={() => {
+                            setBaseURL(p.baseURL);
+                            setShowUrlDropdown(false);
+                            // Also update active tab if it matches a known provider
+                            // setActiveTab(p.id); 
+                          }}
+                          className="w-full flex items-center justify-between px-3 py-2 hover:bg-slate-800 rounded-lg transition-colors group"
+                        >
+                          <span className="text-sm font-medium text-white group-hover:text-blue-400">{p.baseURL}</span>
+                          <span className="text-sm text-slate-500 font-mono truncate max-w-[200px]">{p.name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
 
             {/* Top Row: Provider Info & API Key */}
             <div className="space-y-4">
@@ -343,8 +235,10 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClos
                   <input
                     type={showKey ? "text" : "password"}
                     value={apiKey}
+                    autoComplete="one-time-code"
+                    spellCheck={false}
                     onChange={(e) => setApiKey(e.target.value)}
-                    placeholder={activeTab === 'custom' ? 'sk-...' : `Enter ${AI_PROVIDERS.find(p => p.id === activeTab)?.name} Key`}
+                    placeholder="sk-..."
                     className="w-full pl-4 pr-10 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 placeholder:text-slate-600 transition-all font-mono text-sm"
                   />
                   <button
@@ -362,20 +256,6 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClos
               </div>
             </div>
 
-            {/* Base URL */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-300 flex items-center gap-2">
-                <Server className="w-4 h-4 text-purple-400" />
-                Base URL
-              </label>
-              <input
-                type="text"
-                value={baseURL}
-                onChange={(e) => setBaseURL(e.target.value)}
-                className={`w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-mono ${!isCustomBaseURL ? 'opacity-60 cursor-default bg-slate-900' : ''}`}
-              />
-            </div>
-
             {/* Model Selection Row */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -383,50 +263,45 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClos
                   <List className="w-4 h-4 text-emerald-400" />
                   {lang === 'cn' ? '模型' : 'Model'}
                 </label>
-                {/* Fetch Button moved here for better alignment */}
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1">
+                  {availableModels.length > 0 ? (
+                    <select
+                      value={model}
+                      onChange={(e) => setModel(e.target.value)}
+                      className="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 appearance-none text-sm"
+                    >
+                      {availableModels.map(m => <option key={m} value={m}>{m}</option>)}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      value={model}
+                      onChange={(e) => setModel(e.target.value)}
+                      placeholder="e.g. gpt-4o"
+                      className="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 text-sm"
+                    />
+                  )}
+                  {availableModels.length > 0 && (
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
+                      <List className="w-4 h-4" />
+                    </div>
+                  )}
+                </div>
+
                 <button
                   onClick={fetchModels}
-                  disabled={status === 'fetching' || !apiKey}
-                  className="text-xs text-emerald-400 hover:text-emerald-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1 transition-colors"
+                  disabled={status === 'fetching' || !apiKey || !baseURL}
+                  className="px-6 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg text-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 transition-all active:scale-95"
+                  title={lang === 'cn' ? "获取模型列表" : "Get Models List"}
                 >
-                  {status === 'fetching' ? <RefreshCw className="w-3 h-3 animate-spin" /> : <RefreshCw className="w-3 h-3" />}
-                  {lang === 'cn' ? "刷新列表" : "Refresh List"}
+                  {status === 'fetching' ? <RefreshCw className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
+                  <span className="text-sm font-medium">{lang === 'cn' ? "获取模型" : "Get Models"}</span>
                 </button>
               </div>
-
-              <div className="relative">
-                {availableModels.length > 0 ? (
-                  <select
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50 appearance-none"
-                  >
-                    {availableModels.map(m => <option key={m} value={m}>{m}</option>)}
-                  </select>
-                ) : (
-                  <input
-                    type="text"
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
-                    placeholder="e.g. gpt-4o"
-                      className="w-full px-4 py-2.5 bg-slate-950 border border-slate-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-                  />
-                )}
-                {availableModels.length > 0 && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">
-                    <List className="w-4 h-4" />
-                  </div>
-                )}
-              </div>
             </div>
-
-            {/* Status Message */}
-            {statusMsg && (
-              <div className={`p-3 rounded-xl flex items-center gap-2 text-sm animate-fade-in ${status === 'error' ? 'bg-red-500/10 text-red-400 border border-red-500/20' : 'bg-green-500/10 text-green-400 border border-green-500/20'}`}>
-                {status === 'error' ? <AlertCircle className="w-4 h-4 flex-shrink-0" /> : <CheckCircle className="w-4 h-4 flex-shrink-0" />}
-                <span className="truncate">{statusMsg}</span>
-              </div>
-            )}
 
             {/* Stats Section - Global Stats (or per provider? currently global in service) */}
             <div className="p-4 bg-slate-950/50 rounded-xl border border-slate-800 space-y-3 mt-2">
@@ -455,19 +330,17 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClos
 
         {/* Footer */}
         <div className="flex items-center justify-between p-6 border-t border-slate-800 bg-slate-800/50">
-          <div className="flex items-center gap-2 text-xs text-slate-500">
-            {status === 'validating' && <RefreshCw className="w-3 h-3 animate-spin" />}
-            <span>
-              {liveProviderId === activeTab
-                ? (lang === 'cn' ? '当前已激活' : 'Currently Active')
-                : (lang === 'cn' ? '未激活' : 'Not Active')}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
+          {/* Status Message */}
+          {statusMsg && (
+            <div className={`flex items-center gap-2 text-sm animate-fade-in ${status === 'error' ? 'text-red-400' : 'text-green-400'}`}>
+              {status === 'error' ? <AlertCircle className="w-4 h-4 flex-shrink-0" /> : <CheckCircle className="w-4 h-4 flex-shrink-0" />}
+              <span className="truncate">{statusMsg}</span>
+            </div>
+          )}
+          <div className="ml-auto flex items-center gap-3">
             <button
               onClick={handleTestConnection}
-              disabled={status === 'validating' || !apiKey}
+              disabled={status === 'validating' || !apiKey || !baseURL}
               className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {status === 'validating'
@@ -476,19 +349,12 @@ export const AISettingsModal: React.FC<AISettingsModalProps> = ({ isOpen, onClos
             </button>
 
             <button
-              onClick={handleSave}
-              disabled={(!apiKey && !aiService.getConfig()?.apiKey) && activeTab === 'custom'} // Basic check
-              className="px-6 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              onClick={handleSaveAndUse}
+              disabled={!apiKey || !baseURL}
+              className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               <Save className="w-4 h-4" />
               {lang === 'cn' ? '保存' : 'Save'}
-            </button>
-            <button
-              onClick={handleSaveAndUse}
-              disabled={(!apiKey && !aiService.getConfig()?.apiKey) && activeTab === 'custom'} // Basic check
-              className="px-6 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {lang === 'cn' ? '保存并使用' : 'Save & Activate'}
             </button>
           </div>
         </div>
