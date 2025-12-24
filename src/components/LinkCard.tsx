@@ -3,16 +3,18 @@ import { ExternalLink, X } from 'lucide-react';
 import { LinkItem, Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 
+import { useLanguage } from '../contexts/LanguageContext';
+
 interface LinkCardProps {
   link: LinkItem;
   onDelete?: (id: string) => void;
   onEdit?: (link: LinkItem) => void;
   onVisit?: (linkId: string) => void;
   editMode: boolean;
-  lang: Language;
 }
 
-const LinkCard: React.FC<LinkCardProps> = ({ link, onDelete, onEdit, onVisit, editMode, lang }) => {
+const LinkCard: React.FC<LinkCardProps> = ({ link, onDelete, onEdit, onVisit, editMode }) => {
+  const { lang } = useLanguage();
   const t = TRANSLATIONS[lang];
 
   // Extract domain for favicon

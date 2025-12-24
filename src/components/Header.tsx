@@ -4,11 +4,11 @@ import { Language } from '../types';
 import { TRANSLATIONS } from '../constants';
 import { supabase } from '../lib/supabase';
 
+import { useLanguage } from '../contexts/LanguageContext';
+
 interface HeaderProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  lang: Language;
-  toggleLang: () => void;
   editMode: boolean;
   setEditMode: (mode: boolean) => void;
   isAiSearch: boolean;
@@ -18,7 +18,8 @@ interface HeaderProps {
   onLoginClick: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, lang, toggleLang, editMode, setEditMode, isAiSearch, toggleAiSearch, onSearchClick, showWallpaperPanel = false, onLoginClick }) => {
+const Header: React.FC<HeaderProps> = ({ searchQuery, setSearchQuery, editMode, setEditMode, isAiSearch, toggleAiSearch, onSearchClick, showWallpaperPanel = false, onLoginClick }) => {
+  const { lang, toggleLang } = useLanguage();
   const [greeting, setGreeting] = useState('');
   const [time, setTime] = useState('');
   const [isScrolled, setIsScrolled] = useState(false);

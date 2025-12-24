@@ -6,7 +6,6 @@ import Header from './components/Header';
 import CategorySection from './components/CategorySection';
 import Footer from './components/Footer';
 import Sidebar from './components/Sidebar';
-import WallpaperPanel from './components/WallpaperPanel';
 import { Toast } from './components/Toast';
 import { SearchOverlay } from './components/SearchOverlay';
 import { ImportConfirmModal } from './components/modals/ImportConfirmModal';
@@ -30,6 +29,7 @@ import { useSearchHistory } from './hooks/useSearchHistory';
 import { useCategories } from './hooks/useCategories';
 import { useAppState } from './hooks/useAppState';
 import { useLinkModal } from './hooks/useLinkModal';
+import { useLanguage } from './contexts/LanguageContext';
 
 function App() {
   // 1. Hooks Initialization
@@ -42,14 +42,11 @@ function App() {
     deleteLink 
   } = useCategories();
 
+  const { lang, toggleLang } = useLanguage();
+
   const {
     isSidebarCollapsed,
     setIsSidebarCollapsed,
-    lang,
-    setLang,
-    toggleLang,
-    wallpaper,
-    setWallpaper,
     isAiSearch,
     toggleAiSearch,
     editMode,
@@ -83,7 +80,6 @@ function App() {
   const [showSearchOverlay, setShowSearchOverlay] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [showAISettings, setShowAISettings] = useState(false);
-  const [showWallpaperPanel, setShowWallpaperPanel] = useState(false);
   
   // Confirm Modal
   const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -178,9 +174,6 @@ function App() {
   useEffect(() => {
     if (editMode) {
       setIsSidebarCollapsed(false);
-      setShowWallpaperPanel(true);
-    } else {
-      setShowWallpaperPanel(false);
     }
   }, [editMode, setIsSidebarCollapsed]);
 
@@ -346,14 +339,6 @@ function App() {
 
   return (
     <div className="min-h-screen bg-background text-white relative overflow-hidden">
-      {/* Background */}
-      {wallpaper && (
-        <div className="fixed inset-0 z-0">
-          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${wallpaper})` }} />
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-        </div>
-      )}
-
       <div className="relative z-10">
         <Toast {...notification} />
         
@@ -447,14 +432,11 @@ function App() {
         <Header
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
-          lang={lang}
-          toggleLang={toggleLang}
           editMode={editMode}
           setEditMode={toggleEditMode}
           isAiSearch={isAiSearch}
           toggleAiSearch={toggleAiSearch}
           onSearchClick={() => setShowSearchOverlay(true)}
-          showWallpaperPanel={showWallpaperPanel}
           onLoginClick={() => setShowAuthModal(true)}
         />
 
@@ -469,7 +451,6 @@ function App() {
                 setIsQuickAddCategory(false);
                 setShowCategoryModal(true);
             }}
-            lang={lang}
           />
 
           <main className={`flex-1 overflow-y-auto p-8 transition-all duration-300 ${isSidebarCollapsed ? 'md:pl-24' : 'md:pl-52'}`}>
@@ -504,8 +485,7 @@ function App() {
                         }}
                         onDeleteCategory={handleDeleteCategoryHandler}
                         onVisit={handleLinkVisit}
-                        editMode={editMode}
-                        lang={lang}
+                       editMode={editMode}
                      />
                    ))}
                 </div>
@@ -516,14 +496,6 @@ function App() {
              <Footer lang={lang} />
           </main>
         </div>
-
-        <WallpaperPanel
-           isOpen={showWallpaperPanel}
-           onClose={() => setShowWallpaperPanel(false)}
-           currentWallpaper={wallpaper}
-           onWallpaperChange={setWallpaper}
-           lang={lang}
-        />
 
         {/* Floating Action Buttons (Only in Edit Mode) */}
         {editMode && (

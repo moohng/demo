@@ -4,6 +4,8 @@ import { Category, LinkItem, Language } from '../types';
 import LinkCard from './LinkCard';
 import { CATEGORY_ICONS, CATEGORY_NAMES, CATEGORY_THEMES } from '../constants';
 
+import { useLanguage } from '../contexts/LanguageContext';
+
 interface CategorySectionProps {
   category: Category;
   editMode: boolean;
@@ -12,7 +14,6 @@ interface CategorySectionProps {
   onEditCategory: (categoryId: string) => void;
   onDeleteCategory: (categoryId: string) => void;
   onVisit?: (linkId: string) => void;
-  lang: Language;
 }
 
 const CategorySection: React.FC<CategorySectionProps> = ({
@@ -22,9 +23,9 @@ const CategorySection: React.FC<CategorySectionProps> = ({
   onEdit,
   onEditCategory,
   onDeleteCategory,
-  onVisit,
-  lang
+  onVisit
 }) => {
+  const { lang } = useLanguage();
   const Icon = CATEGORY_ICONS[category.type];
   const displayName = category.customName || CATEGORY_NAMES[lang][category.type];
   const theme = CATEGORY_THEMES[category.type];
@@ -77,7 +78,6 @@ const CategorySection: React.FC<CategorySectionProps> = ({
             key={link.id}
             link={link}
             editMode={editMode}
-            lang={lang}
             onDelete={() => onDelete(category.id, link.id)}
             onEdit={() => onEdit(category.id, link)}
             onVisit={onVisit}

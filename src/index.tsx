@@ -4,6 +4,7 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import App from './App';
 
 import 'virtual:uno.css';
+import { LanguageProvider } from './contexts/LanguageContext';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
@@ -13,7 +14,9 @@ if (!rootElement) {
 const root = ReactDOM.createRoot(rootElement);
 root.render(
   <React.StrictMode>
-    <App />
-    <SpeedInsights />
+    <LanguageProvider>
+      <App />
+      <SpeedInsights />
+    </LanguageProvider>
   </React.StrictMode>
 );

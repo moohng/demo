@@ -3,16 +3,18 @@ import { ChevronLeft, ChevronRight, Hash, Plus, Settings } from 'lucide-react';
 import { Category, CategoryType, Language } from '../types';
 import { CATEGORY_ICONS, CATEGORY_NAMES, CATEGORY_THEMES } from '../constants';
 
+import { useLanguage } from '../contexts/LanguageContext';
+
 interface SidebarProps {
   categories: Category[];
   isCollapsed: boolean;
   setIsCollapsed: (collapsed: boolean) => void;
   editMode: boolean;
   onAddCategory: () => void;
-  lang: Language;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollapsed, editMode, onAddCategory, lang }) => {
+const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollapsed, editMode, onAddCategory }) => {
+  const { lang } = useLanguage();
   const scrollToCategory = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
