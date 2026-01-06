@@ -353,24 +353,69 @@ export const INITIAL_DATA: Category[] = [
     id: generateId(),
     type: CategoryType.FRAMEWORKS,
     links: [
-      { id: generateId(), title: 'React', url: 'https://react.dev', description: 'The library for web and native user interfaces' },
+      {
+        id: generateId(),
+        title: 'React',
+        url: 'https://react.dev',
+        description: 'The library for web and native user interfaces',
+      },
       { id: generateId(), title: 'Next.js', url: 'https://nextjs.org', description: 'The React Framework for the Web' },
-      { id: generateId(), title: 'Vue.js', url: 'https://vuejs.org', description: 'The Progressive JavaScript Framework' },
+      {
+        id: generateId(),
+        title: 'Vue.js',
+        url: 'https://vuejs.org',
+        description: 'The Progressive JavaScript Framework',
+      },
       { id: generateId(), title: 'Svelte', url: 'https://svelte.dev', description: 'Cybernetically enhanced web apps' },
-      { id: generateId(), title: 'Angular', url: 'https://angular.io', description: 'The modern web developer\'s platform' },
-      { id: generateId(), title: 'Astro', url: 'https://astro.build', description: 'The web framework for content-driven websites' },
-    ]
+      {
+        id: generateId(),
+        title: 'Angular',
+        url: 'https://angular.io',
+        description: "The modern web developer's platform",
+      },
+      {
+        id: generateId(),
+        title: 'Astro',
+        url: 'https://astro.build',
+        description: 'The web framework for content-driven websites',
+      },
+    ],
   },
   {
     id: generateId(),
     type: CategoryType.UI_LIBRARIES,
     links: [
-      { id: generateId(), title: 'Tailwind CSS', url: 'https://tailwindcss.com', description: 'Rapidly build modern websites without leaving your HTML' },
-      { id: generateId(), title: 'Shadcn UI', url: 'https://ui.shadcn.com', description: 'Beautifully designed components built with Radix UI' },
-      { id: generateId(), title: 'MUI', url: 'https://mui.com', description: 'Move faster with intuitive React UI tools' },
-      { id: generateId(), title: 'Framer Motion', url: 'https://www.framer.com/motion', description: 'A production-ready motion library for React' },
-      { id: generateId(), title: 'Ant Design', url: 'https://ant.design', description: 'An enterprise-class UI design language' },
-    ]
+      {
+        id: generateId(),
+        title: 'Tailwind CSS',
+        url: 'https://tailwindcss.com',
+        description: 'Rapidly build modern websites without leaving your HTML',
+      },
+      {
+        id: generateId(),
+        title: 'Shadcn UI',
+        url: 'https://ui.shadcn.com',
+        description: 'Beautifully designed components built with Radix UI',
+      },
+      {
+        id: generateId(),
+        title: 'MUI',
+        url: 'https://mui.com',
+        description: 'Move faster with intuitive React UI tools',
+      },
+      {
+        id: generateId(),
+        title: 'Framer Motion',
+        url: 'https://www.framer.com/motion',
+        description: 'A production-ready motion library for React',
+      },
+      {
+        id: generateId(),
+        title: 'Ant Design',
+        url: 'https://ant.design',
+        description: 'An enterprise-class UI design language',
+      },
+    ],
   },
   {
     id: generateId(),
@@ -378,36 +423,85 @@ export const INITIAL_DATA: Category[] = [
     links: [
       { id: generateId(), title: 'GitHub', url: 'https://github.com', description: 'Where the world builds software' },
       { id: generateId(), title: 'Vercel', url: 'https://vercel.com', description: 'Develop. Preview. Ship.' },
-      { id: generateId(), title: 'Can I Use', url: 'https://caniuse.com', description: 'Browser support tables for modern web technologies' },
-      { id: generateId(), title: 'RegExr', url: 'https://regexr.com', description: 'Learn, build, & test Regular Expressions' },
-      { id: generateId(), title: 'Bundlephobia', url: 'https://bundlephobia.com', description: 'Find the cost of adding a npm package to your bundle' },
-    ]
+      {
+        id: generateId(),
+        title: 'Can I Use',
+        url: 'https://caniuse.com',
+        description: 'Browser support tables for modern web technologies',
+      },
+      {
+        id: generateId(),
+        title: 'Wedown',
+        url: 'https://wedown.app',
+        description: '一款基于 Markdown 的微信公众号编辑、排版工具',
+      },
+    ],
   },
   {
     id: generateId(),
     type: CategoryType.LEARNING,
     links: [
-      { id: generateId(), title: 'MDN Web Docs', url: 'https://developer.mozilla.org', description: 'Resources for developers, by developers' },
-      { id: generateId(), title: 'React Docs', url: 'https://react.dev/learn', description: 'Learn React from the official documentation' },
-      { id: generateId(), title: 'Patterns.dev', url: 'https://www.patterns.dev', description: 'Free book on design patterns and component patterns' },
-      { id: generateId(), title: 'CSS-Tricks', url: 'https://css-tricks.com', description: 'Daily articles about CSS, HTML, JavaScript' },
-    ]
+      {
+        id: generateId(),
+        title: 'MDN Web Docs',
+        url: 'https://developer.mozilla.org',
+        description: 'Resources for developers, by developers',
+      },
+      {
+        id: generateId(),
+        title: 'React Docs',
+        url: 'https://react.dev/learn',
+        description: 'Learn React from the official documentation',
+      },
+      {
+        id: generateId(),
+        title: 'Patterns.dev',
+        url: 'https://www.patterns.dev',
+        description: 'Free book on design patterns and component patterns',
+      },
+      {
+        id: generateId(),
+        title: 'CSS-Tricks',
+        url: 'https://css-tricks.com',
+        description: 'Daily articles about CSS, HTML, JavaScript',
+      },
+    ],
   },
   {
     id: generateId(),
     type: CategoryType.DESIGN,
     links: [
-      { id: generateId(), title: 'Figma', url: 'https://figma.com', description: 'Collaborative interface design tool' },
-      { id: generateId(), title: 'Dribbble', url: 'https://dribbble.com', description: 'Discover the world’s top designers & creatives' },
-      { id: generateId(), title: 'Coolors', url: 'https://coolors.co', description: 'The super fast color schemes generator' },
-    ]
+      {
+        id: generateId(),
+        title: 'Figma',
+        url: 'https://figma.com',
+        description: 'Collaborative interface design tool',
+      },
+      {
+        id: generateId(),
+        title: 'Dribbble',
+        url: 'https://dribbble.com',
+        description: 'Discover the world’s top designers & creatives',
+      },
+      {
+        id: generateId(),
+        title: 'Coolors',
+        url: 'https://coolors.co',
+        description: 'The super fast color schemes generator',
+      },
+    ],
   },
-   {
+  {
     id: generateId(),
     type: CategoryType.ICONS_FONTS,
     links: [
       { id: generateId(), title: 'Lucide', url: 'https://lucide.dev', description: 'Beautiful & consistent icons' },
-      { id: generateId(), title: 'Google Fonts', url: 'https://fonts.google.com', description: 'A library of open source font families' },
-    ]
+      {
+        id: generateId(),
+        title: 'Google Fonts',
+        url: 'https://fonts.google.com',
+        description: 'A library of open source font families',
+      },
+    ],
   },
 ];

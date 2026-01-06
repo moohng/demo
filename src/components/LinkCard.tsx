@@ -51,7 +51,7 @@ const LinkCard: React.FC<LinkCardProps> = ({ link, onDelete, onEdit, onVisit }) 
         target="_blank"
         rel="noopener noreferrer"
         onClick={handleLinkClick}
-        className="flex flex-col p-4 rounded-xl border border-glassBorder bg-glass backdrop-blur-md transition-all duration-300 hover:bg-glassHover hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/20 group/card"
+        className="h-full flex flex-col p-4 rounded-xl border border-glassBorder bg-glass backdrop-blur-md transition-all duration-300 group-hover:bg-glassHover group-hover:-translate-y-1 group-hover:shadow-lg group-hover:shadow-primary/20 group/card"
       >
         <div className="flex items-start gap-3">
           <div className="w-8 h-8 flex-shrink-0 rounded-lg bg-gray-800/50 overflow-hidden flex items-center justify-center">

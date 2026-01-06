@@ -54,7 +54,7 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollaps
                   hover:bg-glassHover text-gray-400 hover:text-white
                 `}
               >
-                <div className={`flex-shrink-0 transition-colors duration-300 ${!isCollapsed ? theme.text : theme.hover}`}>
+                <div className={`flex-shrink-0 transition-colors duration-300 ${theme.text}`}>
                   <Icon size={20} />
                 </div>
 
