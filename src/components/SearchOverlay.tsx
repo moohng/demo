@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Search, Clock, X, ExternalLink, Sparkles, Plus } from 'lucide-react';
 import { Category, LinkItem } from '../types';
-import { CATEGORY_NAMES } from '../constants';
+import { CATEGORY_NAMES, TRANSLATIONS } from '../constants';
 import { useLanguage } from '../contexts/LanguageContext';
 
 interface SearchResult {
@@ -78,6 +78,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
   onQuickAdd
 }) => {
   const { lang } = useLanguage();
+  const t = TRANSLATIONS[lang];
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -206,7 +207,7 @@ export const SearchOverlay: React.FC<SearchOverlayProps> = React.memo(({
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={lang === 'cn' ? '搜索链接...' : 'Search links...'}
+              placeholder={t.searchPlaceholder}
               className="w-full bg-gray-800/50 border border-gray-700 text-white text-lg rounded-xl py-3 pl-12 pr-4 focus:ring-2 focus:ring-primary/50 focus:border-primary/50 outline-none placeholder:text-gray-600"
             />
             {query && (

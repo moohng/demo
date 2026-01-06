@@ -49,8 +49,8 @@ export const AddLinkModal: React.FC<AddLinkModalProps> = ({
     setLinkCategory(CategoryType.TOOLS);
   }, []);
 
-  const handleAutoFill = useCallback(async () => {
-    if (!linkUrl) return;
+  const handleAutoFill = useCallback(async (keyword = linkUrl) => {
+    if (!keyword) return;
     setIsAutoFilling(true);
 
     try {
@@ -59,7 +59,7 @@ export const AddLinkModal: React.FC<AddLinkModalProps> = ({
         type: c.type
       }));
 
-      const info = await analyzeLinkInfo(linkUrl, linkTitle, lang, existingCategories);
+      const info = await analyzeLinkInfo(keyword, linkTitle, lang, existingCategories);
 
       if (info.url && info.url !== linkUrl) setLinkUrl(info.url);
       if (info.title) setLinkTitle(info.title);
@@ -115,6 +115,7 @@ export const AddLinkModal: React.FC<AddLinkModalProps> = ({
   useEffect(() => {
     if (!isOpen) {
       autoFillStarted.current = false;
+      resetForm();
       return;
     }
 
@@ -122,9 +123,7 @@ export const AddLinkModal: React.FC<AddLinkModalProps> = ({
       autoFillStarted.current = true;
       setLinkUrl(initialUrl);
       // Trigger auto fill after a short delay to ensure UI is ready
-      setTimeout(() => {
-        handleAutoFill();
-      }, 500);
+      handleAutoFill(initialUrl);
     }
   }, [isOpen, initialUrl, editingLinkId, handleAutoFill]);
 
@@ -199,7 +198,7 @@ export const AddLinkModal: React.FC<AddLinkModalProps> = ({
                 placeholder="https://example.com"
               />
               <button
-                onClick={handleAutoFill}
+                onClick={() => handleAutoFill()}
                 disabled={!linkUrl || isAutoFilling}
                 className="px-3 py-2 bg-primary/20 hover:bg-primary/30 text-primary rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                 title={lang === 'cn' ? 'AI 自动填充' : 'AI Auto-fill'}
