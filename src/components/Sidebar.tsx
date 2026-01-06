@@ -10,10 +10,10 @@ interface SidebarProps {
   isCollapsed: boolean;
   setIsCollapsed: (collapsed: boolean) => void;
   onAddCategory: () => void;
-  onSearchClick?: () => void;
+  onAISettingsClick?: () => void;
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollapsed, onAddCategory, onSearchClick }) => {
+const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollapsed, onAddCategory, onAISettingsClick }) => {
   const { lang } = useLanguage();
   const scrollToCategory = (id: string) => {
     const element = document.getElementById(id);
@@ -92,7 +92,7 @@ const Sidebar: React.FC<SidebarProps> = ({ categories, isCollapsed, setIsCollaps
       {/* AI Settings Button */}
       <div className="p-3 border-t border-glassBorder shrink-0">
         <button
-          onClick={() => (window as any).openAISettings?.()}
+          onClick={onAISettingsClick}
           className={`w-full flex items-center p-3 rounded-xl transition-all duration-200 group hover:bg-glassHover text-gray-400 hover:text-white ${isCollapsed ? 'justify-center' : 'justify-start gap-4'}`}
           title={lang === 'cn' ? 'AI 设置' : 'AI Settings'}
         >

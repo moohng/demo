@@ -285,7 +285,7 @@ function App() {
               setIsQuickAddCategory(false);
               setShowCategoryModal(true);
             }}
-            onSearchClick={() => setShowSearchOverlay(true)}
+            onAISettingsClick={() => setShowAISettings(true)}
           />
 
           <main className={`flex-1 overflow-y-auto p-8 transition-all duration-300 ${isSidebarCollapsed ? 'md:pl-24' : 'md:pl-52'}`}>
