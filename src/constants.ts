@@ -49,12 +49,12 @@ export const CATEGORY_ICONS: Record<CategoryType, any> = {
 };
 
 export const AI_PROVIDERS = [
-  { id: 'openai', name: 'OpenAI', baseURL: 'https://api.openai.com/v1' },
-  { id: 'gemini', name: 'Gemini', baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/' },
-  { id: 'deepseek', name: 'DeepSeek', baseURL: 'https://api.deepseek.com' },
-  { id: 'hunyuan', name: '混元', baseURL: 'https://api.hunyuan.cloud.tencent.com/v1' },
-  { id: 'qwen', name: '千问', baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1' },
-  { id: 'doubao', name: '豆包', baseURL: 'https://ark.cn-beijing.volces.com/api/v3' },
+  { id: 'openai', name: 'OpenAI', baseURL: '/api/openai' },
+  { id: 'gemini', name: 'Gemini', baseURL: '/api/gemini' },
+  { id: 'deepseek', name: 'DeepSeek', baseURL: '/api/deepseek' },
+  { id: 'hunyuan', name: '混元', baseURL: '/api/hunyuan' },
+  { id: 'qwen', name: '千问', baseURL: '/api/qwen' },
+  { id: 'doubao', name: '豆包', baseURL: '/api/doubao' },
 ];
 
 export const CATEGORY_NAMES: Record<Language, Record<CategoryType, string>> = {

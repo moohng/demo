@@ -131,6 +131,38 @@ async function runDev() {
     server: {
       host: '0.0.0.0',
       port: 8824,
+      proxy: {
+        '/api/hunyuan': {
+          target: 'https://api.hunyuan.cloud.tencent.com/v1',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/hunyuan/, ''),
+        },
+        '/api/openai': {
+          target: 'https://api.openai.com/v1',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/openai/, ''),
+        },
+        '/api/gemini': {
+          target: 'https://generativelanguage.googleapis.com/v1beta/openai/',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/gemini/, ''),
+        },
+        '/api/deepseek': {
+          target: 'https://api.deepseek.com',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/deepseek/, ''),
+        },
+        '/api/qwen': {
+          target: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/qwen/, ''),
+        },
+        '/api/doubao': {
+          target: 'https://ark.cn-beijing.volces.com/api/v3',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/doubao/, ''),
+        },
+      },
     },
   });
 

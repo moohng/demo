@@ -1,3 +1,29 @@
 {
-  "bunVersion": "1.x"
+  "bunVersion": "1.x",
+  "rewrites": [
+    {
+      "source": "/api/hunyuan/:match*",
+      "destination": "https://api.hunyuan.cloud.tencent.com/v1/:match*"
+    },
+    {
+      "source": "/api/openai/:match*",
+      "destination": "https://api.openai.com/v1/:match*"
+    },
+    {
+      "source": "/api/gemini/:match*",
+      "destination": "https://generativelanguage.googleapis.com/v1beta/openai/:match*"
+    },
+    {
+      "source": "/api/deepseek/:match*",
+      "destination": "https://api.deepseek.com/:match*"
+    },
+    {
+      "source": "/api/qwen/:match*",
+      "destination": "https://dashscope.aliyuncs.com/compatible-mode/v1/:match*"
+    },
+    {
+      "source": "/api/doubao/:match*",
+      "destination": "https://ark.cn-beijing.volces.com/api/v3/:match*"
+    }
+  ]
 }

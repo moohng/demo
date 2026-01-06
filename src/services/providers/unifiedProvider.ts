@@ -10,10 +10,14 @@ export class UnifiedProvider {
   private model: string;
 
   constructor(apiKey: string, baseURL: string, model: string) {
+    // OpenAI SDK requires a full URL, so we resolve relative paths against the current origin
+    const resolvedBaseURL =
+      baseURL.startsWith('/') && typeof window !== 'undefined' ? `${window.location.origin}${baseURL}` : baseURL;
+
     this.client = new OpenAI({
       apiKey: apiKey,
-      baseURL: baseURL,
-      dangerouslyAllowBrowser: true
+      baseURL: resolvedBaseURL,
+      dangerouslyAllowBrowser: true,
     });
     this.model = model;
   }
@@ -23,10 +27,13 @@ export class UnifiedProvider {
    */
   static async listModels(apiKey: string, baseURL: string): Promise<string[]> {
     try {
+      const resolvedBaseURL =
+        baseURL.startsWith('/') && typeof window !== 'undefined' ? `${window.location.origin}${baseURL}` : baseURL;
+
       const client = new OpenAI({
         apiKey: apiKey,
-        baseURL: baseURL,
-        dangerouslyAllowBrowser: true
+        baseURL: resolvedBaseURL,
+        dangerouslyAllowBrowser: true,
       });
 
       const response = await client.models.list();
@@ -42,10 +49,13 @@ export class UnifiedProvider {
    */
   static async validateConnection(apiKey: string, baseURL: string, model: string): Promise<boolean> {
     try {
+      const resolvedBaseURL =
+        baseURL.startsWith('/') && typeof window !== 'undefined' ? `${window.location.origin}${baseURL}` : baseURL;
+
       const client = new OpenAI({
         apiKey: apiKey,
-        baseURL: baseURL,
-        dangerouslyAllowBrowser: true
+        baseURL: resolvedBaseURL,
+        dangerouslyAllowBrowser: true,
       });
 
       await client.chat.completions.create({
